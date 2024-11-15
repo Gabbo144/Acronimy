@@ -24,16 +24,27 @@
             try {
                 const room = await client.joinById(roomId, { nickname });
                 document.getElementById('room-code').textContent = roomId;
+    
+                // Register message handler BEFORE any other room operations
+                room.onMessage("end_round", () => {
+                    console.log("Received end_round message");
+                    window.location.href = `fine.html?roomId=${room.id}`;
+                });
                 
                 // Listen for state changes
                 room.onStateChange((state) => {
                     document.getElementById('current-letter').textContent = state.currentLetter;
                 });
+    
+                room.onLeave((code) => {
+                    console.log("Left room:", code);
+                });
+    
             } catch (error) {
                 console.error("Error joining room:", error);
             }
         }
-
+    
         joinRoom();
     </script>
 </body>

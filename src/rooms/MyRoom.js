@@ -1,15 +1,40 @@
 const colyseus = require('colyseus');
 const { MyRoomState, PlayerSchema } = require('./schema/MyRoomState');
 
+const acronimi = [
+    "AIDS",
+    "HIV",
+    "USA",
+    "USSR",
+    "ONU",
+    "NASA",
+    "FBI",
+    "UNICEF",
+    "NATO",
+    "URL",
+    "PDF",
+    "HTML",
+    "VIP",
+    "ASAP",
+    "LOL"
+  ];
+  
+
 exports.MyRoom = class extends colyseus.Room {
     maxClients = 4;
 
+
+    
     onCreate(options) {
         this.setState(new MyRoomState());
         console.log(`Room created with ID: ${this.roomId}`);
+
+        this.onMessage("end_round", (client) => {
+            console.log("Broadcasting end_round message");
+            this.broadcast("end_round", {});  // Send an empty object as payload
+        });
         
         // Generate random letter
-        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         this.state.currentLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
         console.log(`Generated letter: ${this.state.currentLetter}`);
         
@@ -21,6 +46,13 @@ exports.MyRoom = class extends colyseus.Room {
 
         // Store original client IDs for reconnection
         this.originalClients = new Map();
+
+        this.state.currentLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
+        console.log(`Generated letter: ${this.state.currentLetter}`);
+        this.autoDispose = false;
+        this.setSeatReservationTime(120);
+        this.originalClients = new Map();
+
     }
 
     onJoin(client, options) {
