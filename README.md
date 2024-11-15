@@ -1,7 +1,7 @@
 # Acronimi
 Un gioco sugli acronimi.
 
-Sto usando soprattutto Javascript con il framework [Colyseus](https://colyseus.io/)
+Sto usando soprattutto Javascript con il framework [Colyseus](https://colyseus.io/).
 Il tutto è attualmente hostato localmente ma non dovrebbe essere difficile configurare un server remoto dato che usa Node e WebSocket.
 
 Pagina di Notion:
