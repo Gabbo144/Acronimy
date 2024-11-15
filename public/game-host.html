@@ -13,39 +13,38 @@
         <h2>Current Letter: <span id="current-letter"></span></h2>
         <button id="end-round-btn">End Round</button>
     </div>
-
     <script>
         const client = new Colyseus.Client('ws://localhost:2567');
         
         async function joinRoom() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomId = urlParams.get('roomId');
-    const nickname = sessionStorage.getItem('nickname');
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomId = urlParams.get('roomId');
+            const nickname = sessionStorage.getItem('nickname');
+            
+            try {
+                const room = await client.joinById(roomId, { nickname });
+                console.log("Joined room:", room.id);
+                document.getElementById('room-code').textContent = roomId;
+                
+                // Gestore del bottone End Round
+                document.getElementById('end-round-btn').addEventListener('click', () => {
+                    room.send("end_round");
+                    window.location.href = `fine-host.html?roomId=${room.id}`;
+                });
     
-    try {
-        const room = await client.joinById(roomId, { nickname });
-        console.log("Joined room:", room.id);
-        document.getElementById('room-code').textContent = roomId;
-        
-        // Add end round button handler
-        document.getElementById('end-round-btn').addEventListener('click', () => {
-            room.send("end_round");
-            window.location.href = `fine-host.html?roomId=${room.id}`;
-        });
-
-        // Listen for state changes
-        room.onStateChange((state) => {
-            document.getElementById('current-letter').textContent = state.currentLetter;
-        });
-        
-        room.onLeave((code) => {
-            console.log("Left room:", code);
-        });
-    } catch (error) {
-        console.error("Error joining room:", error);
-    }
-}
-
+                // Ascolta i cambi di stato
+                room.onStateChange((state) => {
+                    document.getElementById('current-letter').textContent = state.currentLetter;
+                });
+                
+                room.onLeave((code) => {
+                    console.log("Left room:", code);
+                });
+            } catch (error) {
+                console.error("Error joining room:", error);
+            }
+        }
+    
         joinRoom();
     </script>
 </body>

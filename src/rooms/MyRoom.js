@@ -2,68 +2,43 @@ const colyseus = require('colyseus');
 const { MyRoomState, PlayerSchema } = require('./schema/MyRoomState');
 
 const acronimi = [
-    "AIDS",
-    "HIV",
-    "USA",
-    "USSR",
-    "ONU",
-    "NASA",
-    "FBI",
-    "UNICEF",
-    "NATO",
-    "URL",
-    "PDF",
-    "HTML",
-    "VIP",
-    "ASAP",
-    "LOL"
-  ];
-  
+    "AIDS", "HIV", "USA", "USSR", "ONU", "NASA",
+    "FBI", "UNICEF", "NATO", "URL", "PDF",
+    "HTML", "VIP", "ASAP", "LOL"
+];
 
 exports.MyRoom = class extends colyseus.Room {
     maxClients = 4;
 
 
-    
-    onCreate(options) {
-        this.setState(new MyRoomState());
-        console.log(`Room created with ID: ${this.roomId}`);
+onCreate(options) {
+    this.setState(new MyRoomState());
+    console.log(`Room created with ID: ${this.roomId}`);
 
-        this.onMessage("end_round", (client) => {
-            console.log("Broadcasting end_round message");
-            this.broadcast("end_round", {});  // Send an empty object as payload
-        });
-        
-        // Generate random letter
-        this.state.currentLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
-        console.log(`Generated letter: ${this.state.currentLetter}`);
-        
-        // Prevent room from being disposed
-        this.autoDispose = false;
-        
-        // Enable seat reservation for longer time to handle redirects
-        this.setSeatReservationTime(120);
+    // Gestione del messaggio "end_round"
+    this.onMessage("end_round", (client) => {
+        console.log("Broadcasting end_round message from client:", client.sessionId);
+        this.broadcast("end_round"); // Rimuovi il payload vuoto se non necessario
+    });
 
-        // Store original client IDs for reconnection
-        this.originalClients = new Map();
+    // Genera una lettera casuale all'inizio del round
+    this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
+    console.log(`Generated letter: ${this.state.currentLetter}`);
 
-        this.state.currentLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
-        console.log(`Generated letter: ${this.state.currentLetter}`);
-        this.autoDispose = false;
-        this.setSeatReservationTime(120);
-        this.originalClients = new Map();
-
-    }
+    // Impostazioni aggiuntive
+    this.autoDispose = false;
+    this.setSeatReservationTime(120);
+    this.originalClients = new Map();
+}
 
     onJoin(client, options) {
         console.log(`${client.sessionId} joined room ${this.roomId}`);
         
-        // Create a new PlayerSchema instance or reuse existing one
+        // Crea una nuova istanza PlayerSchema o riutilizza quella esistente
         let player = this.state.players[client.sessionId];
         if (!player) {
             player = new PlayerSchema();
             player.nickname = options.nickname;
-            // Store the original client ID
             this.originalClients.set(options.nickname, client.sessionId);
         }
         player.connected = true;
@@ -75,12 +50,10 @@ exports.MyRoom = class extends colyseus.Room {
         
         try {
             if (!consented) {
-                // Only allow reconnection for unexpected disconnects
                 await this.allowReconnection(client, 120);
                 this.state.players[client.sessionId].connected = true;
             }
         } catch (e) {
-            // If reconnection fails, mark as disconnected
             this.state.players[client.sessionId].connected = false;
         }
     }

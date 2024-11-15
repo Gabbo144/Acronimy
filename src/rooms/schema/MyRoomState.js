@@ -5,8 +5,6 @@ class PlayerSchema extends schema.Schema {
         super();
         this.nickname = "";
         this.connected = false;
-        this.players = new schema.MapSchema();
-        this.currentLetter = "";
     }
 }
 
@@ -14,16 +12,17 @@ class MyRoomState extends schema.Schema {
     constructor() {
         super();
         this.players = new schema.MapSchema();
+        this.currentLetter = "";
     }
 }
 
-// Define types for PlayerSchema
+// Definisci i tipi per PlayerSchema
 schema.defineTypes(PlayerSchema, {
     nickname: "string",
     connected: "boolean"
 });
 
-// Define types for MyRoomState
+// Definisci i tipi per MyRoomState
 schema.defineTypes(MyRoomState, {
     players: { map: PlayerSchema },
     currentLetter: "string"

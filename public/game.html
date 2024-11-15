@@ -12,7 +12,6 @@
         <h2>Room Code: <span id="room-code"></span></h2>
         <h2>Current Letter: <span id="current-letter"></span></h2>
     </div>
-
     <script>
         const client = new Colyseus.Client('ws://localhost:2567');
         
@@ -25,13 +24,18 @@
                 const room = await client.joinById(roomId, { nickname });
                 document.getElementById('room-code').textContent = roomId;
     
-                // Register message handler BEFORE any other room operations
-                room.onMessage("end_round", () => {
-                    console.log("Received end_round message");
-                    window.location.href = `fine.html?roomId=${room.id}`;
+                // Gestore generico per tutti i messaggi
+                room.onMessage("*", (type, message) => {
+                    if (type === "end_round") {
+                        console.log("Received end_round message");
+                        window.location.href = `fine.html?roomId=${room.id}`;
+                    } else {
+                        // Ignora altri tipi di messaggio
+                        console.log(`Received unknown message type: ${type}`);
+                    }
                 });
                 
-                // Listen for state changes
+                // Ascolta i cambi di stato
                 room.onStateChange((state) => {
                     document.getElementById('current-letter').textContent = state.currentLetter;
                 });
