@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Host</title>
+    <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
+</head>
+<body>
+    <h1>Game Host</h1>
+    <div>
+        <h2>Room Code: <span id="room-code"></span></h2>
+        <h2>Current Letter: <span id="current-letter"></span></h2>
+    </div>
+
+    <script>
+        const client = new Colyseus.Client('ws://localhost:2567');
+        
+        async function joinRoom() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomId = urlParams.get('roomId');
+            const nickname = sessionStorage.getItem('nickname');
+            
+            try {
+                // Changed from reconnect to joinById
+                const room = await client.joinById(roomId, { nickname });
+                console.log("Joined room:", room.id);
+                document.getElementById('room-code').textContent = roomId;
+                
+                // Listen for state changes
+                room.onStateChange((state) => {
+                    document.getElementById('current-letter').textContent = state.currentLetter;
+                });
+                
+                room.onLeave((code) => {
+                    console.log("Left room:", code);
+                });
+            } catch (error) {
+                console.error("Error joining roomz:", error);
+            }
+        }
+
+        joinRoom();
+    </script>
+</body>
+</html>
