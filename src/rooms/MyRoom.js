@@ -7,34 +7,40 @@ const acronimi = [
     "HTML", "VIP", "ASAP", "LOL"
 ];
 
+var acronimi_mandati = [];
+
 exports.MyRoom = class extends colyseus.Room {
     maxClients = 4;
 
+    onCreate(options) {
+        this.setState(new MyRoomState());
+        console.log(`Room created with ID: ${this.roomId}`);
 
-onCreate(options) {
-    this.setState(new MyRoomState());
-    console.log(`Room created with ID: ${this.roomId}`);
+        // Gestione del messaggio "end_round"
+        this.onMessage("end_round", (client) => {
+            console.log("Broadcasting end_round message from client:", client.sessionId);
+            this.broadcast("end_round");
+        });
 
-    // Gestione del messaggio "end_round"
-    this.onMessage("end_round", (client) => {
-        console.log("Broadcasting end_round message from client:", client.sessionId);
-        this.broadcast("end_round"); // Rimuovi il payload vuoto se non necessario
-    });
+        // Gestione del messaggio "manda_acronimo"
+        this.onMessage("manda_acronimo", (client, message) => {
+            this.state.acronimiMandati.push(message.acronimo);
+            console.log("Acronimo ricevuto:", message.acronimo);
+        });
 
-    // Genera una lettera casuale all'inizio del round
-    this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
-    console.log(`Generated letter: ${this.state.currentLetter}`);
+        // Genera una lettera casuale all'inizio del round
+        this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
+        console.log(`Generated letter: ${this.state.currentLetter}`);
 
-    // Impostazioni aggiuntive
-    this.autoDispose = false;
-    this.setSeatReservationTime(120);
-    this.originalClients = new Map();
-}
+        // Impostazioni aggiuntive
+        this.autoDispose = false;
+        this.setSeatReservationTime(120);
+        this.originalClients = new Map();
+    }
 
     onJoin(client, options) {
         console.log(`${client.sessionId} joined room ${this.roomId}`);
         
-        // Crea una nuova istanza PlayerSchema o riutilizza quella esistente
         let player = this.state.players[client.sessionId];
         if (!player) {
             player = new PlayerSchema();

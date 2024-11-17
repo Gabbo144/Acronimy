@@ -8,11 +8,13 @@ class PlayerSchema extends schema.Schema {
     }
 }
 
+// In MyRoomState.js
 class MyRoomState extends schema.Schema {
     constructor() {
         super();
         this.players = new schema.MapSchema();
         this.currentLetter = "";
+        this.acronimiMandati = new schema.ArraySchema(); // Initialize as empty array
     }
 }
 
@@ -25,7 +27,8 @@ schema.defineTypes(PlayerSchema, {
 // Definisci i tipi per MyRoomState
 schema.defineTypes(MyRoomState, {
     players: { map: PlayerSchema },
-    currentLetter: "string"
+    currentLetter: "string",
+    acronimiMandati: ["string"]  // Aggiungi questo
 });
 
 exports.MyRoomState = MyRoomState;
