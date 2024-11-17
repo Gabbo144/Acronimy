@@ -12,12 +12,11 @@ CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT
 _Attualmente c'è questo strano problema per cui quando viene creata una stanza l'host si sconnette e riconnette una volta con un id diverso, funziona comunque dato che in teoria il token si salva localmente (?)_
 
 ## DA FARE:
-- Aggiungere il sistema che salva gli acronimi delle persone e li mostra in una schermata tra i round (es. fine.html/fine-host.html)
 - Testare connessioni multiple contemporanee
-- Aggiungere immagini al README
+- Progettare e applicare UI
 
 ## Progressi
-15/11 - Per adesso sono riuscito a creare un sistema di Creazione/Join stanza con acronimi sincronizzati e anche un bottone che l'host può premere per finire il round.
+15/11 - Per adesso sono riuscito a creare un sistema di Creazione/Join stanza con acronimi sincronizzati e anche un bottone che l'host può premere per finire il round. </br >
 16/11 - Ora c'è l'input per gli acronimi, e quando un utente invia un acronimo (max 1) viene salvato in un array, che viene poi mostrato a tutti i giocatori quando l'host preme "End Round"
 
 
