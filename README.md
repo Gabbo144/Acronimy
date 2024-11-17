@@ -1,5 +1,5 @@
 # Acronimi
-Un gioco sugli acronimi.
+Un gioco sugli acronimi. 
 
 Sto usando soprattutto Javascript con il framework [Colyseus](https://colyseus.io/).
 Il tutto è attualmente hostato localmente ma non dovrebbe essere difficile configurare un server remoto dato che usa Node e WebSocket.
@@ -8,16 +8,22 @@ Pagina di Notion:
 https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67d2da?pvs=4
 
 ## Note
-CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
-_Attualmente c'è questo strano problema per cui quando viene creata una stanza l'host si sconnette e riconnette una volta con un id diverso, funziona comunque dato che in teoria il token si salva localmente (?)_
+- CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
+- _Attualmente c'è questo strano problema per cui quando viene creata una stanza l'host si sconnette e riconnette una volta con un id diverso, funziona comunque dato che in teoria il token si salva localmente (?)_ </br >
+- Per qualche motivo non accetta più di 2 giocatori, pensavo fosse perchè il limite di default è 4 e come ho scritto il gioco prende più connessioni. Ho provato ad aumentare a 8 e il problema persiste. 
 
 ## DA FARE:
 - Testare connessioni multiple contemporanee
 - Progettare e applicare UI
+- NOMEEEEEEEEEEEEEEEEEEEEEEEEE
+- Lista giocatori attivi
+- Nicknames
+- Sistema di voti
 
 ## Progressi
 15/11 - Per adesso sono riuscito a creare un sistema di Creazione/Join stanza con acronimi sincronizzati e anche un bottone che l'host può premere per finire il round. </br >
-16/11 - Ora c'è l'input per gli acronimi, e quando un utente invia un acronimo (max 1) viene salvato in un array, che viene poi mostrato a tutti i giocatori quando l'host preme "End Round"
+16/11 - Ora c'è l'input per gli acronimi, e quando un utente invia un acronimo (max 1) viene salvato in un array, che viene poi mostrato a tutti i giocatori quando l'host preme "End Round" </br >
+17/11 - Ora quando l'host preme il bottone per finire il round si vedono uno alla volta gli acronimi dei giocatori, l'host può premere un bottone per passare al prossimo </br >
 
 
 ## Cosa fanno i file
@@ -44,4 +50,4 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-_ultima modifica: 16/11/24, 23.04_
+_ultima modifica: 17/11/24, 20.52_
