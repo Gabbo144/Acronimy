@@ -27,6 +27,11 @@ exports.MyRoom = class extends colyseus.Room {
             this.state.acronimiMandati.push(message.acronimo);
             console.log("Acronimo ricevuto:", message.acronimo);
         });
+// Nella funzione onCreate
+this.onMessage("next_acronimo", (client) => {
+    console.log("Broadcasting next_acronimo message");
+    this.broadcast("next_acronimo");
+});
 
         // Genera una lettera casuale all'inizio del round
         this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
