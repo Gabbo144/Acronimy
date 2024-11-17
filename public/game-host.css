@@ -1,0 +1,7 @@
+#risultato-list {
+    display: none; /* Hide initially */
+}
+
+#risultato-list.visible {
+    display: block; /* Show when class is added */
+}

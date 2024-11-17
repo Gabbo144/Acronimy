@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game</title>
+    <link rel="stylesheet" href="game-host.css">
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
 </head>
 <body>
@@ -40,15 +41,17 @@
                 document.getElementById('room-code').textContent = roomId;
     
                 // Gestore generico per tutti i messaggi
-                currentRoom.onMessage("*", (type, message) => {
-                    if (type === "end_round") {
-                        console.log("Received end_round message");
-                        window.location.href = `fine.html?roomId=${currentRoom.id}`;
-                    } else {
-                        // Ignora altri tipi di messaggio
-                        console.log(`Received unknown message type: ${type}`);
-                    }
-                });
+// In game.html, modify the message handler
+currentRoom.onMessage("*", (type, message) => {
+    if (type === "end_round") {
+        console.log("Received end_round message");
+        const resultsList = document.getElementById('risultato-list');
+        resultsList.classList.add('visible'); // Show results when end_round is received
+        // window.location.href = `fine.html?roomId=${currentRoom.id}`; // Commented out redirect
+    } else {
+        console.log(`Received unknown message type: ${type}`);
+    }
+});
 
                 // Ascolta i cambi di stato
                 currentRoom.onStateChange((state) => {

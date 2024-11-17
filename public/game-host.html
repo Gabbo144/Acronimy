@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Host</title>
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
+    <link rel="stylesheet" href="game-host.css">
 </head>
 <body>
     <h1>Game Host</h1>
@@ -44,8 +45,10 @@
                 
                 // Gestore del bottone End Round
                 document.getElementById('end-round-btn').addEventListener('click', () => {
+                    const resultsList = document.getElementById('risultato-list');
+                    resultsList.classList.add('visible'); // Show results
                     currentRoom.send("end_round");
-                    window.location.href = `fine-host.html?roomId=${currentRoom.id}`;
+                    // window.location.href = `fine-host.html?roomId=${currentRoom.id}`;
                 });
     
                 // Ascolta i cambi di stato
