@@ -11,36 +11,63 @@
     <div>
         <h2>Room Code: <span id="room-code"></span></h2>
         <h2>Current Letter: <span id="current-letter"></span></h2>
+        <div id="risultato">
+            <input type="text" name="" id="user_acronimozz">
+            <button onclick="mandaacronimo()">invia</button>
+            <h2>Risultato</h2>
+            <div id="risultato-list">
+                <p></p>
+            </div>
+        </div>
     </div>
     <script>
         const client = new Colyseus.Client('ws://localhost:2567');
+        let currentRoom = null;
         
+        async function mandaacronimo() {
+            var acronimoz = document.getElementById('user_acronimozz').value;
+            currentRoom.send("manda_acronimo", { acronimo: acronimoz });
+            console.log("Acronimo inviato:", acronimoz);
+        }
+
         async function joinRoom() {
             const urlParams = new URLSearchParams(window.location.search);
             const roomId = urlParams.get('roomId');
             const nickname = sessionStorage.getItem('nickname');
             
             try {
-                const room = await client.joinById(roomId, { nickname });
+                currentRoom = await client.joinById(roomId, { nickname });
                 document.getElementById('room-code').textContent = roomId;
     
                 // Gestore generico per tutti i messaggi
-                room.onMessage("*", (type, message) => {
+                currentRoom.onMessage("*", (type, message) => {
                     if (type === "end_round") {
                         console.log("Received end_round message");
-                        window.location.href = `fine.html?roomId=${room.id}`;
+                        window.location.href = `fine.html?roomId=${currentRoom.id}`;
                     } else {
                         // Ignora altri tipi di messaggio
                         console.log(`Received unknown message type: ${type}`);
                     }
                 });
-                
+
                 // Ascolta i cambi di stato
-                room.onStateChange((state) => {
+                currentRoom.onStateChange((state) => {
                     document.getElementById('current-letter').textContent = state.currentLetter;
+                    
+                    // Aggiorna la lista degli acronimi
+                    const lista = document.getElementById('risultato-list');
+                    lista.innerHTML = ''; // Pulisce la lista
+                    
+                    if (state.acronimiMandati) {
+                        state.acronimiMandati.forEach(acronimo => {
+                            const li = document.createElement('li');
+                            li.textContent = acronimo;
+                            lista.appendChild(li);
+                        });
+                    }
                 });
-    
-                room.onLeave((code) => {
+                
+                currentRoom.onLeave((code) => {
                     console.log("Left room:", code);
                 });
     
