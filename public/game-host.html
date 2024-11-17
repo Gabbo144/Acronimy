@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Host</title>
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
-    <link rel="stylesheet" href="game-host.css">
+    <link rel="stylesheet" href="game.css">
 </head>
 <body>
     <h1>Game Host</h1>
@@ -25,12 +25,18 @@
     <script>
         const client = new Colyseus.Client('ws://localhost:2567');
         let currentRoom = null; // Store room reference globally
-    
+        var controllobottone = 0
         async function mandaacronimo() {
-            var acronimoz = document.getElementById('user_acronimozz').value;
-            currentRoom.send("manda_acronimo", { acronimo: acronimoz });
-            console.log("Acronimo inviato:", acronimoz);
-            // Remove the console.log(acronimi_mandati) since it's not needed
+            controllobottone++;
+            if (controllobottone > 1) {
+                alert("Hai già inviato un acronimo!");
+                return;
+            }
+            else {
+                var acronimoz = document.getElementById('user_acronimozz').value;
+                currentRoom.send("manda_acronimo", { acronimo: acronimoz });
+                console.log("Acronimo inviato:", acronimoz);
+            }
         }
     
         async function joinRoom() {

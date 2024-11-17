@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game</title>
-    <link rel="stylesheet" href="game-host.css">
+    <link rel="stylesheet" href="game.css">
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
 </head>
 <body>
@@ -26,9 +26,16 @@
         let currentRoom = null;
         
         async function mandaacronimo() {
-            var acronimoz = document.getElementById('user_acronimozz').value;
-            currentRoom.send("manda_acronimo", { acronimo: acronimoz });
-            console.log("Acronimo inviato:", acronimoz);
+            controllobottone++;
+            if (controllobottone > 1) {
+                alert("Hai già inviato un acronimo!");
+                return;
+            }
+            else {
+                var acronimoz = document.getElementById('user_acronimozz').value;
+                currentRoom.send("manda_acronimo", { acronimo: acronimoz });
+                console.log("Acronimo inviato:", acronimoz);
+            }
         }
 
         async function joinRoom() {
