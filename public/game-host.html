@@ -51,15 +51,13 @@
 
         function vote(isUpvote) {
     // Fix validation to check for valid index range (0 to length-1)
-    if (currentAcronimoIndex <= 0 || currentAcronimoIndex > acronimiList.length) {
+    if (currentAcronimoIndex < 0 || currentAcronimoIndex >= acronimiList.length) {
         console.error("Invalid acronimo index for voting:", currentAcronimoIndex);
         return;
     }
     
-    // Adjust index to match the current acronimo
-    const voteIndex = currentAcronimoIndex - 1;
-    console.log(`Voting for acronimo at index: ${voteIndex}`);
-    currentRoom.send("vote", { index: voteIndex, isUpvote });
+    console.log(`Voting for acronimo at index: ${currentAcronimoIndex}`);
+    currentRoom.send("vote", { index: currentAcronimoIndex, isUpvote });
 }
         function mandaacronimo() {
             if (!currentRoom) return;
@@ -143,8 +141,8 @@
 
 currentRoom.onMessage("vote_update", (message) => {
     // Check if this update is for the currently displayed acronimo
-    if (message.index === currentAcronimoIndex - 1) {
-        const acronimo = acronimiList[currentAcronimoIndex - 1];
+    if (message.index === currentAcronimoIndex) {
+        const acronimo = acronimiList[currentAcronimoIndex];
         if (acronimo) {
             acronimo.upvotes = message.upvotes;
             acronimo.downvotes = message.downvotes;
