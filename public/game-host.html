@@ -16,21 +16,44 @@
         <div id="risultato">
             <input type="text" name="" id="user_acronimozz">
             <button onclick="mandaacronimo()">invia</button>
+            <button id="show-scores-btn" onclick="showScores()" style="display: none;">
+                Mostra Classifica
+            </button>
+            
             <h2>Risultato</h2>
             <div id="risultato-list">
                 <p id="current-acronimo"></p>
+                <div id="voting-buttons">
+                    <button onclick="vote(true)" class="vote-btn">👍 Bello</button>
+                    <button onclick="vote(false)" class="vote-btn">👎 Brutto</button>
+                </div>
+                <p id="vote-count"></p>
             </div>
-            <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
+            <div id="scores-container" style="display: none;">
+                <h2>Classifica</h2>
+                <ul id="scores-list"></ul>
+            </div>
         </div>
+        <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
     </div>
+
     <script>
         const client = new Colyseus.Client('ws://localhost:2567');
-        let currentRoom = null; // Store room reference globally
-        var controllobottone = 0;
+        let currentRoom = null;
+        let controllobottone = 0;
         let currentAcronimoIndex = 0;
         let acronimiList = [];
 
-        async function mandaacronimo() {
+        function showScores() {
+            currentRoom.send("show_scores");
+        }
+
+        function vote(isUpvote) {
+            currentRoom.send("vote", { index: currentAcronimoIndex, isUpvote });
+        }
+
+        function mandaacronimo() {
+            if (!currentRoom) return;
             controllobottone++;
             if (controllobottone > 1) {
                 alert("Hai già inviato un acronimo!");
@@ -43,48 +66,68 @@
         }
 
         function scorriacronimo() {
-            const currentAcronimo = document.getElementById('current-acronimo');
-            if (currentAcronimoIndex < acronimiList.length) {
-                currentRoom.send("next_acronimo"); // Aggiungi questa riga
-
-                currentAcronimo.textContent = acronimiList[currentAcronimoIndex];
-                currentAcronimoIndex++;
-            } else {
-                document.getElementById('bottonepazzo').style.display = 'none';
-            }
+    if (!currentRoom) return;
+    if (currentAcronimoIndex < acronimiList.length) {
+        document.getElementById('current-acronimo').textContent = acronimiList[currentAcronimoIndex].text;
+        currentAcronimoIndex++;
+        // Only send next_acronimo after updating the display
+        if (currentAcronimoIndex < acronimiList.length) {
+            currentRoom.send("next_acronimo");
         }
+    } else {
+        document.getElementById('bottonepazzo').style.display = 'none';
+    }
+}
 
-        async function joinRoom() {
+        async function initializeRoom() {
             const urlParams = new URLSearchParams(window.location.search);
             const roomId = urlParams.get('roomId');
             const nickname = sessionStorage.getItem('nickname');
             
             try {
                 currentRoom = await client.joinById(roomId, { nickname });
-                console.log("Joined room:", currentRoom.id);
                 document.getElementById('room-code').textContent = roomId;
-                
-                // Gestore del bottone End Round
+
                 document.getElementById('end-round-btn').addEventListener('click', () => {
-                    const resultsList = document.getElementById('risultato-list');
-                    resultsList.classList.add('visible'); // Show results
+                    document.getElementById('risultato-list').classList.add('visible');
                     currentRoom.send("end_round");
                 });
 
-                // Ascolta i cambi di stato
-                currentRoom.onStateChange((state) => {
-                    document.getElementById('current-letter').textContent = state.currentLetter;
+                currentRoom.onMessage("*", (type, message) => {
+    if (type === "end_round") {
+        console.log("Received end_round message");
+        acronimiList = Array.from(currentRoom.state.acronimiMandati);
+        currentAcronimoIndex = -1;
+        document.getElementById('bottonepazzo').style.display = 'block';
+        document.getElementById('show-scores-btn').style.display = 'block';
+        // Call scorriacronimo after setting up the list
+        scorriacronimo();
+    }
+});
+
+                currentRoom.onMessage("vote_update", (message) => {
+                    if (message.index === currentAcronimoIndex) {
+                        document.getElementById('vote-count').textContent = 
+                            `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
+                    }
                 });
 
-                // Gestore generico per tutti i messaggi
-                currentRoom.onMessage("*", (type, message) => {
-                    if (type === "end_round") {
-                        console.log("Received end_round message");
-                        acronimiList = currentRoom.state.acronimiMandati;
-                        currentAcronimoIndex = 0;
-                        scorriacronimo(); // Show the first acronym
-                        document.getElementById('bottonepazzo').style.display = 'block'; // Show button
-                    }
+                currentRoom.onMessage("show_scores", () => {
+                    const scoresContainer = document.getElementById('scores-container');
+                    const scoresList = document.getElementById('scores-list');
+                    scoresList.innerHTML = '';
+                    
+                    Object.values(currentRoom.state.players).forEach(player => {
+                        const li = document.createElement('li');
+                        li.textContent = `${player.nickname}: ${player.score} punti`;
+                        scoresList.appendChild(li);
+                    });
+                    
+                    scoresContainer.style.display = 'block';
+                });
+
+                currentRoom.onStateChange((state) => {
+                    document.getElementById('current-letter').textContent = state.currentLetter;
                 });
 
             } catch (error) {
@@ -92,7 +135,8 @@
             }
         }
 
-        joinRoom();
+        // Initialize the room when the page loads
+        initializeRoom();
     </script>
 </body>
 </html>
