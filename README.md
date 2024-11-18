@@ -10,7 +10,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 ## Note
 - CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
 - _Attualmente c'è questo strano problema per cui quando viene creata una stanza l'host si sconnette e riconnette una volta con un id diverso, funziona comunque dato che in teoria il token si salva localmente (?)_ </br >
-- Per qualche motivo non accetta più di 2 giocatori, pensavo fosse perchè il limite di default è 4 e come ho scritto il gioco prende più connessioni. Ho provato ad aumentare a 8 e il problema persiste. 
+- Per qualche motivo non accetta più di 2 giocatori, pensavo fosse perchè il limite di default è 4 e come ho scritto il gioco prende più connessioni. Ho provato ad aumentare a 8 e il problema persiste. </br >
+- Nel branch delle votazioni non viene generato l'acronimo, ma dovrebbe essere facile da fixare </br >
 
 ## DA FARE:
 - Testare connessioni multiple contemporanee
@@ -24,6 +25,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 15/11 - Per adesso sono riuscito a creare un sistema di Creazione/Join stanza con acronimi sincronizzati e anche un bottone che l'host può premere per finire il round. </br >
 16/11 - Ora c'è l'input per gli acronimi, e quando un utente invia un acronimo (max 1) viene salvato in un array, che viene poi mostrato a tutti i giocatori quando l'host preme "End Round" </br >
 17/11 - Ora quando l'host preme il bottone per finire il round si vedono uno alla volta gli acronimi dei giocatori, l'host può premere un bottone per passare al prossimo </br >
+18/11 - Ho creato un'altra branch per evitare casini, sono risucito a fare in modo che i voti siano sincronizzati e in base all'acronimo corrent </br >
 
 
 ## Cosa fanno i file
@@ -50,4 +52,4 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-_ultima modifica: 17/11/24, 20.52_
+_ultima modifica: 18/11/24, 21.53_

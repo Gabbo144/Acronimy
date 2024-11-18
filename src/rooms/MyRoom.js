@@ -1,6 +1,14 @@
 const colyseus = require('colyseus');
 const { MyRoomState, PlayerSchema, AcronimoSchema } = require('./schema/MyRoomState');
 
+const acronimi = [
+    "AIDS", "HIV", "USA", "USSR", "ONU", "NASA",
+    "FBI", "UNICEF", "NATO", "URL", "PDF",
+    "HTML", "VIP", "ASAP", "LOL"
+];
+
+var acronimi_mandati = [];
+
 exports.MyRoom = class extends colyseus.Room {
     maxClients = 4;
 
@@ -24,6 +32,12 @@ exports.MyRoom = class extends colyseus.Room {
                 });
             });
 
+
+                    // Genera una lettera casuale all'inizio del round
+        this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
+        console.log(`Generated letter: ${this.state.currentLetter}`);
+
+        
         this.onMessage("manda_acronimo", (client, message) => {
             const acronimo = new AcronimoSchema();
             acronimo.text = message.acronimo;
