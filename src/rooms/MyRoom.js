@@ -14,11 +14,15 @@ exports.MyRoom = class extends colyseus.Room {
         });
 
             // Add this handler
-    this.onMessage("next_acronimo", (client) => {
-        console.log("Received next_acronimo message");
-        this.broadcast("next_acronimo");
-    });
-
+            this.onMessage("next_acronimo", (client, message) => {
+                console.log("Received next_acronimo message");
+                this.broadcast("next_acronimo", { 
+                    index: message.index,
+                    text: this.state.acronimiMandati[message.index].text,
+                    upvotes: this.state.acronimiMandati[message.index].upvotes,
+                    downvotes: this.state.acronimiMandati[message.index].downvotes
+                });
+            });
 
         this.onMessage("manda_acronimo", (client, message) => {
             const acronimo = new AcronimoSchema();

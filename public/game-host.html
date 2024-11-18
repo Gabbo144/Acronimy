@@ -10,6 +10,7 @@
 <body>
     <h1>Game Host</h1>
     <div>
+        <a href="http://localhost:2567/"><button>HOME</button></a>
         <h2>Room Code: <span id="room-code"></span></h2>
         <h2>Current Letter: <span id="current-letter"></span></h2>
         <button id="end-round-btn">End Round</button>
@@ -49,9 +50,17 @@
         }
 
         function vote(isUpvote) {
-            currentRoom.send("vote", { index: currentAcronimoIndex, isUpvote });
-        }
-
+    // Fix validation to check for valid index range (0 to length-1)
+    if (currentAcronimoIndex <= 0 || currentAcronimoIndex > acronimiList.length) {
+        console.error("Invalid acronimo index for voting:", currentAcronimoIndex);
+        return;
+    }
+    
+    // Adjust index to match the current acronimo
+    const voteIndex = currentAcronimoIndex - 1;
+    console.log(`Voting for acronimo at index: ${voteIndex}`);
+    currentRoom.send("vote", { index: voteIndex, isUpvote });
+}
         function mandaacronimo() {
             if (!currentRoom) return;
             controllobottone++;
@@ -65,19 +74,40 @@
             }
         }
 
+
         function scorriacronimo() {
     if (!currentRoom) return;
-    if (currentAcronimoIndex < acronimiList.length) {
-        document.getElementById('current-acronimo').textContent = acronimiList[currentAcronimoIndex].text;
+    console.log("Current acronimiList:", acronimiList);
+    console.log("Current index before increment:", currentAcronimoIndex);
+    
+    // Check if we can move to next acronimo
+    if (currentAcronimoIndex < acronimiList.length - 1) {
         currentAcronimoIndex++;
-        // Only send next_acronimo after updating the display
-        if (currentAcronimoIndex < acronimiList.length) {
-            currentRoom.send("next_acronimo");
+        const acronimo = acronimiList[currentAcronimoIndex];
+        
+        if (acronimo && acronimo.text) {
+            document.getElementById('current-acronimo').textContent = acronimo.text;
+            document.getElementById('vote-count').textContent =
+                `👍 ${acronimo.upvotes} | 👎 ${acronimo.downvotes}`;
+
+            currentRoom.send("next_acronimo", {
+                index: currentAcronimoIndex,
+                text: acronimo.text,
+                upvotes: acronimo.upvotes,
+                downvotes: acronimo.downvotes
+            });
+
+            console.log("Displayed acronimo at index:", currentAcronimoIndex);
+        } else {
+            console.error("Invalid acronimo at index:", currentAcronimoIndex);
         }
     } else {
+        // Hide the "avanti" button when we reach the end
         document.getElementById('bottonepazzo').style.display = 'none';
+        console.log("Reached end of acronimi list");
     }
 }
+
 
         async function initializeRoom() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -97,20 +127,32 @@
     if (type === "end_round") {
         console.log("Received end_round message");
         acronimiList = Array.from(currentRoom.state.acronimiMandati);
-        currentAcronimoIndex = -1;
+        currentAcronimoIndex = -1; // Start at -1 so first scorriacronimo() shows index 0
+        document.getElementById('risultato-list').classList.add('visible');
         document.getElementById('bottonepazzo').style.display = 'block';
-        document.getElementById('show-scores-btn').style.display = 'block';
-        // Call scorriacronimo after setting up the list
-        scorriacronimo();
+        scorriacronimo(); // Show first acronimo
+    } else if (type === "next_acronimo") {
+        console.log("Received next_acronimo message:", message);
+        if (message && message.text) {
+            document.getElementById('current-acronimo').textContent = message.text;
+            document.getElementById('vote-count').textContent = 
+                `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
+        }
     }
 });
 
-                currentRoom.onMessage("vote_update", (message) => {
-                    if (message.index === currentAcronimoIndex) {
-                        document.getElementById('vote-count').textContent = 
-                            `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
-                    }
-                });
+currentRoom.onMessage("vote_update", (message) => {
+    // Check if this update is for the currently displayed acronimo
+    if (message.index === currentAcronimoIndex - 1) {
+        const acronimo = acronimiList[currentAcronimoIndex - 1];
+        if (acronimo) {
+            acronimo.upvotes = message.upvotes;
+            acronimo.downvotes = message.downvotes;
+            document.getElementById('vote-count').textContent = 
+                `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
+        }
+    }
+});
 
                 currentRoom.onMessage("show_scores", () => {
                     const scoresContainer = document.getElementById('scores-container');
