@@ -9,7 +9,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 ## Note
 - CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
-- _Attualmente c'è questo strano problema per cui quando viene creata una stanza l'host si sconnette e riconnette una volta con un id diverso, funziona comunque dato che in teoria il token si salva localmente (?)_ </br >
+- _Attualmente c'è questo strano problema per cui quando viene creata una stanza l'host si sconnette e riconnette una volta con un id diverso, funziona comunque dato che in teoria il token si salva localmente (?)_ ***IN REALTA POTREBBE ESSERE UNA FUNZIONE DI DEFAULT, QUINDI PER ORA OK, PERO NELLA LSITA DEI GIOCATORI CI SONO DUE HOST***</br > 
 - Per qualche motivo non accetta più di 2 giocatori, pensavo fosse perchè il limite di default è 4 e come ho scritto il gioco prende più connessioni. Ho provato ad aumentare a 8 e il problema persiste. </br >
 - Nel branch delle votazioni non viene generato l'acronimo, ma dovrebbe essere facile da fixare </br >
 
@@ -25,7 +25,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 15/11 - Per adesso sono riuscito a creare un sistema di Creazione/Join stanza con acronimi sincronizzati e anche un bottone che l'host può premere per finire il round. </br >
 16/11 - Ora c'è l'input per gli acronimi, e quando un utente invia un acronimo (max 1) viene salvato in un array, che viene poi mostrato a tutti i giocatori quando l'host preme "End Round" </br >
 17/11 - Ora quando l'host preme il bottone per finire il round si vedono uno alla volta gli acronimi dei giocatori, l'host può premere un bottone per passare al prossimo </br >
-18/11 - Ho creato un'altra branch per evitare casini, sono risucito a fare in modo che i voti siano sincronizzati e in base all'acronimo corrent </br >
+18/11 - Ho creato un'altra branch per evitare casini, sono risucito a fare in modo che i voti siano sincronizzati e in base all'acronimo corrente </br >
+19/11 - Ho inserito una lista di giocatori online nella stanza. </br >
 
 
 ## Cosa fanno i file
@@ -43,7 +44,7 @@ Questo file è la "landing page", puoi scegliere se creare una stanza o connette
 
 ### game.html/game-host.html
 Interfaccia di gioco sia per host che per giocatori, ancora molto rudimentale in quanto mostra il codice stanza e l'acronimo sincronizzato e, in caso della versione host, anche il bottone per fermare il round.
-![alt text](img/game.png)![alt text](img/game-host.png.png)
+![alt text](img/game.png)![alt text](img/game-host.png)
 ### fine.html/fine-host.html
 Schermata di intermezzo tra un round e l'altro (o fine?) ***ANCORA DA DEFINIRE SE SERVIRA' O MENO*** ***SPOILER: NO***
 
@@ -52,4 +53,4 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-_ultima modifica: 18/11/24, 21.53_
+_ultima modifica: 19/11/24, 21.12_

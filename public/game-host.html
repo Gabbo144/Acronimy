@@ -13,6 +13,10 @@
         <a href="http://localhost:2567/"><button>HOME</button></a>
         <h2>Room Code: <span id="room-code"></span></h2>
         <h2>Current Letter: <span id="current-letter"></span></h2>
+        <div class="players-section">
+            <h2>Online Players</h2>
+            <ul id="players-list"></ul>
+        </div>
         <button id="end-round-btn">End Round</button>
         <div id="risultato">
             <input type="text" name="" id="user_acronimozz">
@@ -39,38 +43,38 @@
     </div>
 
     <script>
-        const client = new Colyseus.Client('ws://localhost:2567');
-        let currentRoom = null;
-        let controllobottone = 0;
-        let currentAcronimoIndex = 0;
-        let acronimiList = [];
+    const client = new Colyseus.Client('ws://localhost:2567');
+    let currentRoom = null;
+    let controllobottone = 0;
+    let currentAcronimoIndex = 0;
+    let acronimiList = [];
 
-        function showScores() {
-            currentRoom.send("show_scores");
-        }
-
-        function vote(isUpvote) {
-    // Fix validation to check for valid index range (0 to length-1)
-    if (currentAcronimoIndex < 0 || currentAcronimoIndex >= acronimiList.length) {
-        console.error("Invalid acronimo index for voting:", currentAcronimoIndex);
-        return;
+    function showScores() {
+        currentRoom.send("show_scores");
     }
-    
-    console.log(`Voting for acronimo at index: ${currentAcronimoIndex}`);
-    currentRoom.send("vote", { index: currentAcronimoIndex, isUpvote });
-}
-        function mandaacronimo() {
-            if (!currentRoom) return;
-            controllobottone++;
-            if (controllobottone > 1) {
-                alert("Hai già inviato un acronimo!");
-                return;
-            } else {
-                var acronimoz = document.getElementById('user_acronimozz').value;
-                currentRoom.send("manda_acronimo", { acronimo: acronimoz });
-                console.log("Acronimo inviato:", acronimoz);
-            }
+
+    function vote(isUpvote) {
+    // Fix validation to check for valid index range (0 to length-1)
+        if (currentAcronimoIndex < 0 || currentAcronimoIndex >= acronimiList.length) {
+            console.error("Invalid acronimo index for voting:", currentAcronimoIndex);
+            return;
         }
+    
+        console.log(`Voting for acronimo at index: ${currentAcronimoIndex}`);
+        currentRoom.send("vote", { index: currentAcronimoIndex, isUpvote });
+}
+    function mandaacronimo() {
+        if (!currentRoom) return;
+        controllobottone++;
+        if (controllobottone > 1) {
+            alert("Hai già inviato un acronimo!");
+            return;
+        } else {
+            var acronimoz = document.getElementById('user_acronimozz').value;
+            currentRoom.send("manda_acronimo", { acronimo: acronimoz });
+            console.log("Acronimo inviato:", acronimoz);
+        }
+    }
 
 
         function scorriacronimo() {
@@ -107,19 +111,19 @@
 }
 
 
-        async function initializeRoom() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const roomId = urlParams.get('roomId');
-            const nickname = sessionStorage.getItem('nickname');
-            
-            try {
-                currentRoom = await client.joinById(roomId, { nickname });
-                document.getElementById('room-code').textContent = roomId;
+    async function initializeRoom() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('roomId');
+        const nickname = sessionStorage.getItem('nickname');
+        
+        try {
+            currentRoom = await client.joinById(roomId, { nickname });
+            document.getElementById('room-code').textContent = roomId;
 
-                document.getElementById('end-round-btn').addEventListener('click', () => {
-                    document.getElementById('risultato-list').classList.add('visible');
-                    currentRoom.send("end_round");
-                });
+            document.getElementById('end-round-btn').addEventListener('click', () => {
+                document.getElementById('risultato-list').classList.add('visible');
+                currentRoom.send("end_round");
+            });
 
                 currentRoom.onMessage("*", (type, message) => {
     if (type === "end_round") {
@@ -168,6 +172,15 @@ currentRoom.onMessage("vote_update", (message) => {
 
                 currentRoom.onStateChange((state) => {
                     document.getElementById('current-letter').textContent = state.currentLetter;
+                    const playersList = document.getElementById('players-list');
+                    playersList.innerHTML = '';
+                    
+                    state.players.forEach((player, sessionId) => {
+                        const li = document.createElement('li');
+                        li.className = player.connected ? 'player-online' : 'player-offline';
+                        li.textContent = `${player.nickname} ${player.connected ? '(online)' : '(offline)'}`;
+                        playersList.appendChild(li);
+                    });
                 });
 
             } catch (error) {

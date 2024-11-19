@@ -33,3 +33,29 @@
     margin: 5px 0;
     font-size: 16px;
 }
+
+.players-section {
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#players-list {
+    list-style: none;
+    padding: 0;
+}
+
+#players-list li {
+    margin: 5px 0;
+    padding: 5px;
+}
+
+.player-online {
+    color: green;
+}
+
+.player-offline {
+    color: gray;
+    font-style: italic;
+}
