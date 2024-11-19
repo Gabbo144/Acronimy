@@ -10,7 +10,17 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 ## Note
 - CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
 - _Attualmente c'è questo strano problema per cui quando viene creata una stanza l'host si sconnette e riconnette una volta con un id diverso, funziona comunque dato che in teoria il token si salva localmente (?)_ ***IN REALTA POTREBBE ESSERE UNA FUNZIONE DI DEFAULT, QUINDI PER ORA OK, PERO NELLA LSITA DEI GIOCATORI CI SONO DUE HOST***</br > 
-- Per qualche motivo non accetta più di 2 giocatori, pensavo fosse perchè il limite di default è 4 e come ho scritto il gioco prende più connessioni. Ho provato ad aumentare a 8 e il problema persiste. </br >
+- Per qualche motivo non accetta più di 2 giocatori, pensavo fosse perchè il limite di default è 4 e come ho scritto il gioco prende più connessioni. Ho provato ad aumentare a 8 e il problema persiste. 
+'''
+Attempting to join room with ID: upeLFiVV2
+(index):62 Failed to join room: Error: room "upeLFiVV2" is locked
+    at new MatchMakeError (Client.ts:12:9)
+    at Client.<anonymous> (Client.ts:163:19)
+    at step (tslib.es6.js:147:23)
+    at Object.next (tslib.es6.js:128:53)
+    at fulfilled (tslib.es6.js:118:58)
+''' 
+</br >
 - Nel branch delle votazioni non viene generato l'acronimo, ma dovrebbe essere facile da fixare </br >
 
 ## DA FARE:
