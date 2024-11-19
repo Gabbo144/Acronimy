@@ -17,9 +17,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - Testare connessioni multiple contemporanee
 - Progettare e applicare UI
 - NOMEEEEEEEEEEEEEEEEEEEEEEEEE
-- Lista giocatori attivi
-- Nicknames
-- Sistema di voti
+- Classifica finale e ripetizione round
+- Fixare problema terzo utente.
 
 ## Progressi
 15/11 - Per adesso sono riuscito a creare un sistema di Creazione/Join stanza con acronimi sincronizzati e anche un bottone che l'host può premere per finire il round. </br >
