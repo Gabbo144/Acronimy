@@ -4,7 +4,7 @@ class PlayerSchema extends schema.Schema {
     constructor() {
         super();
         this.nickname = "";
-        this.connected = true; // Set default to true
+        this.connected = true;
         this.score = 0;
     }
 }
@@ -29,22 +29,19 @@ class MyRoomState extends schema.Schema {
     }
 }
 
-// Update the type definition to use AcronimoSchema instead of string
 schema.defineTypes(MyRoomState, {
     players: { map: PlayerSchema },
     currentLetter: "string",
-    acronimiMandati: [ AcronimoSchema ], // Change this line
+    acronimiMandati: [ AcronimoSchema ],
     currentAcronimoIndex: "number"
 });
 
-// Define types for PlayerSchema
 schema.defineTypes(PlayerSchema, {
     nickname: "string",
     connected: "boolean",
     score: "number"
 });
 
-// Define types for AcronimoSchema
 schema.defineTypes(AcronimoSchema, {
     text: "string",
     author: "string",

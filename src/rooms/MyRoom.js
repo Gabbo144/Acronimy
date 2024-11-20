@@ -39,9 +39,18 @@ exports.MyRoom = class extends colyseus.Room {
             });
         });
     
-        // Generate a random letter at the start of the round
-        this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
-        console.log(`Generated letter: ${this.state.currentLetter}`);
+        this.onMessage("vote", (client, message) => {
+            const { index, isUpvote } = message;
+            const acronimo = this.state.acronimiMandati[index];
+            if (acronimo) {
+                if (isUpvote) {
+                    acronimo.upvotes++;
+                } else {
+                    acronimo.downvotes++;
+                }
+                this.broadcast("vote_update", { index, upvotes: acronimo.upvotes, downvotes: acronimo.downvotes });
+            }
+        });
     
         this.onMessage("manda_acronimo", (client, message) => {
             const acronimo = new AcronimoSchema();
@@ -53,12 +62,9 @@ exports.MyRoom = class extends colyseus.Room {
             console.log("Acronimo ricevuto:", message.acronimo);
         });
     
-        this.onMessage("vote", (client, message) => {
-            const { index, isUpvote } = message;
-            // Voting logic...
-        });
-    
-        this.reconnectionTimeouts = new Map();
+        // Generate a random letter at the start of the round
+        this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
+        console.log(`Generated letter: ${this.state.currentLetter}`);
     }
 
     onJoin(client, options) {
@@ -150,5 +156,4 @@ exports.MyRoom = class extends colyseus.Room {
         this.reconnectionTimeouts.clear();
         console.log(`Room ${this.roomId} disposing...`);
     }
-
 }
