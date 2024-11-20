@@ -4,7 +4,18 @@ class PlayerSchema extends schema.Schema {
     constructor() {
         super();
         this.nickname = "";
-        this.connected = false;
+        this.connected = true;
+        this.score = 0;
+    }
+}
+
+class AcronimoSchema extends schema.Schema {
+    constructor() {
+        super();
+        this.text = "";
+        this.author = "";
+        this.upvotes = 0;
+        this.downvotes = 0;
     }
 }
 
@@ -14,23 +25,30 @@ class MyRoomState extends schema.Schema {
         this.players = new schema.MapSchema();
         this.currentLetter = "";
         this.acronimiMandati = new schema.ArraySchema();
-        this.currentAcronimoIndex = 0; // Add this line
+        this.currentAcronimoIndex = 0;
     }
 }
 
-// Definisci i tipi per PlayerSchema
-schema.defineTypes(PlayerSchema, {
-    nickname: "string",
-    connected: "boolean"
-});
-
-// Definisci i tipi per MyRoomState
 schema.defineTypes(MyRoomState, {
     players: { map: PlayerSchema },
     currentLetter: "string",
-    acronimiMandati: ["string"],
-    currentAcronimoIndex: "number"  // Add this line
+    acronimiMandati: [ AcronimoSchema ],
+    currentAcronimoIndex: "number"
+});
+
+schema.defineTypes(PlayerSchema, {
+    nickname: "string",
+    connected: "boolean",
+    score: "number"
+});
+
+schema.defineTypes(AcronimoSchema, {
+    text: "string",
+    author: "string",
+    upvotes: "number",
+    downvotes: "number"
 });
 
 exports.MyRoomState = MyRoomState;
 exports.PlayerSchema = PlayerSchema;
+exports.AcronimoSchema = AcronimoSchema;
