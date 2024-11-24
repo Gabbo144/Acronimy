@@ -20,6 +20,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - Classifica finale e ripetizione round
 - Voti singoli e non due a due
 - Update alle immagini README
+- Numero round
 
 
 ## Progressi
