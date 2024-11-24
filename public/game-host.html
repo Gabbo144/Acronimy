@@ -17,15 +17,17 @@
             <h2>Online Players</h2>
             <ul id="players-list"></ul>
         </div>
-        <button id="mostra_classifica">Mostra classifica</button>
+        <div id="scores-container" style="display: none;">
+            <h2>Classifica</h2>
+            <ul id="scores-list"></ul>
+        </div>
+        <button onclick="showScores()">Mostra Classifica</button>
         <button id="end-round-btn">End Round</button>
         <button id="next-round">Prossimo Round</button>
         <div id="risultato">
             <input type="text" name="" id="user_acronimozz">
             <button onclick="mandaacronimo()">invia</button>
-            <button id="show-scores-btn" onclick="showScores()" style="display: none;">
-                Mostra Classifica
-            </button>
+
             
             <h2>Risultato</h2>
             <div id="risultato-list">
@@ -51,8 +53,23 @@
         let acronimiList = [];
 
         function showScores() {
-            currentRoom.send("show_scores");
-        }
+    if (!currentRoom) {
+        console.error("Room not connected");
+        return;
+    }
+    const scoresContainer = document.getElementById('scores-container');
+    const scoresList = document.getElementById('scores-list');
+    scoresList.innerHTML = '';
+    
+    // Correctly iterate over MapSchema of players
+    currentRoom.state.players.forEach((player, sessionId) => {
+        const li = document.createElement('li');
+        li.textContent = `${player.nickname}: ${player.score} punti`;
+        scoresList.appendChild(li);
+    });
+    
+    scoresContainer.style.display = 'block';
+}
 
         function vote(isUpvote) {
             if (currentAcronimoIndex < 0 || currentAcronimoIndex >= acronimiList.length) {
@@ -145,17 +162,27 @@
                     }
                 });
 
-                currentRoom.onMessage("show_scores", () => {
-                    const scoresContainer = document.getElementById('scores-container');
-                    const scoresList = document.getElementById('scores-list');
-                    scoresList.innerHTML = '';
-                    Object.values(currentRoom.state.players).forEach(player => {
-                        const li = document.createElement('li');
-                        li.textContent = `${player.nickname}: ${player.score} punti`;
-                        scoresList.appendChild(li);
-                    });
-                    scoresContainer.style.display = 'block';
-                });
+                function showScores() {
+    if (!currentRoom) {
+        console.error("Room not connected");
+        return;
+    }
+    const scoresContainer = document.getElementById('scores-container');
+    const scoresList = document.getElementById('scores-list');
+    scoresList.innerHTML = '';
+    
+    // Debug log
+    console.log("Current players state:", currentRoom.state.players);
+    
+    currentRoom.state.players.forEach((player, sessionId) => {
+        const li = document.createElement('li');
+        console.log(`Player ${player.nickname} has score: ${player.score}`); // Debug log
+        li.textContent = `${player.nickname}: ${player.score} punti`;
+        scoresList.appendChild(li);
+    });
+    
+    scoresContainer.style.display = 'block';
+}
 
                 currentRoom.onStateChange((state) => {
                     document.getElementById('current-letter').textContent = state.currentLetter;

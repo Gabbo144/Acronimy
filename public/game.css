@@ -59,3 +59,14 @@
     color: gray;
     font-style: italic;
 }
+
+#scores-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+}
+
+#scores-list {
+    list-style: none;
+    padding: 0;
+}

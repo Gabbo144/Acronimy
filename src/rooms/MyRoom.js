@@ -28,6 +28,14 @@ exports.MyRoom = class extends colyseus.Room {
             console.log("Broadcasting end_round message from client:", client.sessionId);
             this.broadcast("end_round");
         });
+
+        this.onMessage("show_scores", (client) => {
+            console.log("Showing scores");
+            this.broadcast("show_scores");
+            Object.entries(this.state.players).forEach(([sessionId, player]) => {
+                console.log(`Player ${player.nickname}: ${player.score} points`);
+            });
+        });
     
         this.onMessage("next_acronimo", (client, message) => {
             console.log("Received next_acronimo message");
@@ -35,7 +43,8 @@ exports.MyRoom = class extends colyseus.Room {
                 index: message.index,
                 text: this.state.acronimiMandati[message.index].text,
                 upvotes: this.state.acronimiMandati[message.index].upvotes,
-                downvotes: this.state.acronimiMandati[message.index].downvotes
+                downvotes: this.state.acronimiMandati[message.index].downvotes,
+                author: this.state.acronimiMandati[message.index].author // Aggiungi l'autore
             });
         });
     
@@ -43,23 +52,44 @@ exports.MyRoom = class extends colyseus.Room {
             const { index, isUpvote } = message;
             const acronimo = this.state.acronimiMandati[index];
             if (acronimo) {
+                // Find the player who authored the acronimo
+                const authorPlayer = Array.from(this.state.players.entries())
+                    .find(([_, player]) => player.nickname === acronimo.author)?.[1];
+                    
+                if (!authorPlayer) {
+                    console.error(`Could not find player with nickname ${acronimo.author}`);
+                    return;
+                }
+        
                 if (isUpvote) {
                     acronimo.upvotes++;
+                    authorPlayer.score++;
+                    console.log(`Punto assegnato a ${authorPlayer.nickname}, nuovo punteggio: ${authorPlayer.score}`);
                 } else {
                     acronimo.downvotes++;
+                    authorPlayer.score--;
+                    console.log(`Punto sottratto a ${authorPlayer.nickname}, nuovo punteggio: ${authorPlayer.score}`);
                 }
-                this.broadcast("vote_update", { index, upvotes: acronimo.upvotes, downvotes: acronimo.downvotes });
+        
+                // Broadcast vote update with author score
+                this.broadcast("vote_update", { 
+                    index, 
+                    upvotes: acronimo.upvotes, 
+                    downvotes: acronimo.downvotes,
+                    author: acronimo.author,
+                    authorScore: authorPlayer.score
+                });
             }
         });
     
         this.onMessage("manda_acronimo", (client, message) => {
             const acronimo = new AcronimoSchema();
             acronimo.text = message.acronimo;
-            acronimo.author = this.state.players[client.sessionId].nickname;
+            acronimo.author = this.state.players[client.sessionId].nickname; // Assicurati che questo sia impostato
             acronimo.upvotes = 0;
             acronimo.downvotes = 0;
             this.state.acronimiMandati.push(acronimo);
-            console.log("Acronimo ricevuto:", message.acronimo);
+            console.log("Acronimo ricevuto:", message.acronimo, "da:", acronimo.author); // Log per debug
         });
     
         // Generate a random letter at the start of the round
