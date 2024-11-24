@@ -9,6 +9,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 ## Note
 - CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
+- http://localhost:2567/game.html?roomId=
 </br >
 
 
