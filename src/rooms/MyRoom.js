@@ -14,15 +14,16 @@ exports.MyRoom = class extends colyseus.Room {
 
     onCreate(options) {
         this.setState(new MyRoomState());
-        console.log(`Room created with ID: ${this.roomId}`);
         this.reconnectionTimeouts = new Map();
-    
+        this.playerIdentities = new Map(); // Track original player identities
+        this.usedNicknames = new Set();
+
         // Set maximum clients and ensure room stays unlocked
         this.maxClients = 16;
         this.setMetadata({ maxClients: 16 });
         this.autoDispose = false;
         this.unlock(); // Start with an unlocked room
-    
+
         // Message handlers
         this.onMessage("end_round", (client) => {
             console.log("Broadcasting end_round message from client:", client.sessionId);
@@ -51,8 +52,19 @@ exports.MyRoom = class extends colyseus.Room {
         this.onMessage("vote", (client, message) => {
             const { index, isUpvote } = message;
             const acronimo = this.state.acronimiMandati[index];
-            if (acronimo) {
+            if (acronimo && acronimo.author) {
                 // Find the player who authored the acronimo
+                const authorSessionId = this.getSessionIdByNickname(acronimo.author);
+                if (authorSessionId && this.state.players[authorSessionId]) {
+                    if (isUpvote) {
+                        acronimo.upvotes++;
+                        this.state.players[authorSessionId].score++;
+                    } else {
+                        acronimo.downvotes++;
+                        this.state.players[authorSessionId].score--;
+                    }
+                }
+
                 const authorPlayer = Array.from(this.state.players.entries())
                     .find(([_, player]) => player.nickname === acronimo.author)?.[1];
                     
@@ -99,91 +111,127 @@ exports.MyRoom = class extends colyseus.Room {
 
     onJoin(client, options) {
         console.log(`${client.sessionId} joined room ${this.roomId}`);
-    
-        let player = this.state.players[client.sessionId];
-        if (!player) {
-            player = new PlayerSchema();
-            player.nickname = options.nickname;
+        console.log(`Received nickname: ${options.nickname}`);
+
+        // First check if nickname is provided
+        if (!options.nickname) {
+            throw new Error("Nickname is required");
         }
+
+        // Check for existing nickname
+        if (this.usedNicknames.has(options.nickname)) {
+            console.log(`Nickname ${options.nickname} is already in use. Reconnecting...`);
+            // If nickname exists, handle reconnection
+            const existingSessionId = this.getSessionIdByNickname(options.nickname);
+            if (existingSessionId) {
+                // Remove old player entry
+                delete this.state.players[existingSessionId];
+                this.usedNicknames.delete(options.nickname);
+                this.playerIdentities.delete(existingSessionId);
+                console.log(`Removed previous sessionId ${existingSessionId} for nickname ${options.nickname}`);
+            }
+        }
+
+        // Store player identity and nickname
+        this.playerIdentities.set(client.sessionId, options.nickname);
+        this.usedNicknames.add(options.nickname);
+        console.log(`Added nickname ${options.nickname} for sessionId ${client.sessionId}`);
+
+        // Create new player
+        const player = new PlayerSchema();
+        player.nickname = options.nickname;
+        player.score = 0;
         player.connected = true;
         this.state.players[client.sessionId] = player;
-    
-        // Correctly count connected players
-        const connectedPlayers = Object.values(this.state.players).filter(p => p.connected).length;
-        console.log(`Current connected players: ${connectedPlayers}`);
-    
-        // Lock the room only if maxClients is reached
+        console.log(`Player ${player.nickname} added to players state.`);
+
+        // Update connected players count
+        const connectedPlayers = Object.values(this.state.players)
+            .filter(p => p.connected).length;
+
+        console.log(`Connected players count: ${connectedPlayers}`);
+
+        // Update room lock status
         if (connectedPlayers >= this.maxClients) {
             this.lock();
-            console.log(`Room ${this.roomId} locked - max clients reached`);
+            console.log(`Room ${this.roomId} locked.`);
         } else {
             this.unlock();
-            console.log(`Room ${this.roomId} unlocked - space available`);
+            console.log(`Room ${this.roomId} unlocked.`);
         }
-    
-        console.log(`Player ${player.nickname} connected: ${player.connected}`);
     }
+
+    getSessionIdByNickname(nickname) {
+        for (const [sessionId, playerNickname] of this.playerIdentities) {
+            if (playerNickname === nickname) {
+                return sessionId;
+            }
+        }
+        return null;
+    }
+
 
     async onLeave(client, consented) {
         console.log(`${client.sessionId} attempting to leave room ${this.roomId} (consented: ${consented})`);
-    
+
+        if (consented) {
+            // If leaving consensually, clean up completely
+            const nickname = this.playerIdentities.get(client.sessionId);
+            this.usedNicknames.delete(nickname);
+            this.playerIdentities.delete(client.sessionId);
+            delete this.state.players[client.sessionId];
+            console.log(`Player ${nickname} left the room.`);
+        } else {
+            // If disconnected, just mark as offline
+            if (this.state.players[client.sessionId]) {
+                this.state.players[client.sessionId].connected = false;
+                console.log(`Player ${this.state.players[client.sessionId].nickname} marked as offline.`);
+            } else {
+                console.log(`Player with sessionId ${client.sessionId} not found in players state.`);
+            }
+        }
+
         try {
             // Clear any existing reconnection timeout
             if (this.reconnectionTimeouts.has(client.sessionId)) {
                 clearTimeout(this.reconnectionTimeouts.get(client.sessionId));
                 this.reconnectionTimeouts.delete(client.sessionId);
+                console.log(`Cleared reconnection timeout for sessionId ${client.sessionId}`);
             }
-    
+
             if (!consented) {
                 console.log(`${client.sessionId} disconnected, waiting for reconnection...`);
-                this.state.players[client.sessionId].connected = false;
-    
-                // Set up reconnection timeout
-                const timeout = setTimeout(() => {
-                    console.log(`${client.sessionId} reconnection timeout expired`);
+                if (this.state.players[client.sessionId]) {
                     this.state.players[client.sessionId].connected = false;
-                }, 120000); // 120 seconds timeout
-    
-                this.reconnectionTimeouts.set(client.sessionId, timeout);
-    
-                try {
-                    // Wait for reconnection
-                    await this.allowReconnection(client, 120);
-                    console.log(`${client.sessionId} successfully reconnected`);
-                    this.state.players[client.sessionId].connected = true;
-    
-                    // Clear timeout after successful reconnection
-                    clearTimeout(timeout);
-                    this.reconnectionTimeouts.delete(client.sessionId);
-                } catch (e) {
-                    console.log(`${client.sessionId} failed to reconnect:`, e);
-                    this.state.players[client.sessionId].connected = false;
+
+                    // Set up reconnection timeout
+                    const timeout = setTimeout(() => {
+                        console.log(`${client.sessionId} reconnection timeout expired`);
+                        if (this.state.players[client.sessionId]) {
+                            this.state.players[client.sessionId].connected = false;
+                        }
+                    }, 120000); // 120 seconds timeout
+
+                    this.reconnectionTimeouts.set(client.sessionId, timeout);
                 }
-            } else {
-                // Immediate disconnection, mark as disconnected
-                console.log(`${client.sessionId} left consensually`);
-                this.state.players[client.sessionId].connected = false;
+            }
+
+            // Correctly count connected players after a player leaves
+            const connectedPlayers = Object.values(this.state.players)
+                .filter(p => p.connected).length;
+            if (connectedPlayers < this.maxClients) {
+                this.unlock();
+                console.log(`Room ${this.roomId} unlocked after player left. Connected players: ${connectedPlayers}`);
             }
         } catch (error) {
             console.error(`Error handling leave for ${client.sessionId}:`, error);
-            this.state.players[client.sessionId].connected = false;
-        }
-    
-        // Correctly count connected players after a player leaves
-        const connectedPlayers = Object.values(this.state.players).filter(p => p.connected).length;
-        if (connectedPlayers < this.maxClients) {
-            console.log("Unlocking room as player count is below maximum");
-            this.unlock();
-            console.log(`Room ${this.roomId} unlocked after player left`);
+            if (this.state.players[client.sessionId]) {
+                this.state.players[client.sessionId].connected = false;
+            }
         }
     }
 
     onDispose() {
-        // Clear all reconnection timeouts
-        for (const timeout of this.reconnectionTimeouts.values()) {
-            clearTimeout(timeout);
-        }
-        this.reconnectionTimeouts.clear();
-        console.log(`Room ${this.roomId} disposing...`);
+        console.log(`Room ${this.roomId} disposed.`);
     }
 }
