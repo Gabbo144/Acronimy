@@ -124,10 +124,18 @@
             const urlParams = new URLSearchParams(window.location.search);
             const roomId = urlParams.get('roomId');
             const nickname = sessionStorage.getItem('nickname');
+
+            if (!nickname) {
+        console.error("No nickname found in sessionStorage");
+        alert("Error: Nickname not found. Please create a room again.");
+        window.location.href = '/';
+        return;
+    }
             
             try {
                 currentRoom = await client.joinById(roomId, { nickname });
                 document.getElementById('room-code').textContent = roomId;
+                
 
                 document.getElementById('end-round-btn').addEventListener('click', () => {
                     document.getElementById('risultato-list').classList.add('visible');

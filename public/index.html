@@ -51,21 +51,25 @@
             }
         });
 
-        document.getElementById('join-room-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const nickname = document.getElementById('join-nickname').value;
-            const roomCode = document.getElementById('room-code').value;
-            console.log(`Attempting to join room with ID: ${roomCode}`);
-            try {
-                const room = await client.joinById(roomCode, { nickname });
-                console.log(`Joined room with ID: ${room.id}`);
-                // Redirect to game.html with room ID as query parameter
-                window.location.href = `game.html?roomId=${room.id}`;
-            } catch (error) {
-                console.error('Failed to join room:', error);
-                document.getElementById('error-message').style.display = 'block';
-            }
-        });
+// In index.html
+document.getElementById('join-room-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const nickname = document.getElementById('join-nickname').value;
+    const roomCode = document.getElementById('room-code').value;
+    console.log(`Attempting to join room with ID: ${roomCode}`);
+    try {
+        // Store nickname in sessionStorage
+        sessionStorage.setItem('nickname', nickname);
+
+        const room = await client.joinById(roomCode, { nickname });
+        console.log(`Joined room with ID: ${room.id}`);
+        // Redirect to game.html with room ID as query parameter
+        window.location.href = `game.html?roomId=${room.id}`;
+    } catch (error) {
+        console.error('Failed to join room:', error);
+        document.getElementById('error-message').style.display = 'block';
+    }
+});
     </script>
 </body>
 </html>
