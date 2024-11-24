@@ -11,19 +11,30 @@
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
 </head>
 <body>
-    <p id="numero_round"></p>
-    <div>
+    <div id="lobby">
+
         <a href="http://localhost:2567/"><button>HOME</button></a>
         <h2>Room Code: <span id="room-code"></span></h2>
-        <h2>Current Letter: <span id="current-letter"></span></h2>
         <div class="players-section">
             <h2>Online Players</h2>
             <ul id="players-list"></ul>
         </div>
-        <div id="risultato">
+
+    </div>
+    
+    <p id="numero_round"></p>
+
+    
+    <div id="playing">
+
+            <h2>Current Letter: <span id="current-letter"></span></h2>
             <input type="text" name="" id="user_acronimozz">
             <button onclick="mandaacronimo()">invia</button>
-            <h2>Risultato</h2>
+
+    </div>
+    
+    <div id="votazioni">
+
             <div id="risultato-list">
                 <p id="current-acronimo"></p>
                 <div id="voting-buttons">
@@ -32,12 +43,18 @@
                 </div>
                 <p id="vote-count"></p>
             </div>
+
+    </div>
+    
+    <div id="classifica">
+
             <div id="scores-container" style="display: none;">
                 <h2>Classifica</h2>
                 <ul id="scores-list"></ul>
             </div>
-        </div>
+
     </div>
+
     <script>
         const client = new Colyseus.Client('ws://localhost:2567');
         let currentRoom = null;

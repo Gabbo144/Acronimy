@@ -8,43 +8,56 @@
     <link rel="stylesheet" href="game.css">
 </head>
 <body>
+
+
     <div id="lobby">
+
+        <a href="http://localhost:2567/"><button>HOME</button></a>
+        <h2>Room Code: <span id="room-code"></span></h2>
         <div class="players-section">
             <h2>Online Players</h2>
             <ul id="players-list"></ul>
-            </div>
-            <a href="http://localhost:2567/"><button>HOME</button></a>
-            <h2>Room Code: <span id="room-code"></span></h2>
-    
+        </div>
+
     </div>
     
+    <div id="host_interface">
+        <p id="numero_round"></p>
+        <button onclick="showScores()">Mostra Classifica</button>
+        <button id="end-round-btn">End Round</button>
+        <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
+    </div>
     
     <div id="playing">
-                <h2>Current Letter: <span id="current-letter"></span></h2>
-                <input type="text" name="" id="user_acronimozz">
-                <button onclick="mandaacronimo()">invia</button>
+
+            <h2>Current Letter: <span id="current-letter"></span></h2>
+            <input type="text" name="" id="user_acronimozz">
+            <button onclick="mandaacronimo()">invia</button>
+
     </div>
     
     <div id="votazioni">
-                <div id="risultato-list">
-                    <h2>Risultato</h2>
-                    <p id="current-acronimo"></p>
-                    <div id="voting-buttons">
-                        <button onclick="vote(true)" class="vote-btn">👍 Bello</button>
-                        <button onclick="vote(false)" class="vote-btn">👎 Brutto</button>
-                    </div>
-                    <p id="vote-count"></p>
+
+            <div id="risultato-list">
+                <p id="current-acronimo"></p>
+                <div id="voting-buttons">
+                    <button onclick="vote(true)" class="vote-btn">👍 Bello</button>
+                    <button onclick="vote(false)" class="vote-btn">👎 Brutto</button>
                 </div>
+                <p id="vote-count"></p>
+            </div>
+
     </div>
     
     <div id="classifica">
-    
-                <div id="scores-container" style="display: none;">
-                    <h2>Classifica</h2>
-                    <ul id="scores-list"></ul>
-                </div>
-    
+
+            <div id="scores-container" style="display: none;">
+                <h2>Classifica</h2>
+                <ul id="scores-list"></ul>
+            </div>
+
     </div>
+
     <script>
         const client = new Colyseus.Client('ws://localhost:2567');
         let currentRoom = null;

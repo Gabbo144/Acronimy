@@ -19,7 +19,6 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - NOMEEEEEEEEEEEEEEEEEEEEEEEEE
 - Classifica finale e ripetizione round
 - Voti singoli e non due a due
-- Update alle immagini README
 - Numero round
 
 
@@ -30,7 +29,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 18/11 - Ho creato un'altra branch per evitare casini, sono risucito a fare in modo che i voti siano sincronizzati e in base all'acronimo corrente </br >
 19/11 - Ho inserito una lista di giocatori online nella stanza. </br >
 20/11 - Ora i voti sono sincronizzati </br >
-24/11 - Ora i voti sono associati al nickname e c'è una classifica sincronizzata, ma i voti vanno avanti due a due. </br >
+24/11 - Ora i voti sono associati al nickname e c'è una classifica sincronizzata, ma i voti vanno avanti due a due. Ho anche disposto gli elementi html in div precisi per presidporre il progetto a un cambio di pagine e visuali. </br >
 
 
 ## Cosa fanno i file
@@ -47,7 +46,7 @@ Questo file è la "landing page", puoi scegliere se creare una stanza o connette
 ![alt text](img/index.png.png)
 
 ### game.html/game-host.html
-Interfaccia di gioco sia per host che per giocatori, ancora molto rudimentale in quanto mostra il codice stanza e l'acronimo sincronizzato e, in caso della versione host, anche il bottone per fermare il round.
+Interfaccia di gioco sia per host che per giocatori, ancora molto rudimentale in quanto mostra il codice stanza e l'acronimo sincronizzato e, in caso della versione host, anche il bottone per fermare il round. *IMMAGINE DI GAME.HTML OBSOLETA, ORA E' UGUALE A GAME-HOST.HTML MA SENZA I BOTTONI*
 ![alt text](img/game.png)![alt text](img/game-host.png)
 ### fine.html/fine-host.html
 Schermata di intermezzo tra un round e l'altro (o fine?) ***ANCORA DA DEFINIRE SE SERVIRA' O MENO*** ***SPOILER: NO***
@@ -57,4 +56,4 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-_ultima modifica: 24/11/24, 14.06_
+_ultima modifica: 24/11/24, 23.18_
