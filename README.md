@@ -9,7 +9,6 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 ## Note
 - CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
-- _Attualmente c'è questo strano problema per cui quando viene creata una stanza l'host si sconnette e riconnette una volta con un id diverso, funziona comunque dato che in teoria il token si salva localmente (?)_ ***IN REALTA POTREBBE ESSERE UNA FUNZIONE DI DEFAULT, QUINDI PER ORA OK, PERO NELLA LSITA DEI GIOCATORI CI SONO DUE HOST***</br > 
 </br >
 
 
