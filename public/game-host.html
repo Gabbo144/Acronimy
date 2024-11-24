@@ -56,11 +56,14 @@
         console.error("Room not connected");
         return;
     }
+    // Invia il messaggio "show_scores" al server
+    currentRoom.send("show_scores");
+    
+    // Mostra la classifica localmente
     const scoresContainer = document.getElementById('scores-container');
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';
     
-    // Correctly iterate over MapSchema of players
     currentRoom.state.players.forEach((player, sessionId) => {
         const li = document.createElement('li');
         li.textContent = `${player.nickname}: ${player.score} punti`;

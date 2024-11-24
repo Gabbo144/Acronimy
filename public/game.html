@@ -122,6 +122,20 @@ currentRoom.onMessage("*", (type, message) => {
     }
 });
 
+currentRoom.onMessage("show_scores", () => {
+    const scoresContainer = document.getElementById('scores-container');
+    const scoresList = document.getElementById('scores-list');
+    scoresList.innerHTML = '';
+    
+    currentRoom.state.players.forEach((player, sessionId) => {
+        const li = document.createElement('li');
+        li.textContent = `${player.nickname}: ${player.score} punti`;
+        scoresList.appendChild(li);
+    });
+    
+    scoresContainer.style.display = 'block';
+});
+
                 currentRoom.onMessage("*", (type, message) => {
                     if (type === "end_round") {
                         console.log("Received end_round message");

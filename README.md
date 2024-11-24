@@ -29,7 +29,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 18/11 - Ho creato un'altra branch per evitare casini, sono risucito a fare in modo che i voti siano sincronizzati e in base all'acronimo corrente </br >
 19/11 - Ho inserito una lista di giocatori online nella stanza. </br >
 20/11 - Ora i voti sono sincronizzati </br >
-24/11 - Ora i voti sono associati al nickname e c'è una classifica, ma i voti vanno avanti due a due. </br >
+24/11 - Ora i voti sono associati al nickname e c'è una classifica sincronizzata, ma i voti vanno avanti due a due. </br >
 
 
 ## Cosa fanno i file
