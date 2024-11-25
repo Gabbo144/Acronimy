@@ -20,6 +20,9 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - Classifica finale e ripetizione round
 - Voti singoli e non due a due
 - Numero round
+- aggiungere counter round
+- aggiungere limite round
+- aggiungere slider setting
 
 
 ## Progressi
@@ -30,7 +33,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 19/11 - Ho inserito una lista di giocatori online nella stanza. </br >
 20/11 - Ora i voti sono sincronizzati </br >
 24/11 - Ora i voti sono associati al nickname e c'è una classifica sincronizzata, ma i voti vanno avanti due a due. Ho anche disposto gli elementi html in div precisi per presidporre il progetto a un cambio di pagine e visuali. </br >
-25/11 - ora in base al momento del round le varie sezioni scorrono in modo sincronizzato </br >
+25/11 - ora in base al momento del round le varie sezioni scorrono in modo sincronizzato. Creato sistema di round sincronizzato </br >
 
 
 ## Cosa fanno i file
@@ -57,4 +60,4 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 25/11/24, 19.25_
+## _ultima modifica: 25/11/24, 20.17_
