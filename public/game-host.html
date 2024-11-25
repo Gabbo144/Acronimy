@@ -23,6 +23,7 @@
     
     <div id="host_interface" class="active">
         <p id="numero_round"></p>
+        <button id="copy-link-btn" onclick="copyGameLink()">Copy Game Link</button>
         <button onclick="showScores()">Mostra Classifica</button>
         <button id="end-round-btn">End Round</button>
         <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
@@ -274,6 +275,25 @@
         }
 
         initializeRoom();
+    </script>
+    <script>
+        function copyGameLink() {
+    const roomId = document.getElementById('room-code').textContent;
+    const gameLink = `http://localhost:2567/game.html?roomId=${roomId}`;
+    
+    navigator.clipboard.writeText(gameLink).then(() => {
+        // Provide visual feedback
+        const btn = document.getElementById('copy-link-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Link Copied!';
+        setTimeout(() => {
+            btn.textContent = originalText;
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy link:', err);
+        alert('Failed to copy link to clipboard');
+    });
+}
     </script>
 </body>
 </html>
