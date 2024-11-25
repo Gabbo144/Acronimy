@@ -24,6 +24,12 @@ exports.MyRoom = class extends colyseus.Room {
         this.autoDispose = false;
         this.unlock(); // Start with an unlocked room
 
+        // In MyRoom.js, dentro onCreate()
+this.onMessage("start_game", (client) => {
+    console.log("Broadcasting start_game message");
+    this.broadcast("start_game");
+});
+
         // Message handlers
         this.onMessage("end_round", (client) => {
             console.log("Broadcasting end_round message from client:", client.sessionId);

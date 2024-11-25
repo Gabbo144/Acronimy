@@ -78,3 +78,7 @@
 #lobby.active, #host_interface.active, #playing.active, #votazioni.active, #classifica.active {
     display: block;
 }
+
+#scores-container {
+    display: block; /* Remove any inline display:none styles */
+}

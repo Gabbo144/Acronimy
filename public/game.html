@@ -104,13 +104,19 @@ function vote(isUpvote) {
         }
 
         async function joinRoom() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const roomId = urlParams.get('roomId');
-            const nickname = sessionStorage.getItem('nickname');
-
-            try {
-                currentRoom = await client.joinById(roomId, { nickname });
-                document.getElementById('room-code').textContent = roomId;
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get('roomId');
+    const nickname = sessionStorage.getItem('nickname');
+    
+    try {
+        currentRoom = await client.joinById(roomId, { nickname });
+        document.getElementById('room-code').textContent = roomId;
+        
+        // Show only lobby initially
+        document.getElementById('lobby').classList.add('active');
+        document.getElementById('playing').classList.remove('active'); 
+        document.getElementById('votazioni').classList.remove('active');
+        document.getElementById('classifica').classList.remove('active');
 
                 currentRoom.onMessage("vote_update", (message) => {
     if (message.index === currentAcronimoIndex) {
@@ -121,26 +127,58 @@ function vote(isUpvote) {
 
 currentRoom.onMessage("*", (type, message) => {
     if (type === "end_round") {
+        // Hide all other divs and show only votazioni
+        document.getElementById('lobby').classList.remove('active');
+        document.getElementById('playing').classList.remove('active');
+        document.getElementById('votazioni').classList.add('active');
+        document.getElementById('classifica').classList.remove('active');
+        
         console.log("Received end_round message");
         acronimiList = Array.from(currentRoom.state.acronimiMandati);
         currentAcronimoIndex = 0;
         document.getElementById('risultato-list').classList.add('visible');
         showNextAcronimo();
     } else if (type === "next_acronimo") {
-        console.log("Received next_acronimo message:", message);
-        // Update the display and index based on the message from host
+        // Keep votazioni active for players
+        document.getElementById('lobby').classList.remove('active');
+        document.getElementById('playing').classList.remove('active');
+        document.getElementById('votazioni').classList.add('active');
+        document.getElementById('classifica').classList.remove('active');
+        
         if (message && message.text) {
             document.getElementById('current-acronimo').textContent = message.text;
             document.getElementById('vote-count').textContent = 
                 `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
             currentAcronimoIndex = message.index;
-            console.log("Updated display with:", message.text, "at index:", message.index);
         }
+    } else if (type === "show_scores") {
+        // Hide all other divs and show only classifica
+        document.getElementById('lobby').classList.remove('active');
+        document.getElementById('playing').classList.remove('active');
+        document.getElementById('votazioni').classList.remove('active');
+        document.getElementById('classifica').classList.add('active');
     }
 });
 
+// In game.html, aggiungi questo handler dei messaggi dopo la connessione alla stanza
+currentRoom.onMessage("start_game", () => {
+    // Hide lobby and show playing div
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('playing').classList.add('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+    console.log("Game started by host");
+});
+
 currentRoom.onMessage("show_scores", () => {
+    // Hide all other divs and show only classifica
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.add('active');
+    
     const scoresContainer = document.getElementById('scores-container');
+    scoresContainer.style.display = 'block';  // Make sure the container is visible
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';
     
@@ -149,28 +187,9 @@ currentRoom.onMessage("show_scores", () => {
         li.textContent = `${player.nickname}: ${player.score} punti`;
         scoresList.appendChild(li);
     });
-    
-    scoresContainer.style.display = 'block';
 });
 
-                currentRoom.onMessage("*", (type, message) => {
-                    if (type === "end_round") {
-                        console.log("Received end_round message");
-                        acronimiList = Array.from(currentRoom.state.acronimiMandati);
-                        currentAcronimoIndex = 0;
-                        document.getElementById('risultato-list').classList.add('visible');
-                    } else if (type === "next_acronimo") {
-                        console.log("Received next_acronimo message:", message);
-                        // Update the display and index based on the message from host
-                        if (message && message.text) {
-                            document.getElementById('current-acronimo').textContent = message.text;
-                            document.getElementById('vote-count').textContent = 
-                                `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
-                            currentAcronimoIndex = message.index;
-                            console.log("Updated display with:", message.text, "at index:", message.index);
-                        }
-                    }
-});
+
 
                 currentRoom.onStateChange((state) => {
                     document.getElementById('current-letter').textContent = state.currentLetter;

@@ -146,25 +146,7 @@
             const roomId = urlParams.get('roomId');
             const nickname = sessionStorage.getItem('nickname');
 
-            document.getElementById('lobby').classList.add('active');
-    document.getElementById('host_interface').classList.add('active');
-    document.getElementById('playing').classList.remove('active');
-    document.getElementById('votazioni').classList.remove('active');
-    document.getElementById('classifica').classList.remove('active');
 
-    // Add click handler for inizia_round
-    document.getElementById('inizia_round').addEventListener('click', () => {
-        document.getElementById('lobby').classList.remove('active');
-        document.getElementById('playing').classList.add('active');
-    });
-
-    // Modify end-round button handler
-    document.getElementById('end-round-btn').addEventListener('click', () => {
-        document.getElementById('playing').classList.remove('active');
-        document.getElementById('votazioni').classList.add('active');
-        document.getElementById('risultato-list').classList.add('visible');
-        currentRoom.send("end_round");
-    });
 
         document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.add('active');
@@ -177,6 +159,39 @@
     }
             
             try {
+
+                currentRoom = await client.joinById(roomId, { nickname });
+        document.getElementById('room-code').textContent = roomId;
+
+        // Set initial visibility
+        document.getElementById('lobby').classList.add('active');
+        document.getElementById('host_interface').classList.add('active');
+        document.getElementById('playing').classList.remove('active');
+        document.getElementById('votazioni').classList.remove('active');
+        document.getElementById('classifica').classList.remove('active');
+
+        // Add message handlers after room connection
+        currentRoom.onMessage("start_game", () => {
+            document.getElementById('lobby').classList.remove('active');
+            document.getElementById('playing').classList.add('active');
+            document.getElementById('votazioni').classList.remove('active');
+            document.getElementById('classifica').classList.remove('active');
+        });
+
+        // Add event listeners after room connection
+        document.getElementById('inizia_round').addEventListener('click', () => {
+            document.getElementById('lobby').classList.remove('active');
+            document.getElementById('playing').classList.add('active');
+            currentRoom.send("start_game");
+        });
+
+        document.getElementById('end-round-btn').addEventListener('click', () => {
+            document.getElementById('playing').classList.remove('active');
+            document.getElementById('votazioni').classList.add('active');
+            document.getElementById('risultato-list').classList.add('visible');
+            currentRoom.send("end_round");
+        });
+
                 currentRoom = await client.joinById(roomId, { nickname });
                 document.getElementById('room-code').textContent = roomId;
                 
