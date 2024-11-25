@@ -10,7 +10,7 @@
 <body>
 
 
-    <div id="lobby">
+    <div id="lobby" class="active">
 
         <a href="http://localhost:2567/"><button>HOME</button></a>
         <h2>Room Code: <span id="room-code"></span></h2>
@@ -21,11 +21,12 @@
 
     </div>
     
-    <div id="host_interface">
+    <div id="host_interface" class="active">
         <p id="numero_round"></p>
         <button onclick="showScores()">Mostra Classifica</button>
         <button id="end-round-btn">End Round</button>
         <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
+        <button id="inizia_round"></button>
     </div>
     
     <div id="playing">
@@ -51,7 +52,7 @@
     
     <div id="classifica">
 
-            <div id="scores-container" style="display: none;">
+            <div id="scores-container">
                 <h2>Classifica</h2>
                 <ul id="scores-list"></ul>
             </div>
@@ -70,11 +71,17 @@
         console.error("Room not connected");
         return;
     }
-    // Invia il messaggio "show_scores" al server
+    // Send show_scores message to server
     currentRoom.send("show_scores");
     
-    // Mostra la classifica localmente
-    const scoresContainer = document.getElementById('scores-container');
+    // Hide all other divs and show only classifica
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('host_interface').classList.remove('active');
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.add('active');
+    
+    // Update scores display
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';
     
@@ -83,8 +90,6 @@
         li.textContent = `${player.nickname}: ${player.score} punti`;
         scoresList.appendChild(li);
     });
-    
-    scoresContainer.style.display = 'block';
 }
 
         function vote(isUpvote) {
@@ -141,6 +146,29 @@
             const roomId = urlParams.get('roomId');
             const nickname = sessionStorage.getItem('nickname');
 
+            document.getElementById('lobby').classList.add('active');
+    document.getElementById('host_interface').classList.add('active');
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+
+    // Add click handler for inizia_round
+    document.getElementById('inizia_round').addEventListener('click', () => {
+        document.getElementById('lobby').classList.remove('active');
+        document.getElementById('playing').classList.add('active');
+    });
+
+    // Modify end-round button handler
+    document.getElementById('end-round-btn').addEventListener('click', () => {
+        document.getElementById('playing').classList.remove('active');
+        document.getElementById('votazioni').classList.add('active');
+        document.getElementById('risultato-list').classList.add('visible');
+        currentRoom.send("end_round");
+    });
+
+        document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.add('active');
+
             if (!nickname) {
         console.error("No nickname found in sessionStorage");
         alert("Error: Nickname not found. Please create a room again.");
@@ -191,6 +219,11 @@
         console.error("Room not connected");
         return;
     }
+
+    currentRoom.send("show_scores");
+        document.getElementById('votazioni').classList.remove('active');
+        document.getElementById('classifica').classList.add('active');
+
     const scoresContainer = document.getElementById('scores-container');
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';

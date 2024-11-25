@@ -70,3 +70,11 @@
     list-style: none;
     padding: 0;
 }
+
+#lobby, #host_interface, #playing, #votazioni, #classifica {
+    display: none;
+}
+
+#lobby.active, #host_interface.active, #playing.active, #votazioni.active, #classifica.active {
+    display: block;
+}
