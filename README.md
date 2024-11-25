@@ -23,6 +23,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - aggiungere counter round
 - aggiungere limite round
 - aggiungere slider setting
+- aggiornare immagini README
 
 
 ## Progressi
