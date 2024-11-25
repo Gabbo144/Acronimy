@@ -16,6 +16,8 @@ class AcronimoSchema extends schema.Schema {
         this.author = "";
         this.upvotes = 0;
         this.downvotes = 0;
+        this.currentRound = 0;  // Add this
+        this.totalRounds = 3;   // Add this
     }
 }
 
@@ -33,7 +35,9 @@ schema.defineTypes(MyRoomState, {
     players: { map: PlayerSchema },
     currentLetter: "string",
     acronimiMandati: [ AcronimoSchema ],
-    currentAcronimoIndex: "number"
+    currentAcronimoIndex: "number",
+    currentRound: "number",     // Add this
+    totalRounds: "number"       // Add this
 });
 
 schema.defineTypes(PlayerSchema, {

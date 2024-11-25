@@ -30,6 +30,26 @@ this.onMessage("start_game", (client) => {
     this.broadcast("start_game");
 });
 
+this.onMessage("start_new_round", (client) => {
+    console.log("Starting new round...");
+    
+    // Reset game state for new round
+    this.state.acronimiMandati = [];
+    
+    // Generate new random letter
+    this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
+    
+    // Update round counter
+    this.state.currentRound++;
+    
+    // Broadcast to all clients
+    this.broadcast("new_round_started", {
+        roundNumber: this.state.currentRound,
+        totalRounds: 3,
+        letter: this.state.currentLetter
+    });
+});
+
         // Message handlers
         this.onMessage("end_round", (client) => {
             console.log("Broadcasting end_round message from client:", client.sessionId);

@@ -28,6 +28,8 @@
         <button id="end-round-btn">End Round</button>
         <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
         <button id="inizia_round">Comincia la partita</button>
+        <button id="prossimo_round">Prossimo round</button>
+        <input type="range" min="1" max="10" value="3" class="slider" id="myRange">
     </div>
     
     <div id="playing">
@@ -66,21 +68,25 @@
         let controllobottone = 0;
         let currentAcronimoIndex = 0;
         let acronimiList = [];
+        let currentRound = 0;
+        const TOTAL_ROUNDS = 3;
 
         function showScores() {
     if (!currentRoom) {
         console.error("Room not connected");
         return;
     }
+    
     // Send show_scores message to server
     currentRoom.send("show_scores");
     
-    // Hide all other divs and show only classifica
+    // Hide only game-related divs but keep host_interface visible
     document.getElementById('lobby').classList.remove('active');
-    document.getElementById('host_interface').classList.remove('active');
     document.getElementById('playing').classList.remove('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.add('active');
+    // Keep host interface visible
+    document.getElementById('host_interface').classList.add('active');
     
     // Update scores display
     const scoresList = document.getElementById('scores-list');
@@ -102,6 +108,37 @@
             currentRoom.send("vote", { index: currentAcronimoIndex, isUpvote });
         }
 
+        function startNextRound() {
+    if (currentRoom.state.currentRound >= TOTAL_ROUNDS) {
+        // Game is over, show final scores
+        showScores();
+        document.getElementById('prossimo_round').style.display = 'none';
+        return;
+    }
+    
+    // Reset round-specific variables
+    controllobottone = 0;
+    currentAcronimoIndex = -1;
+    acronimiList = [];
+    
+    // Show playing section
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('host_interface').classList.add('active');
+    document.getElementById('playing').classList.add('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+    
+    // Reset bottonepazzo visibility
+    document.getElementById('bottonepazzo').style.display = 'block';
+    
+    // Tell server to start new round
+    if (currentRoom) {
+        console.log("Sending start_new_round message");
+        currentRoom.send("start_new_round");
+    } else {
+        console.error("Room not connected");
+    }
+}
         function mandaacronimo() {
             if (!currentRoom) return;
             controllobottone++;
@@ -152,6 +189,10 @@
         document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.add('active');
 
+    currentRound = 0;
+    document.getElementById('prossimo_round').addEventListener('click', startNextRound);
+    document.getElementById('numero_round').textContent = 'Round 0/3';
+
             if (!nickname) {
         console.error("No nickname found in sessionStorage");
         alert("Error: Nickname not found. Please create a room again.");
@@ -179,8 +220,15 @@
             document.getElementById('classifica').classList.remove('active');
         });
 
+        // Add this message handler
+currentRoom.onMessage("round_started", (message) => {
+    console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
+    document.getElementById('current-letter').textContent = message.letter;
+});
+
         // Add event listeners after room connection
         document.getElementById('inizia_round').addEventListener('click', () => {
+            startNextRound(); // This will start round 1
             document.getElementById('lobby').classList.remove('active');
             document.getElementById('playing').classList.add('active');
             currentRoom.send("start_game");
@@ -258,6 +306,8 @@
 }
 
                 currentRoom.onStateChange((state) => {
+                    document.getElementById('numero_round').textContent = 
+                    `Round ${state.currentRound}/${state.totalRounds}`;
                     document.getElementById('current-letter').textContent = state.currentLetter;
                     const playersList = document.getElementById('players-list');
                     playersList.innerHTML = '';

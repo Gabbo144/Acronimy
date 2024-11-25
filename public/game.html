@@ -160,6 +160,26 @@ currentRoom.onMessage("*", (type, message) => {
     }
 });
 
+// Add this message handler
+currentRoom.onMessage("new_round_started", (message) => {
+    console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
+    
+    // Reset UI for new round
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('playing').classList.add('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+    
+    // Reset input and controls
+    document.getElementById('user_acronimozz').value = '';
+    controllobottone = 0;
+    
+    // Update round display
+    document.getElementById('numero_round').textContent = 
+        `Round ${message.roundNumber}/${message.totalRounds}`;
+    document.getElementById('current-letter').textContent = message.letter;
+});
+
 // In game.html, aggiungi questo handler dei messaggi dopo la connessione alla stanza
 currentRoom.onMessage("start_game", () => {
     // Hide lobby and show playing div
@@ -168,6 +188,15 @@ currentRoom.onMessage("start_game", () => {
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
     console.log("Game started by host");
+});
+
+// Add same message handler for non-host players
+currentRoom.onMessage("round_started", (message) => {
+    console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
+    document.getElementById('current-letter').textContent = message.letter;
+    // Reset input field
+    document.getElementById('user_acronimozz').value = '';
+    controllobottone = 0;
 });
 
 currentRoom.onMessage("show_scores", () => {
