@@ -21,6 +21,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - Voti singoli e non due a due
 - aggiornare immagini README
 - sistema di classifica del round appena giocato
+- sistma di tempo
+- sistema di quando tutti hanno fatto vai avanti
 
 
 ## Progressi

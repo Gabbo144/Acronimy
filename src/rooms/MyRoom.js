@@ -1,6 +1,14 @@
 const colyseus = require('colyseus');
 const { MyRoomState, PlayerSchema, AcronimoSchema } = require('./schema/MyRoomState');
 
+const sigle = [
+    "AIDS", "HIV", "USA", "USSR", "ONU", "NASA",
+    "FBI", "UNICEF", "NATO", "URL", "PDF",
+    "HTML", "VIP", "ASAP", "LOL"
+];
+
+const parolegiocatori =[]
+
 const acronimi = [
     "AIDS", "HIV", "USA", "USSR", "ONU", "NASA",
     "FBI", "UNICEF", "NATO", "URL", "PDF",
