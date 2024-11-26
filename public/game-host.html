@@ -18,18 +18,16 @@
             <h2>Online Players</h2>
             <ul id="players-list"></ul>
         </div>
+        <button id="copy-link-btn" onclick="copyGameLink()">Copy Game Link</button>
+        <button id="inizia_round">Comincia la partita</button>
+        <input type="range" min="1" max="10" value="3" class="slider" id="myRange">
+
+
 
     </div>
     
     <div id="host_interface" class="active">
         <p id="numero_round"></p>
-        <button id="copy-link-btn" onclick="copyGameLink()">Copy Game Link</button>
-        <button onclick="showScores()">Mostra Classifica</button>
-        <button id="end-round-btn">End Round</button>
-        <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
-        <button id="inizia_round">Comincia la partita</button>
-        <button id="prossimo_round">Prossimo round</button>
-        <input type="range" min="1" max="10" value="3" class="slider" id="myRange">
     </div>
     
     <div id="playing">
@@ -37,6 +35,8 @@
             <h2>Current Letter: <span id="current-letter"></span></h2>
             <input type="text" name="" id="user_acronimozz">
             <button onclick="mandaacronimo()">invia</button>
+            <button id="end-round-btn">End Round</button>
+
 
     </div>
     
@@ -50,6 +50,10 @@
                 </div>
                 <p id="vote-count"></p>
             </div>
+            <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
+
+            <button onclick="showScores()">Mostra Classifica</button>
+
 
     </div>
     
@@ -59,8 +63,11 @@
                 <h2>Classifica</h2>
                 <ul id="scores-list"></ul>
             </div>
+            <button id="prossimo_round">Prossimo round</button>
+
 
     </div>
+
 
     <script>
         const client = new Colyseus.Client('ws://localhost:2567');

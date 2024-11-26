@@ -19,11 +19,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - NOMEEEEEEEEEEEEEEEEEEEEEEEEE
 - Classifica finale e ripetizione round
 - Voti singoli e non due a due
-- Numero round
-- aggiungere counter round
-- aggiungere limite round
-- aggiungere slider setting
 - aggiornare immagini README
+- sistema di classifica del round appena giocato
 
 
 ## Progressi
