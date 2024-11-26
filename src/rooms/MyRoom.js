@@ -70,6 +70,14 @@ exports.MyRoom = class extends colyseus.Room {
             this.broadcast("start_game");
         });
 
+        this.onMessage("return_all_to_lobby", (client) => {
+            // Verifica che il messaggio provenga dall'host
+            if (client.sessionId === this.hostSessionId) {
+                // Invia tutti alla home
+                this.broadcast("force_return_to_lobby");
+            }
+        });
+
         this.onMessage("start_custom_words_phase", (client) => {
             this.broadcast("custom_words_phase");
         });

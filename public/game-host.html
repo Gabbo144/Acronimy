@@ -113,43 +113,54 @@
         `Round ${currentRoom ? currentRoom.state.currentRound : 0}/${this.value}`;
 }
 
-        function showScores() {
+function showScores() {
     if (!currentRoom) {
         console.error("Room not connected");
         return;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-    const slider = document.getElementById('myRange');
-    
-    slider.addEventListener('change', (e) => {
-        document.getElementById('numero_round').textContent = 
-            `Round ${currentRoom.state.currentRound}/${output1}`;
-    });
-});
-
-
-    
-    // Send show_scores message to server
     currentRoom.send("show_scores");
-    
-    // Hide only game-related divs but keep host_interface visible
-    document.getElementById('lobby').classList.remove('active');
-    document.getElementById('playing').classList.remove('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.add('active');
-    // Keep host interface visible
-    document.getElementById('host_interface').classList.add('active');
-    
-    // Update scores display
+
+    const scoresContainer = document.getElementById('scores-container');
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';
+    const titulo = scoresContainer.querySelector('h2');
+    
+    if (currentRoom.state.currentRound >= currentRoom.state.totalRounds) {
+        titulo.textContent = "Classifica Finale";
+        // Aggiungi il bottone per tornare alla lobby SOLO in game-host.html
+        const backButton = document.createElement('button');
+        backButton.textContent = "Torna alla Lobby";
+        backButton.onclick = () => {
+            // L'host invia un messaggio a tutti i client per tornare alla lobby
+            currentRoom.send("return_all_to_lobby");
+            // Mostra il div lobby e nascondi gli altri
+            document.getElementById('lobby').classList.add('active');
+            document.getElementById('playing').classList.remove('active');
+            document.getElementById('votazioni').classList.remove('active');
+            document.getElementById('classifica').classList.remove('active');
+            document.getElementById('host_interface').classList.add('active');
+            // Azzera il numero di round
+            document.getElementById('numero_round').textContent = 'Round 0/3';
+            currentRoom.state.currentRound = 0;
+        };
+        scoresContainer.appendChild(backButton);
+        // Nascondi il bottone "prossimo round"
+        const nextRoundBtn = document.getElementById('prossimo_round');
+        if (nextRoundBtn) nextRoundBtn.style.display = 'none';
+    } else {
+        titulo.textContent = "Classifica";
+    }
     
     currentRoom.state.players.forEach((player, sessionId) => {
         const li = document.createElement('li');
         li.textContent = `${player.nickname}: ${player.score} punti`;
         scoresList.appendChild(li);
     });
+    
+    scoresContainer.style.display = 'block';
 }
 
         function vote(isUpvote) {
@@ -325,16 +336,18 @@ document.getElementById('submit-words-btn').addEventListener('click', () => {
 });
 
 
-        // Add event listeners after room connection
-        document.getElementById('inizia_round').addEventListener('click', () => {
+document.getElementById('inizia_round').addEventListener('click', () => {
     const slider = document.getElementById('myRange');
     const totalRounds = parseInt(slider.value);
     const useCustomWords = document.getElementById('parolone').checked;
 
     if (useCustomWords) {
-        // Mostra la fase di inserimento parole
+        // Nascondi il lobby e mostra la sezione di inserimento parole
         document.getElementById('lobby').classList.remove('active');
         document.getElementById('scrivereparole').classList.add('active');
+        document.getElementById('playing').classList.remove('active');
+        document.getElementById('votazioni').classList.remove('active');
+        document.getElementById('classifica').classList.remove('active');
         currentRoom.send("start_custom_words_phase");
     } else {
         // Avvia il gioco normalmente con le sigle predefinite
@@ -342,6 +355,17 @@ document.getElementById('submit-words-btn').addEventListener('click', () => {
         document.getElementById('lobby').classList.remove('active');
         document.getElementById('playing').classList.add('active');
     }
+});
+
+// Quando si preme "AVANTI" dopo aver inserito le parole
+document.getElementById('avanti-btn').addEventListener('click', () => {
+    currentRoom.send("start_game", { 
+        totalRounds: parseInt(document.getElementById('myRange').value),
+        useCustomWords: true 
+    });
+    // Nascondi la sezione parole e mostra il gioco
+    document.getElementById('scrivereparole').classList.remove('active');
+    document.getElementById('playing').classList.add('active');
 });
 
 document.getElementById('scrivereparole').querySelector('button').addEventListener('click', () => {
@@ -410,6 +434,22 @@ document.getElementById('scrivereparole').querySelector('button').addEventListen
     const scoresContainer = document.getElementById('scores-container');
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';
+    const titulo = scoresContainer.querySelector('h2');
+    if (currentRoom.state.currentRound >= currentRoom.state.totalRounds) {
+        titulo.textContent = "Classifica Finale";
+        // Aggiungi il bottone per tornare alla lobby
+        const backButton = document.createElement('button');
+        backButton.textContent = "Torna alla Lobby";
+        backButton.onclick = () => {
+            window.location.href = '/';
+        };
+        scoresContainer.appendChild(backButton);
+        // Nascondi il bottone "prossimo round" se presente
+        const nextRoundBtn = document.getElementById('prossimo_round');
+        if (nextRoundBtn) nextRoundBtn.style.display = 'none';
+    } else {
+        titulo.textContent = "Classifica";
+    }
     
     // Debug log
     console.log("Current players state:", currentRoom.state.players);

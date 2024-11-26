@@ -191,6 +191,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+currentRoom.onMessage("force_return_to_lobby", () => {
+    // Reset UI
+    document.getElementById('lobby').classList.add('active');
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+    document.getElementById('scrivereparole').classList.remove('active');
+    
+    // Reset game state
+    currentAcronimoIndex = -1;
+    acronimiList = [];
+    controllobottone = 0;
+    
+    // Azzera il numero di round
+    document.getElementById('numero_round').textContent = 'Round 0/3';
+    
+    // Pulisci la lista dei punteggi
+    const scoresList = document.getElementById('scores-list');
+    if (scoresList) {
+        scoresList.innerHTML = '';
+    }
+
+    // Pulisci il contenitore dei punteggi
+    const scoresContainer = document.getElementById('scores-container');
+    if (scoresContainer) {
+        scoresContainer.style.display = 'none';
+    }
+});
+
 currentRoom.onMessage("*", (type, message) => {
     if (type === "end_round") {
         // Hide all other divs and show only votazioni
@@ -285,6 +314,7 @@ currentRoom.onMessage("round_started", (message) => {
     
     // Aggiorna l'interfaccia per mostrare la sezione di gioco
     document.getElementById('lobby').classList.remove('active');
+    document.getElementById('scrivereparole').classList.remove('active'); // Nascondi la sezione scrivereparole
     document.getElementById('playing').classList.add('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
@@ -299,7 +329,7 @@ currentRoom.onMessage("round_started", (message) => {
     controllobottone = 0;
 });
 
-currentRoom.onMessage("show_scores", () => {
+currentRoom.onMessage("show_scores", (message) => {
     // Hide all other divs and show only classifica
     document.getElementById('lobby').classList.remove('active');
     document.getElementById('playing').classList.remove('active');
@@ -307,7 +337,23 @@ currentRoom.onMessage("show_scores", () => {
     document.getElementById('classifica').classList.add('active');
     
     const scoresContainer = document.getElementById('scores-container');
-    scoresContainer.style.display = 'block';  // Make sure the container is visible
+    scoresContainer.style.display = 'block';
+    
+    // Cambia il titolo in base al round corrente
+    const titulo = scoresContainer.querySelector('h2');
+    if (currentRoom.state.currentRound >= currentRoom.state.totalRounds) {
+        titulo.textContent = "Classifica Finale";
+        // Aggiungi il bottone per tornare alla lobby
+        const backButton = document.createElement('button');
+        backButton.textContent = "Torna alla Lobby";
+        backButton.onclick = () => {
+            window.location.href = '/';
+        };
+        scoresContainer.appendChild(backButton);
+    } else {
+        titulo.textContent = "Classifica";
+    }
+    
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';
     
@@ -317,6 +363,7 @@ currentRoom.onMessage("show_scores", () => {
         scoresList.appendChild(li);
     });
 });
+
 
 
 
