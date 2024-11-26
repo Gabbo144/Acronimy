@@ -1,6 +1,14 @@
 const colyseus = require('colyseus');
 const { MyRoomState, PlayerSchema, AcronimoSchema } = require('./schema/MyRoomState');
 
+const sigle = [
+    "AIDS", "HIV", "USA", "USSR", "ONU", "NASA",
+    "FBI", "UNICEF", "NATO", "URL", "PDF",
+    "HTML", "VIP", "ASAP", "LOL"
+];
+
+const parolegiocatori =[]
+
 const acronimi = [
     "AIDS", "HIV", "USA", "USSR", "ONU", "NASA",
     "FBI", "UNICEF", "NATO", "URL", "PDF",
@@ -15,8 +23,10 @@ exports.MyRoom = class extends colyseus.Room {
     onCreate(options) {
         this.setState(new MyRoomState());
         this.reconnectionTimeouts = new Map();
-        this.playerIdentities = new Map(); // Track original player identities
+        this.playerIdentities = new Map();
         this.usedNicknames = new Set();
+        this.state.currentRound = 0;
+        this.gameStarted = false;  // Add this flag
 
         // Set maximum clients and ensure room stays unlocked
         this.maxClients = 16;
@@ -24,31 +34,93 @@ exports.MyRoom = class extends colyseus.Room {
         this.autoDispose = false;
         this.unlock(); // Start with an unlocked room
 
-        // In MyRoom.js, dentro onCreate()
-this.onMessage("start_game", (client) => {
-    console.log("Broadcasting start_game message");
-    this.broadcast("start_game");
-});
+        this.onMessage("start_game", (client, message) => {
+            this.gameStarted = true;
+            this.state.currentRound = 1;
+            this.hostSessionId = client.sessionId;
+            
+            if (message && message.totalRounds) {
+                this.state.totalRounds = message.totalRounds;
+            } else {
+                this.state.totalRounds = 3;
+            }
+        
+            // Se useCustomWords è true, usa parolegiocatori come fonte di parole
+            if (message.useCustomWords) {
+                if (parolegiocatori.length === 0) {
+                    console.error("No custom words available!");
+                    return;
+                }
+                // Usa una parola casuale dall'array parolegiocatori
+                const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
+                this.state.currentLetter = randomWord;
+                console.log("Selected custom word:", randomWord);
+            } else {
+                // Se usiamo acronimi predefiniti, prendi solo la prima lettera
+                const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
+                this.state.currentLetter = randomAcronimo.charAt(0);
+            }
+            
+            this.broadcast("round_started", {
+                roundNumber: this.state.currentRound,
+                totalRounds: this.state.totalRounds,
+                letter: this.state.currentLetter
+            });
+            
+            this.broadcast("start_game");
+        });
 
-this.onMessage("start_new_round", (client) => {
-    console.log("Starting new round...");
+        this.onMessage("start_custom_words_phase", (client) => {
+            this.broadcast("custom_words_phase");
+        });
+
+        this.onMessage("submit_custom_word", (client, message) => {
+            if (!parolegiocatori.includes(message.word)) {
+                parolegiocatori.push(message.word);
+                console.log("Parola aggiunta:", message.word);
+            }
+        });
+
+        this.onMessage("start_new_round", (client, message) => {
+            if (!this.gameStarted) return;
+        
+            this.state.currentRound++;
+        
+            if (this.state.currentRound > this.state.totalRounds) {
+                // Reset game state
+                this.gameStarted = false;
+                this.state.currentRound = 0;
+                
+                // Reset all player scores
+                this.state.players.forEach(player => {
+                    player.score = 0;
+                });
+                
+                // Return to lobby
+                this.broadcast("return_to_lobby");
+                return;
+            }
+        
+            // Reset dello stato del gioco per il nuovo round
+            this.state.acronimiMandati = [];
+            
+            // Usa le parole dei giocatori se disponibili
+            if (parolegiocatori.length > 0) {
+                const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
+                this.state.currentLetter = randomWord;
+            } else {
+                // Fallback sugli acronimi predefiniti
+                const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
+                this.state.currentLetter = randomAcronimo.charAt(0);
+            }
+            
+            this.broadcast("round_started", {
+                roundNumber: this.state.currentRound,
+                totalRounds: this.state.totalRounds,
+                letter: this.state.currentLetter
+            });
+        });
     
-    // Reset game state for new round
-    this.state.acronimiMandati = [];
-    
-    // Generate new random letter
-    this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
-    
-    // Update round counter
-    this.state.currentRound++;
-    
-    // Broadcast to all clients
-    this.broadcast("new_round_started", {
-        roundNumber: this.state.currentRound,
-        totalRounds: 3,
-        letter: this.state.currentLetter
-    });
-});
 
         // Message handlers
         this.onMessage("end_round", (client) => {
