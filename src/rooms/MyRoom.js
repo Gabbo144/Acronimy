@@ -15,8 +15,10 @@ exports.MyRoom = class extends colyseus.Room {
     onCreate(options) {
         this.setState(new MyRoomState());
         this.reconnectionTimeouts = new Map();
-        this.playerIdentities = new Map(); // Track original player identities
+        this.playerIdentities = new Map();
         this.usedNicknames = new Set();
+        this.state.currentRound = 0;
+        this.gameStarted = false;  // Add this flag
 
         // Set maximum clients and ensure room stays unlocked
         this.maxClients = 16;
@@ -24,31 +26,58 @@ exports.MyRoom = class extends colyseus.Room {
         this.autoDispose = false;
         this.unlock(); // Start with an unlocked room
 
-        // In MyRoom.js, dentro onCreate()
-this.onMessage("start_game", (client) => {
-    console.log("Broadcasting start_game message");
-    this.broadcast("start_game");
-});
+        this.onMessage("start_game", (client, message) => {
+            this.gameStarted = true;
+            this.state.currentRound = 1; // Imposta a 1 quando il gioco inizia
+            
+            if (message && message.totalRounds) {
+                this.state.totalRounds = message.totalRounds;
+            } else {
+                this.state.totalRounds = 3; // Default a 3 se non specificato
+            }
+        
+            // Reset dello stato del gioco
+            this.state.acronimiMandati = [];
+            this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
+            
+            this.broadcast("round_started", {
+                roundNumber: this.state.currentRound,
+                totalRounds: this.state.totalRounds,
+                letter: this.state.currentLetter
+            });
+            
+            this.broadcast("start_game");
+        });
 
-this.onMessage("start_new_round", (client) => {
-    console.log("Starting new round...");
+        this.onMessage("start_new_round", (client, message) => {
+            if (!this.gameStarted) return;
+        
+            if (this.state.currentRound >= this.state.totalRounds) {
+                // Reset game state
+                this.gameStarted = false;
+                this.state.currentRound = 0;
+                
+                // Reset all player scores
+                this.state.players.forEach(player => {
+                    player.score = 0;
+                });
+                
+                // Return to lobby
+                this.broadcast("return_to_lobby");
+                return;
+            }
+        
+            this.state.currentRound++;
+            this.state.acronimiMandati = [];
+            this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
+            
+            this.broadcast("round_started", {
+                roundNumber: this.state.currentRound,
+                totalRounds: this.state.totalRounds,
+                letter: this.state.currentLetter
+            });
+        });
     
-    // Reset game state for new round
-    this.state.acronimiMandati = [];
-    
-    // Generate new random letter
-    this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
-    
-    // Update round counter
-    this.state.currentRound++;
-    
-    // Broadcast to all clients
-    this.broadcast("new_round_started", {
-        roundNumber: this.state.currentRound,
-        totalRounds: 3,
-        letter: this.state.currentLetter
-    });
-});
 
         // Message handlers
         this.onMessage("end_round", (client) => {

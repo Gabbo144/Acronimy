@@ -21,6 +21,7 @@
         <button id="copy-link-btn" onclick="copyGameLink()">Copy Game Link</button>
         <button id="inizia_round">Comincia la partita</button>
         <input type="range" min="1" max="10" value="3" class="slider" id="myRange">
+        <span id="slider-value">rounds</span>
 
 
 
@@ -70,19 +71,42 @@
 
 
     <script>
+
+
+
         const client = new Colyseus.Client('ws://localhost:2567');
         let currentRoom = null;
         let controllobottone = 0;
         let currentAcronimoIndex = 0;
         let acronimiList = [];
         let currentRound = 0;
-        const TOTAL_ROUNDS = 3;
+        let slider = document.getElementById("myRange");
+        let output1 = document.getElementById("slider-value");
+        const TOTAL_ROUNDS = output1;
+
+        slider.oninput = function() {
+    output1.textContent = this.value + " rounds";
+    // Aggiorna anche il display del round corrente
+    document.getElementById('numero_round').textContent = 
+        `Round ${currentRoom ? currentRoom.state.currentRound : 0}/${this.value}`;
+}
 
         function showScores() {
     if (!currentRoom) {
         console.error("Room not connected");
         return;
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.getElementById('myRange');
+    
+    slider.addEventListener('change', (e) => {
+        document.getElementById('numero_round').textContent = 
+            `Round ${currentRoom.state.currentRound}/${output1}`;
+    });
+});
+
+
     
     // Send show_scores message to server
     currentRoom.send("show_scores");
@@ -116,8 +140,8 @@
         }
 
         function startNextRound() {
-    if (currentRoom.state.currentRound >= TOTAL_ROUNDS) {
-        // Game is over, show final scores
+            if (currentRoom.state.currentRound >= parseInt(slider.value)) {
+        console.log("Game Over - Max rounds reached");
         showScores();
         document.getElementById('prossimo_round').style.display = 'none';
         return;
@@ -127,6 +151,13 @@
     controllobottone = 0;
     currentAcronimoIndex = -1;
     acronimiList = [];
+
+    currentRoom.send("start_new_round", { 
+    totalRounds: parseInt(slider.value)
+});
+
+document.getElementById('numero_round').textContent = 
+    `Round ${currentRoom.state.currentRound + 1}/${slider.value}`;
     
     // Show playing section
     document.getElementById('lobby').classList.remove('active');
@@ -134,9 +165,9 @@
     document.getElementById('playing').classList.add('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
-    
-    // Reset bottonepazzo visibility
     document.getElementById('bottonepazzo').style.display = 'block';
+    
+
     
     // Tell server to start new round
     if (currentRoom) {
@@ -227,19 +258,42 @@
             document.getElementById('classifica').classList.remove('active');
         });
 
-        // Add this message handler
+        currentRoom.onMessage("return_to_lobby", () => {
+    // Reset UI
+    document.getElementById('lobby').classList.add('active');
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+    document.getElementById('host_interface').classList.add('active');
+    
+    // Reset game state
+    currentAcronimoIndex = -1;
+    acronimiList = [];
+    controllobottone = 0;
+    
+    // Re-enable start game button
+    document.getElementById('inizia_round').style.display = 'block';
+});
+
 currentRoom.onMessage("round_started", (message) => {
     console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
     document.getElementById('current-letter').textContent = message.letter;
+    document.getElementById('numero_round').textContent = 
+        `Round ${message.roundNumber}/${message.totalRounds}`;
 });
 
         // Add event listeners after room connection
         document.getElementById('inizia_round').addEventListener('click', () => {
-            startNextRound(); // This will start round 1
-            document.getElementById('lobby').classList.remove('active');
-            document.getElementById('playing').classList.add('active');
-            currentRoom.send("start_game");
-        });
+    const slider = document.getElementById('myRange');
+    const totalRounds = parseInt(slider.value);
+
+    // Invia il messaggio start_game con totalRounds
+    currentRoom.send("start_game", { totalRounds });
+
+    // Mostra la sezione di gioco
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('playing').classList.add('active');
+});
 
         document.getElementById('end-round-btn').addEventListener('click', () => {
             document.getElementById('playing').classList.remove('active');

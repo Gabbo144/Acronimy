@@ -190,6 +190,19 @@ currentRoom.onMessage("start_game", () => {
     console.log("Game started by host");
 });
 
+currentRoom.onMessage("return_to_lobby", () => {
+    // Reset UI
+    document.getElementById('lobby').classList.add('active');
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+    
+    // Reset game state
+    currentAcronimoIndex = -1;
+    acronimiList = [];
+    controllobottone = 0;
+});
+
 // Add same message handler for non-host players
 currentRoom.onMessage("round_started", (message) => {
     console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
