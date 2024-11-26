@@ -36,17 +36,30 @@ exports.MyRoom = class extends colyseus.Room {
 
         this.onMessage("start_game", (client, message) => {
             this.gameStarted = true;
-            this.state.currentRound = 1; // Imposta a 1 quando il gioco inizia
+            this.state.currentRound = 1;
+            this.hostSessionId = client.sessionId;
             
             if (message && message.totalRounds) {
                 this.state.totalRounds = message.totalRounds;
             } else {
-                this.state.totalRounds = 3; // Default a 3 se non specificato
+                this.state.totalRounds = 3;
             }
         
-            // Reset dello stato del gioco
-            this.state.acronimiMandati = [];
-            this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
+            // Se useCustomWords è true, usa parolegiocatori come fonte di parole
+            if (message.useCustomWords) {
+                if (parolegiocatori.length === 0) {
+                    console.error("No custom words available!");
+                    return;
+                }
+                // Usa una parola casuale dall'array parolegiocatori
+                const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
+                this.state.currentLetter = randomWord;
+                console.log("Selected custom word:", randomWord);
+            } else {
+                // Se usiamo acronimi predefiniti, prendi solo la prima lettera
+                const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
+                this.state.currentLetter = randomAcronimo.charAt(0);
+            }
             
             this.broadcast("round_started", {
                 roundNumber: this.state.currentRound,
@@ -55,6 +68,17 @@ exports.MyRoom = class extends colyseus.Room {
             });
             
             this.broadcast("start_game");
+        });
+
+        this.onMessage("start_custom_words_phase", (client) => {
+            this.broadcast("custom_words_phase");
+        });
+
+        this.onMessage("submit_custom_word", (client, message) => {
+            if (!parolegiocatori.includes(message.word)) {
+                parolegiocatori.push(message.word);
+                console.log("Parola aggiunta:", message.word);
+            }
         });
 
         this.onMessage("start_new_round", (client, message) => {
@@ -79,9 +103,17 @@ exports.MyRoom = class extends colyseus.Room {
         
             // Reset dello stato del gioco per il nuovo round
             this.state.acronimiMandati = [];
-            this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
             
-            // Invia il messaggio round_started a tutti i client
+            // Usa le parole dei giocatori se disponibili
+            if (parolegiocatori.length > 0) {
+                const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
+                this.state.currentLetter = randomWord;
+            } else {
+                // Fallback sugli acronimi predefiniti
+                const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
+                this.state.currentLetter = randomAcronimo.charAt(0);
+            }
+            
             this.broadcast("round_started", {
                 roundNumber: this.state.currentRound,
                 totalRounds: this.state.totalRounds,

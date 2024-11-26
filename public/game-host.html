@@ -32,11 +32,11 @@
     </div>
 
     <div id="scrivereparole">
-        <button>AVANTI</button>
-        <input type="text" name="" id="">
-        <input type="text" name="" id="">
-        <input type="text" name="" id="">
-        <input type="submit" name="" id="">
+        <button id="avanti-btn">AVANTI</button>
+        <input type="text" id="custom-word-1" class="custom-word-input">
+        <input type="text" id="custom-word-2" class="custom-word-input">
+        <input type="text" id="custom-word-3" class="custom-word-input">
+        <button id="submit-words-btn">Invia Parole</button>
     </div>
     
     <div id="host_interface" class="active">
@@ -95,6 +95,16 @@
         let slider = document.getElementById("myRange");
         let output1 = document.getElementById("slider-value");
         const TOTAL_ROUNDS = output1;
+
+        document.getElementById('avanti-btn').addEventListener('click', () => {
+    currentRoom.send("start_game", { 
+        totalRounds: parseInt(document.getElementById('myRange').value),
+        useCustomWords: true 
+    });
+    // Mostra la sezione di gioco
+    document.getElementById('scrivereparole').classList.remove('active');
+    document.getElementById('playing').classList.add('active');
+});
 
         slider.oninput = function() {
     output1.textContent = this.value + " rounds";
@@ -269,6 +279,7 @@
             document.getElementById('classifica').classList.remove('active');
         });
 
+
         currentRoom.onMessage("return_to_lobby", () => {
     // Reset UI
     document.getElementById('lobby').classList.add('active');
@@ -293,16 +304,52 @@ currentRoom.onMessage("round_started", (message) => {
         `Round ${message.roundNumber}/${message.totalRounds}`;
 });
 
+currentRoom.onMessage("custom_words_phase", () => {
+    // Mostra la sezione di inserimento parole
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('scrivereparole').classList.add('active');
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+});
+
+
+document.getElementById('submit-words-btn').addEventListener('click', () => {
+    const inputs = document.querySelectorAll('.custom-word-input');
+    inputs.forEach(input => {
+        if (input.value.trim()) {
+            currentRoom.send("submit_custom_word", { word: input.value.trim() });
+            input.value = ''; // Pulisci l'input dopo l'invio
+        }
+    });
+});
+
+
         // Add event listeners after room connection
         document.getElementById('inizia_round').addEventListener('click', () => {
     const slider = document.getElementById('myRange');
     const totalRounds = parseInt(slider.value);
+    const useCustomWords = document.getElementById('parolone').checked;
 
-    // Invia il messaggio start_game con totalRounds
-    currentRoom.send("start_game", { totalRounds });
+    if (useCustomWords) {
+        // Mostra la fase di inserimento parole
+        document.getElementById('lobby').classList.remove('active');
+        document.getElementById('scrivereparole').classList.add('active');
+        currentRoom.send("start_custom_words_phase");
+    } else {
+        // Avvia il gioco normalmente con le sigle predefinite
+        currentRoom.send("start_game", { totalRounds });
+        document.getElementById('lobby').classList.remove('active');
+        document.getElementById('playing').classList.add('active');
+    }
+});
 
-    // Mostra la sezione di gioco
-    document.getElementById('lobby').classList.remove('active');
+document.getElementById('scrivereparole').querySelector('button').addEventListener('click', () => {
+    currentRoom.send("start_game", { 
+        totalRounds: parseInt(document.getElementById('myRange').value),
+        useCustomWords: true 
+    });
+    document.getElementById('scrivereparole').classList.remove('active');
     document.getElementById('playing').classList.add('active');
 });
 
