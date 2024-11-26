@@ -52,7 +52,9 @@ exports.MyRoom = class extends colyseus.Room {
         this.onMessage("start_new_round", (client, message) => {
             if (!this.gameStarted) return;
         
-            if (this.state.currentRound >= this.state.totalRounds) {
+            this.state.currentRound++;
+        
+            if (this.state.currentRound > this.state.totalRounds) {
                 // Reset game state
                 this.gameStarted = false;
                 this.state.currentRound = 0;
@@ -67,10 +69,11 @@ exports.MyRoom = class extends colyseus.Room {
                 return;
             }
         
-            this.state.currentRound++;
+            // Reset dello stato del gioco per il nuovo round
             this.state.acronimiMandati = [];
             this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
             
+            // Invia il messaggio round_started a tutti i client
             this.broadcast("round_started", {
                 roundNumber: this.state.currentRound,
                 totalRounds: this.state.totalRounds,

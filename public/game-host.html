@@ -140,7 +140,7 @@
         }
 
         function startNextRound() {
-            if (currentRoom.state.currentRound >= parseInt(slider.value)) {
+    if (currentRoom.state.currentRound >= parseInt(slider.value)) {
         console.log("Game Over - Max rounds reached");
         showScores();
         document.getElementById('prossimo_round').style.display = 'none';
@@ -152,12 +152,13 @@
     currentAcronimoIndex = -1;
     acronimiList = [];
 
-    currentRoom.send("start_new_round", { 
-    totalRounds: parseInt(slider.value)
-});
+    // RIMUOVI QUESTA PRIMA CHIAMATA
+    // currentRoom.send("start_new_round", { 
+    //     totalRounds: parseInt(slider.value)
+    // });
 
-document.getElementById('numero_round').textContent = 
-    `Round ${currentRoom.state.currentRound + 1}/${slider.value}`;
+    document.getElementById('numero_round').textContent = 
+        `Round ${currentRoom.state.currentRound + 1}/${slider.value}`;
     
     // Show playing section
     document.getElementById('lobby').classList.remove('active');
@@ -167,9 +168,7 @@ document.getElementById('numero_round').textContent =
     document.getElementById('classifica').classList.remove('active');
     document.getElementById('bottonepazzo').style.display = 'block';
     
-
-    
-    // Tell server to start new round
+    // Mantieni solo questa chiamata
     if (currentRoom) {
         console.log("Sending start_new_round message");
         currentRoom.send("start_new_round");
