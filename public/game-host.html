@@ -20,8 +20,18 @@
         </div>
         <button id="copy-link-btn" onclick="copyGameLink()">Copy Game Link</button>
         <button id="inizia_round">Comincia la partita</button>
-        <input type="range" min="1" max="10" value="3" class="slider" id="myRange">
+        <input type="range" min="1" max="10" value="3" class="slider" id="myRange"> <br>
+        <select name="timer" id="temporound">
+            <option value="0:10">0:10</option>
+            <option value="0:30">0:30</option>
+            <option value="1:00">1:00</option>
+            <option value="1:30">1:30</option>
+            <option value="2:00">2:00</option> 
+        </select>
+            <br>
+
         <span id="slider-value">rounds</span>
+        <br>
           <input type="radio" id="sigle" name="fav_language" value="HTML">
           <label for="html">SIGLE FAMOSE</label>
           <input type="radio" id="parolone" name="fav_language" value="CSS">
@@ -45,6 +55,7 @@
     
     <div id="playing">
 
+            <h3>Time Remaining: <span id="timer-display">00:00</span></h3>
             <h2>Current Letter: <span id="current-letter"></span></h2>
             <input type="text" name="" id="user_acronimozz">
             <button onclick="mandaacronimo()">invia</button>
@@ -95,6 +106,8 @@
         let slider = document.getElementById("myRange");
         let output1 = document.getElementById("slider-value");
         const TOTAL_ROUNDS = output1;
+        let timerInterval;
+        let timeRemaining;
 
         document.getElementById('avanti-btn').addEventListener('click', () => {
     currentRoom.send("start_game", { 
@@ -185,10 +198,11 @@ function showScores() {
     currentAcronimoIndex = -1;
     acronimiList = [];
 
-    // RIMUOVI QUESTA PRIMA CHIAMATA
-    // currentRoom.send("start_new_round", { 
-    //     totalRounds: parseInt(slider.value)
-    // });
+    const timeSelect = document.getElementById('temporound');
+    const selectedTime = timeSelect.value;
+    const [minutes, seconds] = selectedTime.split(':').map(Number);
+    const totalSeconds = minutes * 60 + seconds;
+
 
     document.getElementById('numero_round').textContent = 
         `Round ${currentRoom.state.currentRound + 1}/${slider.value}`;
@@ -200,14 +214,19 @@ function showScores() {
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
     document.getElementById('bottonepazzo').style.display = 'block';
+
+    
     
     // Mantieni solo questa chiamata
     if (currentRoom) {
         console.log("Sending start_new_round message");
-        currentRoom.send("start_new_round");
+        currentRoom.send("start_new_round", { timerDuration: totalSeconds });    
+
     } else {
         console.error("Room not connected");
     }
+
+    startTimer(totalSeconds);
 }
         function mandaacronimo() {
             if (!currentRoom) return;
@@ -221,6 +240,33 @@ function showScores() {
                 console.log("Acronimo inviato:", acronimoz);
             }
         }
+
+        function startTimer(duration) {
+    clearInterval(timerInterval);
+    timeRemaining = duration;
+    
+    function updateTimer() {
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        document.getElementById('timer-display').textContent = display;
+        
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            // Send end_round message
+            currentRoom.send("end_round");
+            // Update host UI
+            document.getElementById('playing').classList.remove('active');
+            document.getElementById('votazioni').classList.add('active');
+            document.getElementById('risultato-list').classList.add('visible');
+            return;
+        }
+        timeRemaining--;
+    }
+    
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+}
 
         function scorriacronimo() {
             if (!currentRoom) return;
@@ -340,6 +386,10 @@ document.getElementById('inizia_round').addEventListener('click', () => {
     const slider = document.getElementById('myRange');
     const totalRounds = parseInt(slider.value);
     const useCustomWords = document.getElementById('parolone').checked;
+    const timeSelect = document.getElementById('temporound');
+    const selectedTime = timeSelect.value; // Format: "1:30"
+    const [minutes, seconds] = selectedTime.split(':').map(Number);
+    const totalSeconds = minutes * 60 + seconds;
 
     if (useCustomWords) {
         // Nascondi il lobby e mostra la sezione di inserimento parole
@@ -351,9 +401,13 @@ document.getElementById('inizia_round').addEventListener('click', () => {
         currentRoom.send("start_custom_words_phase");
     } else {
         // Avvia il gioco normalmente con le sigle predefinite
-        currentRoom.send("start_game", { totalRounds });
+        currentRoom.send("start_game", { 
+            totalRounds,
+            timerDuration: totalSeconds
+        });
         document.getElementById('lobby').classList.remove('active');
         document.getElementById('playing').classList.add('active');
+        
     }
 });
 
@@ -408,6 +462,13 @@ document.getElementById('scrivereparole').querySelector('button').addEventListen
                         }
                     }
                 });
+
+                currentRoom.onMessage("timer_sync", (message) => {
+    startTimer(message.timeRemaining);
+});
+
+
+
 
                 currentRoom.onMessage("vote_update", (message) => {
                     if (message.index === currentAcronimoIndex) {

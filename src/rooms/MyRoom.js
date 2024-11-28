@@ -44,6 +44,12 @@ exports.MyRoom = class extends colyseus.Room {
             } else {
                 this.state.totalRounds = 3;
             }
+
+            if (message.timerDuration) {
+                this.broadcast("timer_sync", {
+                    timeRemaining: message.timerDuration
+                });
+            }
         
             // Se useCustomWords è true, usa parolegiocatori come fonte di parole
             if (message.useCustomWords) {
@@ -89,45 +95,43 @@ exports.MyRoom = class extends colyseus.Room {
             }
         });
 
-        this.onMessage("start_new_round", (client, message) => {
-            if (!this.gameStarted) return;
-        
-            this.state.currentRound++;
-        
-            if (this.state.currentRound > this.state.totalRounds) {
-                // Reset game state
-                this.gameStarted = false;
-                this.state.currentRound = 0;
-                
-                // Reset all player scores
-                this.state.players.forEach(player => {
-                    player.score = 0;
-                });
-                
-                // Return to lobby
-                this.broadcast("return_to_lobby");
-                return;
-            }
-        
-            // Reset dello stato del gioco per il nuovo round
-            this.state.acronimiMandati = [];
-            
-            // Usa le parole dei giocatori se disponibili
-            if (parolegiocatori.length > 0) {
-                const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
-                this.state.currentLetter = randomWord;
-            } else {
-                // Fallback sugli acronimi predefiniti
-                const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
-                this.state.currentLetter = randomAcronimo.charAt(0);
-            }
-            
-            this.broadcast("round_started", {
-                roundNumber: this.state.currentRound,
-                totalRounds: this.state.totalRounds,
-                letter: this.state.currentLetter
-            });
+// src/rooms/MyRoom.js
+
+this.onMessage("start_new_round", (client, message) => {
+    if (!this.gameStarted) return;
+
+    this.state.currentRound++;
+
+    if (this.state.currentRound > this.state.totalRounds) {
+        this.gameStarted = false;
+        this.state.currentRound = 0;
+        this.state.players.forEach(player => {
+            player.score = 0;
         });
+        this.broadcast("return_to_lobby");
+        return;
+    }
+
+    // Reset dello stato del gioco per il nuovo round
+    this.state.acronimiMandati = [];
+    
+    // Imposta la lettera corrente
+    if (parolegiocatori.length > 0) {
+        const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
+        this.state.currentLetter = randomWord;
+    } else {
+        const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
+        this.state.currentLetter = randomAcronimo.charAt(0);
+    }
+    
+    // Invia il messaggio round_started con timerDuration
+    this.broadcast("round_started", {
+        roundNumber: this.state.currentRound,
+        totalRounds: this.state.totalRounds,
+        letter: this.state.currentLetter,
+        timerDuration: message.timerDuration  // Assicurati di includere questa linea
+    });
+});
     
 
         // Message handlers

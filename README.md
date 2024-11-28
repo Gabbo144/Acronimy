@@ -19,7 +19,6 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - Voti singoli e non due a due
 - aggiornare immagini README
 - sistema di classifica del round appena giocato
-- sistma di tempo
 - sistema di quando tutti hanno fatto vai avanti
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
@@ -36,6 +35,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 24/11 - Ora i voti sono associati al nickname e c'è una classifica sincronizzata, ma i voti vanno avanti due a due. Ho anche disposto gli elementi html in div precisi per presidporre il progetto a un cambio di pagine e visuali. </br >
 25/11 - ora in base al momento del round le varie sezioni scorrono in modo sincronizzato. Creato sistema di round sincronizzato </br >
 26/11 - aggiunto sistema di round, l'host può scegliere quanti round fare. Ho anche aggiunto il nuovo sistema per cui le parole le inseriscono gli utenti. Schermata finale.</br >
+28/11 - aggiunto sistema di tempo
 
 
 ## Cosa fanno i file
@@ -62,4 +62,4 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 26/11/24, 22.02_
+## _ultima modifica: 28/11/24, 19.58_

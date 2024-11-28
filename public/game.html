@@ -34,6 +34,7 @@
     <div id="playing">
 
             <h2>Current Letter: <span id="current-letter"></span></h2>
+            <h3>Time Remaining: <span id="timer-display">00:00</span></h3>
             <input type="text" name="" id="user_acronimozz">
             <button onclick="mandaacronimo()">invia</button>
 
@@ -67,6 +68,8 @@
         let controllobottone = 0;
         let acronimiList = [];
         let currentAcronimoIndex = -1;
+        let timerInterval;
+let timeRemaining;
 
         function showNextAcronimo() {
     if (currentAcronimoIndex < acronimiList.length) {
@@ -78,6 +81,32 @@
         }
     }
 }
+
+function startTimer(duration) {
+    clearInterval(timerInterval);
+    timeRemaining = duration;
+    
+    function updateTimer() {
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        document.getElementById('timer-display').textContent = display;
+        
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            // Mostra la sezione votazioni quando il timer finisce
+            document.getElementById('playing').classList.remove('active');
+            document.getElementById('votazioni').classList.add('active');
+            return;
+        }
+        timeRemaining--;
+    }
+    
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+// Aggiungi l'handler per il timer sync
 
 function vote(isUpvote) {
     if (!currentRoom) {
@@ -129,6 +158,12 @@ function vote(isUpvote) {
     if (message.index === currentAcronimoIndex) {
         document.getElementById('vote-count').textContent = 
             `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
+    }
+});
+
+currentRoom.onMessage("timer_sync", (message) => {
+    if (message.timeRemaining) {
+        startTimer(message.timeRemaining);
     }
 });
 
@@ -309,24 +344,28 @@ currentRoom.onMessage("return_to_lobby", () => {
 });
 
 // Add same message handler for non-host players
+// public/game.html
+
 currentRoom.onMessage("round_started", (message) => {
     console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
     
-    // Aggiorna l'interfaccia per mostrare la sezione di gioco
     document.getElementById('lobby').classList.remove('active');
-    document.getElementById('scrivereparole').classList.remove('active'); // Nascondi la sezione scrivereparole
     document.getElementById('playing').classList.add('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
     
-    // Aggiorna il testo del round e della lettera corrente
+    document.getElementById('user_acronimozz').value = '';
+    controllobottone = 0;
+    
     document.getElementById('current-letter').textContent = message.letter;
     document.getElementById('numero_round').textContent = 
         `Round ${message.roundNumber}/${message.totalRounds}`;
     
-    // Reset input field e controlli
-    document.getElementById('user_acronimozz').value = '';
-    controllobottone = 0;
+    if (message.timerDuration) {
+        startTimer(message.timerDuration);
+    } else {
+        console.error("timerDuration mancato nel messaggio round_started");
+    }
 });
 
 currentRoom.onMessage("show_scores", (message) => {
