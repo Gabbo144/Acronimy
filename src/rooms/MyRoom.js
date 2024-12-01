@@ -1,11 +1,7 @@
 const colyseus = require('colyseus');
 const { MyRoomState, PlayerSchema, AcronimoSchema } = require('./schema/MyRoomState');
 
-const sigle = [
-    "AIDS", "HIV", "USA", "USSR", "ONU", "NASA",
-    "FBI", "UNICEF", "NATO", "URL", "PDF",
-    "HTML", "VIP", "ASAP", "LOL"
-];
+
 
 const parolegiocatori =[]
 
@@ -36,20 +32,21 @@ exports.MyRoom = class extends colyseus.Room {
 
         this.onMessage("start_game", (client, message) => {
             this.gameStarted = true;
-            this.state.currentRound = 1;
+            this.state.currentRound = 0; 
             this.hostSessionId = client.sessionId;
             this.state.totalRounds = message.totalRounds || 3;
             this.state.timerDuration = message.timerDuration || 60;
             
-            // Set total rounds from message
-            this.state.totalRounds = message.totalRounds || 3;
+            // Clear any existing custom words
+            parolegiocatori.length = 0;
             
-            // Use custom words if specified
             if (message.useCustomWords) {
-                this.useCustomWords = true; // Flag to track custom words mode
+                this.useCustomWords = true;
                 this.broadcast("custom_words_phase");
             } else {
                 // Start game immediately with default words
+                const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
+                this.state.currentLetter = randomAcronimo;
                 this.broadcast("round_started", {
                     roundNumber: this.state.currentRound,
                     totalRounds: this.state.totalRounds,
@@ -57,14 +54,6 @@ exports.MyRoom = class extends colyseus.Room {
                     timerDuration: this.state.timerDuration
                 });
             }
-        
-            // Broadcast game start with timer duration
-            this.broadcast("round_started", {
-                roundNumber: this.state.currentRound,
-                totalRounds: this.state.totalRounds,
-                letter: this.state.currentLetter,
-                timerDuration: this.state.timerDuration
-            });
         });
 
         this.onMessage("return_all_to_lobby", (client) => {
@@ -80,30 +69,26 @@ exports.MyRoom = class extends colyseus.Room {
         });
 
         this.onMessage("submit_custom_word", (client, message) => {
-            // Get the player using MapSchema's get method
             const player = this.state.players.get(client.sessionId);
             
             if (!player || player.hasSubmittedWords) {
-                return; // Exit if player doesn't exist or has already submitted
+                return;
             }
             
-            // Add word to array if it's not already there
+            // Verifica e aggiungi la parola
             if (message.word && !parolegiocatori.includes(message.word)) {
                 parolegiocatori.push(message.word);
                 console.log("Word added:", message.word);
             }
         
-            // Mark player as having submitted
             player.hasSubmittedWords = true;
             this.state.wordsSubmittedCount++;
         
-            // Broadcast progress update
             this.broadcast("words_submission_update", {
                 submittedCount: this.state.wordsSubmittedCount,
                 totalPlayers: this.clients.length-1
             });
         
-            // Check if all players have submitted
             if (this.state.wordsSubmittedCount >= this.clients.length-1) {
                 this.state.wordsSubmittedCount = 0;
                 this.state.players.forEach((p) => {
@@ -112,19 +97,21 @@ exports.MyRoom = class extends colyseus.Room {
                     }
                 });
         
-                this.gameStarted = true;
-                this.state.currentRound++;
+                console.log("Parole raccolte:", parolegiocatori); // Debug log
+                this.state.currentRound = 1;
+                
+                // Copia le parole in un nuovo array per mantenerle
+                this.customWords = [...parolegiocatori];
                 
                 const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
                 this.state.currentLetter = randomWord;
                 
                 this.broadcast("all_words_submitted");
-                // Add timerDuration to the round_started message
                 this.broadcast("round_started", {
                     roundNumber: this.state.currentRound,
                     totalRounds: this.state.totalRounds,
                     letter: this.state.currentLetter,
-                    timerDuration: this.state.timerDuration // Use stored duration
+                    timerDuration: this.state.timerDuration
                 });
             }
         });
@@ -158,6 +145,16 @@ this.onMessage("start_new_round", (client, message) => {
     } else {
         const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
         this.state.currentLetter = randomAcronimo.charAt(0);
+    }
+
+    if (this.useCustomWords && parolegiocatori.length > 0) {
+        // Remove the used word from the array after selecting it
+        const randomIndex = Math.floor(Math.random() * parolegiocatori.length);
+        const randomWord = parolegiocatori.splice(randomIndex, 1)[0];
+        this.state.currentLetter = randomWord;
+    } else {
+        const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
+        this.state.currentLetter = randomAcronimo;
     }
     
     // Invia il messaggio round_started con timerDuration
