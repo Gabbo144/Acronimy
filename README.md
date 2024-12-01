@@ -1,7 +1,7 @@
 # Acronimi
 Un gioco sugli acronimi. 
 
-Sto usando soprattutto Javascript con il framework [Colyseus](https://colyseus.io/).
+Sto usando Javascript con il framework [Colyseus](https://colyseus.io/).
 Il tutto è attualmente hostato localmente ma non dovrebbe essere difficile configurare un server remoto dato che usa Node e WebSocket.
 
 Pagina di Notion:
@@ -10,18 +10,18 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 ## Note
 - CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
 - http://localhost:2567/game.html?roomId=
+- non sono sicuro di cosa succede quando gli acronimi disponibili finiscono
 </br >
 
 
-## DA FARE:
+## DA FARE (in ordine di impostanza):
 - Voti singoli e non due a due
-- aggiornare immagini README
-- sistema di classifica del round appena giocato
 - sistema di quando tutti hanno fatto vai avanti (div playing)
+- sistema di classifica del round appena giocato
+- eliminare elemento da array quando è stato mostrato
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
 - Fixare formattazione
-- eliminare elemento da array quando è stato mostrato
 
 
 ## Progressi
@@ -49,14 +49,8 @@ Punto di ingresso dell'applicazione, avvia il server sulla porta 2567
 Configurazione principale del server, definisce route e middleware, gestisce file statici e playground/monitor di colyseus. Questo file lo ho modificato molto poco.
 ### index.html
 Questo file è la "landing page", puoi scegliere se creare una stanza o connetterti a una esistente
-![alt text](img/index.png.png)
-
 ### game.html/game-host.html
-Interfaccia di gioco sia per host che per giocatori, ancora molto rudimentale in quanto mostra il codice stanza e l'acronimo sincronizzato e, in caso della versione host, anche il bottone per fermare il round. *IMMAGINE DI GAME.HTML OBSOLETA, ORA E' UGUALE A GAME-HOST.HTML MA SENZA I BOTTONI*
-![alt text](img/game.png)![alt text](img/game-host.png)
-### fine.html/fine-host.html
-Schermata di intermezzo tra un round e l'altro (o fine?) ***ANCORA DA DEFINIRE SE SERVIRA' O MENO*** ***SPOILER: NO***
-
+Interfaccia di gioco sia per host che per giocatori, ancora molto rudimentale in quanto mostra il codice stanza e l'acronimo sincronizzato e, in caso della versione host, anche il bottone per fermare il round. 
 ### MyRoom_test.js, example.js, eccetera
 File che non ho toccato, a scopo di test o configurazione del framework.
 
