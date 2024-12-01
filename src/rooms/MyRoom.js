@@ -38,42 +38,33 @@ exports.MyRoom = class extends colyseus.Room {
             this.gameStarted = true;
             this.state.currentRound = 1;
             this.hostSessionId = client.sessionId;
+            this.state.totalRounds = message.totalRounds || 3;
+            this.state.timerDuration = message.timerDuration || 60;
             
-            if (message && message.totalRounds) {
-                this.state.totalRounds = message.totalRounds;
+            // Set total rounds from message
+            this.state.totalRounds = message.totalRounds || 3;
+            
+            // Use custom words if specified
+            if (message.useCustomWords) {
+                this.useCustomWords = true; // Flag to track custom words mode
+                this.broadcast("custom_words_phase");
             } else {
-                this.state.totalRounds = 3;
-            }
-
-            if (message.timerDuration) {
-                this.broadcast("timer_sync", {
-                    timeRemaining: message.timerDuration
+                // Start game immediately with default words
+                this.broadcast("round_started", {
+                    roundNumber: this.state.currentRound,
+                    totalRounds: this.state.totalRounds,
+                    letter: this.state.currentLetter,
+                    timerDuration: this.state.timerDuration
                 });
             }
         
-            // Se useCustomWords è true, usa parolegiocatori come fonte di parole
-            if (message.useCustomWords) {
-                if (parolegiocatori.length === 0) {
-                    console.error("No custom words available!");
-                    return;
-                }
-                // Usa una parola casuale dall'array parolegiocatori
-                const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
-                this.state.currentLetter = randomWord;
-                console.log("Selected custom word:", randomWord);
-            } else {
-                // Se usiamo acronimi predefiniti, prendi solo la prima lettera
-                const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
-                this.state.currentLetter = randomAcronimo.charAt(0);
-            }
-            
+            // Broadcast game start with timer duration
             this.broadcast("round_started", {
                 roundNumber: this.state.currentRound,
                 totalRounds: this.state.totalRounds,
-                letter: this.state.currentLetter
+                letter: this.state.currentLetter,
+                timerDuration: this.state.timerDuration
             });
-            
-            this.broadcast("start_game");
         });
 
         this.onMessage("return_all_to_lobby", (client) => {
@@ -114,29 +105,26 @@ exports.MyRoom = class extends colyseus.Room {
         
             // Check if all players have submitted
             if (this.state.wordsSubmittedCount >= this.clients.length-1) {
-                // Reset submission counter and flags
                 this.state.wordsSubmittedCount = 0;
-                
-                // Use MapSchema's forEach method to iterate over players
                 this.state.players.forEach((p) => {
                     if (p instanceof PlayerSchema) {
                         p.hasSubmittedWords = false;
                     }
                 });
         
-                // Start the game with custom words
                 this.gameStarted = true;
                 this.state.currentRound++;
                 
-                // Select random word and broadcast round start
                 const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
                 this.state.currentLetter = randomWord;
                 
                 this.broadcast("all_words_submitted");
+                // Add timerDuration to the round_started message
                 this.broadcast("round_started", {
                     roundNumber: this.state.currentRound,
                     totalRounds: this.state.totalRounds,
-                    letter: this.state.currentLetter
+                    letter: this.state.currentLetter,
+                    timerDuration: this.state.timerDuration // Use stored duration
                 });
             }
         });
@@ -147,6 +135,8 @@ this.onMessage("start_new_round", (client, message) => {
     if (!this.gameStarted) return;
 
     this.state.currentRound++;
+    this.state.timerDuration = message.timerDuration || 60;
+
 
     if (this.state.currentRound > this.state.totalRounds) {
         this.gameStarted = false;
@@ -175,7 +165,46 @@ this.onMessage("start_new_round", (client, message) => {
         roundNumber: this.state.currentRound,
         totalRounds: this.state.totalRounds,
         letter: this.state.currentLetter,
-        timerDuration: message.timerDuration  // Assicurati di includere questa linea
+        timerDuration: this.state.timerDuration
+    });
+});
+
+// src/rooms/MyRoom.js
+
+this.onMessage("start_round", (client, message) => {
+    if (!this.gameStarted) return;
+
+    this.state.currentRound++;
+    this.state.timerDuration = message.timerDuration || 60;
+
+    if (this.state.currentRound > this.state.totalRounds) {
+        this.gameStarted = false;
+        this.state.currentRound = 0;
+        this.state.players.forEach(player => {
+            player.score = 0;
+        });
+        this.broadcast("return_to_lobby");
+        return;
+    }
+
+    // Reset dello stato del gioco per il nuovo round
+    this.state.acronimiMandati = [];
+
+    // Imposta la lettera corrente
+    if (parolegiocatori.length > 0) {
+        const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
+        this.state.currentLetter = randomWord;
+    } else {
+        const randomAcronimo = acronimi[Math.floor(Math.random() * acronimi.length)];
+        this.state.currentLetter = randomAcronimo.charAt(0);
+    }
+
+    // Broadcast del nuovo round
+    this.broadcast("round_started", {
+        roundNumber: this.state.currentRound,
+        totalRounds: this.state.totalRounds,
+        letter: this.state.currentLetter,
+        timerDuration: this.state.timerDuration
     });
 });
     

@@ -309,24 +309,55 @@ document.getElementById('submit-words-btn').addEventListener('click', () => {
     });
 });
 
+
+// public/game.html
+
+currentRoom.onMessage("start_round", (message) => {
+    console.log("Received start_round message:", message);
+
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('playing').classList.add('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+
+    document.getElementById('user_acronimozz').value = '';
+    controllobottone = 0;
+
+    document.getElementById('current-letter').textContent = message.letter;
+    document.getElementById('numero_round').textContent = 
+        `Round ${message.roundNumber}/${message.totalRounds}`;
+
+    if (message.timerDuration) {
+        console.log("Starting timer with duration:", message.timerDuration);
+        startTimer(message.timerDuration);
+    } else {
+        console.warn("No timerDuration in start_round message");
+    }
+});
+
+
 // Add this message handler
-currentRoom.onMessage("new_round_started", (message) => {
-    console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
+currentRoom.onMessage("round_started", (message) => {
+    console.log("Received round_started message:", message);
     
-    // Reset UI for new round
     document.getElementById('lobby').classList.remove('active');
     document.getElementById('playing').classList.add('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
     
-    // Reset input and controls
     document.getElementById('user_acronimozz').value = '';
     controllobottone = 0;
     
-    // Update round display
+    document.getElementById('current-letter').textContent = message.letter;
     document.getElementById('numero_round').textContent = 
         `Round ${message.roundNumber}/${message.totalRounds}`;
-    document.getElementById('current-letter').textContent = message.letter;
+    
+    if (message.timerDuration) {
+        console.log("Starting timer with duration:", message.timerDuration);
+        startTimer(message.timerDuration);
+    } else {
+        console.warn("No timerDuration in round_started message");
+    }
 });
 
 // In game.html, aggiungi questo handler dei messaggi dopo la connessione alla stanza

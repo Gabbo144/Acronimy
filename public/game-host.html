@@ -111,11 +111,15 @@
 
 
 
-        slider.oninput = function() {
-    output1.textContent = this.value + " rounds";
-    // Aggiorna anche il display del round corrente
-    document.getElementById('numero_round').textContent = 
-        `Round ${currentRoom ? currentRoom.state.currentRound : 0}/${this.value}`;
+// Add this after slider initialization
+const output = document.getElementById("slider-value");
+slider.oninput = function() {
+    output.textContent = this.value + " rounds";
+    // Update round display if room exists
+    if (currentRoom) {
+        document.getElementById('numero_round').textContent = 
+            `Round ${currentRoom.state.currentRound}/${this.value}`;
+    }
 }
 
 function showScores() {
@@ -178,7 +182,9 @@ function showScores() {
         }
 
         function startNextRound() {
-    if (currentRoom.state.currentRound >= parseInt(slider.value)) {
+            const maxRounds = parseInt(slider.value);
+
+            if (currentRoom.state.currentRound >= maxRounds) {
         console.log("Game Over - Max rounds reached");
         showScores();
         document.getElementById('prossimo_round').style.display = 'none';
@@ -193,7 +199,7 @@ function showScores() {
     const timeSelect = document.getElementById('temporound');
     const selectedTime = timeSelect.value;
     const [minutes, seconds] = selectedTime.split(':').map(Number);
-    const totalSeconds = minutes * 60 + seconds;
+    const timerDuration = minutes * 60 + seconds;
 
 
     document.getElementById('numero_round').textContent = 
@@ -211,9 +217,12 @@ function showScores() {
     
     // Mantieni solo questa chiamata
     if (currentRoom) {
-        console.log("Sending start_new_round message");
-        currentRoom.send("start_new_round", { timerDuration: totalSeconds });    
-
+        console.log("Sending start_new_round message with duration:", timerDuration);
+        currentRoom.send("start_new_round", { 
+            timerDuration: timerDuration,
+            maxRounds: maxRounds 
+        });    
+        startTimer(timerDuration);
     } else {
         console.error("Room not connected");
     }
@@ -359,10 +368,21 @@ currentRoom.onMessage("all_words_submitted", () => {
 });
 
 currentRoom.onMessage("round_started", (message) => {
-    console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
+    console.log("Received round_started message:", message);
+    
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('playing').classList.add('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+    
     document.getElementById('current-letter').textContent = message.letter;
     document.getElementById('numero_round').textContent = 
         `Round ${message.roundNumber}/${message.totalRounds}`;
+    
+    if (message.timerDuration) {
+        console.log("Starting timer with duration:", message.timerDuration);
+        startTimer(message.timerDuration);
+    }
 });
 
 currentRoom.onMessage("custom_words_phase", () => {
@@ -397,15 +417,22 @@ document.getElementById('submit-words-btn').addEventListener('click', () => {
 
 document.getElementById('inizia_round').addEventListener('click', () => {
     const slider = document.getElementById('myRange');
-    const totalRounds = parseInt(slider.value);
+    const totalRounds = parseInt(document.getElementById('myRange').value);
     const useCustomWords = document.getElementById('parolone').checked;
     const timeSelect = document.getElementById('temporound');
-    const selectedTime = timeSelect.value; // Format: "1:30"
+    const selectedTime = timeSelect.value;
     const [minutes, seconds] = selectedTime.split(':').map(Number);
     const totalSeconds = minutes * 60 + seconds;
+    const timerDuration = minutes * 60 + seconds;
 
     if (useCustomWords) {
+        
         // Nascondi il lobby e mostra la sezione di inserimento parole
+        currentRoom.send("start_game", { 
+            totalRounds: totalRounds,
+            timerDuration: timerDuration,
+            useCustomWords: true
+        });
         document.getElementById('lobby').classList.remove('active');
         document.getElementById('scrivereparole').classList.add('active');
         document.getElementById('playing').classList.remove('active');
@@ -415,9 +442,9 @@ document.getElementById('inizia_round').addEventListener('click', () => {
     } else {
         // Avvia il gioco normalmente con le sigle predefinite
         currentRoom.send("start_game", { 
-            totalRounds,
-            timerDuration: totalSeconds
-        });
+        totalRounds: totalRounds,
+        timerDuration: timerDuration
+    });
         document.getElementById('lobby').classList.remove('active');
         document.getElementById('playing').classList.add('active');
         
@@ -425,12 +452,21 @@ document.getElementById('inizia_round').addEventListener('click', () => {
 });
 
 // Quando si preme "AVANTI" dopo aver inserito le parole
+// public/game-host.html
+
 document.getElementById('avanti-btn').addEventListener('click', () => {
-    currentRoom.send("start_game", { 
-        totalRounds: parseInt(document.getElementById('myRange').value),
-        useCustomWords: true 
+    const totalRounds = parseInt(document.getElementById('myRange').value);
+    const timeSelect = document.getElementById('temporound');
+    const selectedTime = timeSelect.value;
+    const [minutes, seconds] = selectedTime.split(':').map(Number);
+    const timerDuration = minutes * 60 + seconds;
+
+    // Usa un messaggio diverso per avviare il round successivo
+    currentRoom.send("start_round", { 
+        timerDuration: timerDuration
     });
-    // Nascondi la sezione parole e mostra il gioco
+
+    // Aggiorna l'interfaccia utente
     document.getElementById('scrivereparole').classList.remove('active');
     document.getElementById('playing').classList.add('active');
 });
