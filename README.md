@@ -14,12 +14,10 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 
 ## DA FARE:
-- Testare connessioni multiple contemporanee
-- Progettare e applicare UI
 - Voti singoli e non due a due
 - aggiornare immagini README
 - sistema di classifica del round appena giocato
-- sistema di quando tutti hanno fatto vai avanti
+- sistema di quando tutti hanno fatto vai avanti (div playing)
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
 - Fixare formattazione
@@ -35,7 +33,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 24/11 - Ora i voti sono associati al nickname e c'è una classifica sincronizzata, ma i voti vanno avanti due a due. Ho anche disposto gli elementi html in div precisi per presidporre il progetto a un cambio di pagine e visuali. </br >
 25/11 - ora in base al momento del round le varie sezioni scorrono in modo sincronizzato. Creato sistema di round sincronizzato </br >
 26/11 - aggiunto sistema di round, l'host può scegliere quanti round fare. Ho anche aggiunto il nuovo sistema per cui le parole le inseriscono gli utenti. Schermata finale.</br >
-28/11 - aggiunto sistema di tempo
+28/11 - aggiunto sistema di tempo</br >
+01/12 - Ora nella fase di scrittura degli acronimi (se l'opzione è selezionata) la fase finisce quando tutti hanno mandato le parole
 
 
 ## Cosa fanno i file
@@ -62,4 +61,4 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 28/11/24, 19.58_
+## _ultima modifica: 01/12/24, 20.08_
