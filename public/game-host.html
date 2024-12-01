@@ -370,6 +370,15 @@ currentRoom.onMessage("custom_words_phase", () => {
     document.getElementById('classifica').classList.remove('active');
 });
 
+// Add this to game-host.html where other message handlers are defined
+currentRoom.onMessage("words_submission_update", (message) => {
+    console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`);
+    // Optionally add a visual indicator
+    const submissionStatus = document.createElement('p');
+    submissionStatus.textContent = `Words submitted: ${message.submittedCount}/${message.totalPlayers}`;
+    document.getElementById('scrivereparole').appendChild(submissionStatus);
+});
+
 
 document.getElementById('submit-words-btn').addEventListener('click', () => {
     const inputs = document.querySelectorAll('.custom-word-input');

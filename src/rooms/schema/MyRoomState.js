@@ -28,6 +28,7 @@ class MyRoomState extends schema.Schema {
         this.currentLetter = "";
         this.acronimiMandati = new schema.ArraySchema();
         this.currentAcronimoIndex = 0;
+        this.wordsSubmittedCount = 0; // Add this to track submissions
     }
 }
 
@@ -37,7 +38,8 @@ schema.defineTypes(MyRoomState, {
     acronimiMandati: [ AcronimoSchema ],
     currentAcronimoIndex: "number",
     currentRound: "number",     // Add this
-    totalRounds: "number"       // Add this
+    totalRounds: "number",       // Add this
+    wordsSubmittedCount: "number" // Define the new property
 });
 
 schema.defineTypes(PlayerSchema, {

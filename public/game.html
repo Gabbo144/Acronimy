@@ -176,17 +176,19 @@ currentRoom.onMessage("custom_words_phase", () => {
     document.getElementById('classifica').classList.remove('active');
 });
 
-// Rimuovi questa parte duplicata
-// document.getElementById('scrivereparole').querySelector('input[type="submit"]').addEventListener('click', () => {
-//     const inputs = document.getElementById('scrivereparole').querySelectorAll('input[type="text"]');
-//     inputs.forEach(input => {
-//         if (input.value.trim()) {
-//             currentRoom.send("submit_custom_word", { word: input.value.trim() });
-//         }
-//     });
-// });
+currentRoom.onMessage("words_submission_update", (message) => {
+    console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`);
+    // Optionally show a progress indicator
+});
 
-// Mantieni solo questa implementazione
+currentRoom.onMessage("all_words_submitted", () => {
+    document.getElementById('scrivereparole').classList.remove('active');
+    document.getElementById('playing').classList.add('active');
+});
+
+
+
+
 const submitButton = document.getElementById('submit-words-btn');
 if (submitButton) { // Verifica che l'elemento esista
     submitButton.addEventListener('click', () => {
@@ -200,17 +202,24 @@ if (submitButton) { // Verifica che l'elemento esista
     });
 }
 
-// Rimuovi questa parte che causa l'errore
-// document.getElementById('scrivereparole').querySelector('input[type="submit"]').addEventListener('click', () => {
-//     const inputs = document.getElementById('scrivereparole').querySelectorAll('input[type="text"]');
-//     inputs.forEach(input => {
-//         if (input.value.trim()) {
-//             currentRoom.send("submit_custom_word", { word: input.value.trim() });
-//         }
-//     });
-// });
+document.getElementById('submit-words-btn').addEventListener('click', () => {
+    const inputs = document.querySelectorAll('.custom-word-input');
+    let submitted = false;
+    
+    inputs.forEach(input => {
+        if (input.value.trim()) {
+            currentRoom.send("submit_custom_word", { word: input.value.trim() });
+            input.value = ''; // Clear input after submission
+            submitted = true;
+        }
+    });
+    
+    if (submitted) {
+        // Disable the submit button after submission
+        document.getElementById('submit-words-btn').disabled = true;
+    }
+});
 
-// Mantieni solo questa implementazione
 document.addEventListener('DOMContentLoaded', () => {
     const submitButton = document.getElementById('submit-words-btn');
     if (submitButton) {

@@ -89,9 +89,48 @@ exports.MyRoom = class extends colyseus.Room {
         });
 
         this.onMessage("submit_custom_word", (client, message) => {
-            if (!parolegiocatori.includes(message.word)) {
-                parolegiocatori.push(message.word);
-                console.log("Parola aggiunta:", message.word);
+            const player = this.state.players[client.sessionId];
+            
+            if (!player.hasSubmittedWords) {
+                // Add word to array if it's not already there
+                if (message.word && !parolegiocatori.includes(message.word)) {
+                    parolegiocatori.push(message.word);
+                    console.log("Word added:", message.word);
+                }
+        
+                // Mark player as having submitted
+                player.hasSubmittedWords = true;
+                this.state.wordsSubmittedCount++;
+        
+                // Broadcast progress update
+                this.broadcast("words_submission_update", {
+                    submittedCount: this.state.wordsSubmittedCount,
+                    totalPlayers: this.clients.length
+                });
+        
+                // Check if all players have submitted
+                if (this.state.wordsSubmittedCount >= this.clients.length) {
+                    // Reset submission counter and flags
+                    this.state.wordsSubmittedCount = 0;
+                    Object.values(this.state.players).forEach(p => {
+                        p.hasSubmittedWords = false;
+                    });
+        
+                    // Start the game
+                    this.state.currentRound++;
+                    
+                    // Select random word and broadcast round start
+                    const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
+                    this.state.currentLetter = randomWord;
+                    
+                    this.broadcast("all_words_submitted");
+                    this.broadcast("round_started", {
+                        roundNumber: this.state.currentRound,
+                        totalRounds: this.state.totalRounds,
+                        letter: this.state.currentLetter,
+                        timerDuration: this.timerDuration
+                    });
+                }
             }
         });
 
