@@ -89,48 +89,55 @@ exports.MyRoom = class extends colyseus.Room {
         });
 
         this.onMessage("submit_custom_word", (client, message) => {
-            const player = this.state.players[client.sessionId];
+            // Get the player using MapSchema's get method
+            const player = this.state.players.get(client.sessionId);
             
-            if (!player.hasSubmittedWords) {
-                // Add word to array if it's not already there
-                if (message.word && !parolegiocatori.includes(message.word)) {
-                    parolegiocatori.push(message.word);
-                    console.log("Word added:", message.word);
-                }
+            if (!player || player.hasSubmittedWords) {
+                return; // Exit if player doesn't exist or has already submitted
+            }
+            
+            // Add word to array if it's not already there
+            if (message.word && !parolegiocatori.includes(message.word)) {
+                parolegiocatori.push(message.word);
+                console.log("Word added:", message.word);
+            }
         
-                // Mark player as having submitted
-                player.hasSubmittedWords = true;
-                this.state.wordsSubmittedCount++;
+            // Mark player as having submitted
+            player.hasSubmittedWords = true;
+            this.state.wordsSubmittedCount++;
         
-                // Broadcast progress update
-                this.broadcast("words_submission_update", {
-                    submittedCount: this.state.wordsSubmittedCount,
-                    totalPlayers: this.clients.length
+            // Broadcast progress update
+            this.broadcast("words_submission_update", {
+                submittedCount: this.state.wordsSubmittedCount,
+                totalPlayers: this.clients.length-1
+            });
+        
+            // Check if all players have submitted
+            if (this.state.wordsSubmittedCount >= this.clients.length-1) {
+                // Reset submission counter and flags
+                this.state.wordsSubmittedCount = 0;
+                
+                // Use MapSchema's forEach method to iterate over players
+                this.state.players.forEach((p) => {
+                    if (p instanceof PlayerSchema) {
+                        p.hasSubmittedWords = false;
+                    }
                 });
         
-                // Check if all players have submitted
-                if (this.state.wordsSubmittedCount >= this.clients.length) {
-                    // Reset submission counter and flags
-                    this.state.wordsSubmittedCount = 0;
-                    Object.values(this.state.players).forEach(p => {
-                        p.hasSubmittedWords = false;
-                    });
-        
-                    // Start the game
-                    this.state.currentRound++;
-                    
-                    // Select random word and broadcast round start
-                    const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
-                    this.state.currentLetter = randomWord;
-                    
-                    this.broadcast("all_words_submitted");
-                    this.broadcast("round_started", {
-                        roundNumber: this.state.currentRound,
-                        totalRounds: this.state.totalRounds,
-                        letter: this.state.currentLetter,
-                        timerDuration: this.timerDuration
-                    });
-                }
+                // Start the game with custom words
+                this.gameStarted = true;
+                this.state.currentRound++;
+                
+                // Select random word and broadcast round start
+                const randomWord = parolegiocatori[Math.floor(Math.random() * parolegiocatori.length)];
+                this.state.currentLetter = randomWord;
+                
+                this.broadcast("all_words_submitted");
+                this.broadcast("round_started", {
+                    roundNumber: this.state.currentRound,
+                    totalRounds: this.state.totalRounds,
+                    letter: this.state.currentLetter
+                });
             }
         });
 
@@ -261,6 +268,7 @@ this.onMessage("start_new_round", (client, message) => {
     onJoin(client, options) {
         console.log(`${client.sessionId} joined room ${this.roomId}`);
         console.log(`Received nickname: ${options.nickname}`);
+        
 
         // First check if nickname is provided
         if (!options.nickname) {

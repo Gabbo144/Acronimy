@@ -6,6 +6,7 @@ class PlayerSchema extends schema.Schema {
         this.nickname = "";
         this.connected = true;
         this.score = 0;
+        this.hasSubmittedWords = false; // Add this property
     }
 }
 
@@ -45,7 +46,8 @@ schema.defineTypes(MyRoomState, {
 schema.defineTypes(PlayerSchema, {
     nickname: "string",
     connected: "boolean",
-    score: "number"
+    score: "number",
+    hasSubmittedWords: "boolean" // Define the type
 });
 
 schema.defineTypes(AcronimoSchema, {

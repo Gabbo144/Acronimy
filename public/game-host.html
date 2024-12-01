@@ -109,15 +109,7 @@
         let timerInterval;
         let timeRemaining;
 
-        document.getElementById('avanti-btn').addEventListener('click', () => {
-    currentRoom.send("start_game", { 
-        totalRounds: parseInt(document.getElementById('myRange').value),
-        useCustomWords: true 
-    });
-    // Mostra la sezione di gioco
-    document.getElementById('scrivereparole').classList.remove('active');
-    document.getElementById('playing').classList.add('active');
-});
+
 
         slider.oninput = function() {
     output1.textContent = this.value + " rounds";
@@ -335,6 +327,18 @@ function showScores() {
             document.getElementById('votazioni').classList.remove('active');
             document.getElementById('classifica').classList.remove('active');
         });
+
+        // Add this handler in game-host.html where other message handlers are defined
+currentRoom.onMessage("all_words_submitted", () => {
+    // Hide word submission section and show playing section
+    document.getElementById('scrivereparole').classList.remove('active');
+    document.getElementById('playing').classList.add('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+    
+    // Show the end round button since we're now in playing phase
+    document.getElementById('end-round-btn').style.display = 'block';
+});
 
 
         currentRoom.onMessage("return_to_lobby", () => {
