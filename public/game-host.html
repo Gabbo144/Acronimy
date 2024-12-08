@@ -234,18 +234,18 @@ function showScores() {
 
     startTimer(totalSeconds);
 }
-        function mandaacronimo() {
-            if (!currentRoom) return;
-            controllobottone++;
-            if (controllobottone > 1) {
-                alert("Hai già inviato un acronimo!");
-                return;
-            } else {
-                var acronimoz = document.getElementById('user_acronimozz').value;
-                currentRoom.send("manda_acronimo", { acronimo: acronimoz });
-                console.log("Acronimo inviato:", acronimoz);
-            }
-        }
+function mandaacronimo() {
+    if (!currentRoom) return;
+    controllobottone++;
+    if (controllobottone > 1) {
+        alert("Hai già inviato un acronimo!");
+        return;
+    } else {
+        var acronimoz = document.getElementById('user_acronimozz').value;
+        console.log("Host sending acronimo:", acronimoz); // Debug log
+        currentRoom.send("manda_acronimo", { acronimo: acronimoz });
+    }
+}
 
         function startTimer(duration) {
     clearInterval(timerInterval);
@@ -274,32 +274,30 @@ function showScores() {
     timerInterval = setInterval(updateTimer, 1000);
 }
 
-        function scorriacronimo() {
-            if (!currentRoom) return;
-            console.log("Current acronimiList:", acronimiList);
-            console.log("Current index before increment:", currentAcronimoIndex);
-            if (currentAcronimoIndex < acronimiList.length - 1) {
-                currentAcronimoIndex++;
-                const acronimo = acronimiList[currentAcronimoIndex];
-                if (acronimo && acronimo.text) {
-                    document.getElementById('current-acronimo').textContent = acronimo.text;
-                    document.getElementById('vote-count').textContent =
-                        `👍 ${acronimo.upvotes} | 👎 ${acronimo.downvotes}`;
-                    currentRoom.send("next_acronimo", {
-                        index: currentAcronimoIndex,
-                        text: acronimo.text,
-                        upvotes: acronimo.upvotes,
-                        downvotes: acronimo.downvotes
-                    });
-                    console.log("Displayed acronimo at index:", currentAcronimoIndex);
-                } else {
-                    console.error("Invalid acronimo at index:", currentAcronimoIndex);
-                }
-            } else {
-                document.getElementById('bottonepazzo').style.display = 'none';
-                console.log("Reached end of acronimi list");
-            }
+function scorriacronimo() {
+    if (!currentRoom) return;
+    console.log("Current acronimiList:", currentRoom.state.acronimiMandati); // Debug log
+    
+    if (currentAcronimoIndex < currentRoom.state.acronimiMandati.length - 1) {
+        currentAcronimoIndex++;
+        const acronimo = currentRoom.state.acronimiMandati[currentAcronimoIndex];
+        
+        if (acronimo && acronimo.text) {
+            document.getElementById('current-acronimo').textContent = acronimo.text;
+            document.getElementById('vote-count').textContent =
+                `👍 ${acronimo.upvotes} | 👎 ${acronimo.downvotes}`;
+            currentRoom.send("next_acronimo", {
+                index: currentAcronimoIndex,
+                text: acronimo.text,
+                upvotes: acronimo.upvotes,
+                downvotes: acronimo.downvotes
+            });
+            console.log("Displayed acronimo at index:", currentAcronimoIndex);
         }
+    } else {
+        document.getElementById('bottonepazzo').style.display = 'none';
+    }
+}
 
         async function initializeRoom() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -344,6 +342,10 @@ function showScores() {
 
         // Add this handler in game-host.html where other message handlers are defined
 currentRoom.onMessage("all_words_submitted", () => {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
     // Hide word submission section and show playing section
     document.getElementById('scrivereparole').classList.remove('active');
     document.getElementById('playing').classList.add('active');
@@ -549,19 +551,21 @@ document.getElementById('end-round-btn').addEventListener('click', () => {
 
                 currentRoom.onMessage("*", (type, message) => {
                     if (type === "end_round") {
-                        console.log("Received end_round message");
-
-                        document.getElementById('lobby').classList.remove('active');
+                        if (type === "end_round") {
+                            if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+        document.getElementById('lobby').classList.remove('active');
         document.getElementById('playing').classList.remove('active');
         document.getElementById('votazioni').classList.add('active');
         document.getElementById('classifica').classList.remove('active');
         
-        console.log("Received end_round message");
+        console.log("End round - current acronimi:", currentRoom.state.acronimiMandati);
+        currentAcronimoIndex = -1;
         document.getElementById('risultato-list').classList.add('visible');
-
-                        acronimiList = Array.from(currentRoom.state.acronimiMandati);
-                        currentAcronimoIndex = -1;
-                        scorriacronimo();
+        scorriacronimo();
+    }
                     } else if (type === "next_acronimo") {
                         console.log("Received next_acronimo message:", message);
                         if (message && message.text) {
@@ -579,17 +583,19 @@ document.getElementById('end-round-btn').addEventListener('click', () => {
 
 
 
-                currentRoom.onMessage("vote_update", (message) => {
-                    if (message.index === currentAcronimoIndex) {
-                        const acronimo = acronimiList[currentAcronimoIndex];
-                        if (acronimo) {
-                            acronimo.upvotes = message.upvotes;
-                            acronimo.downvotes = message.downvotes;
-                            document.getElementById('vote-count').textContent =
-                                `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
-                        }
-                    }
-                });
+currentRoom.onMessage("vote_update", (message) => {
+    // Update vote count for current acronimo
+    if (message.index === currentAcronimoIndex) {
+        document.getElementById('vote-count').textContent = 
+            `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
+        
+        // Also update the acronimiList array to keep it in sync
+        if (currentRoom.state.acronimiMandati[currentAcronimoIndex]) {
+            currentRoom.state.acronimiMandati[currentAcronimoIndex].upvotes = message.upvotes;
+            currentRoom.state.acronimiMandati[currentAcronimoIndex].downvotes = message.downvotes;
+        }
+    }
+});
 
                 function showScores() {
     if (!currentRoom) {

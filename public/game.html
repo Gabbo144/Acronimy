@@ -281,6 +281,10 @@ currentRoom.onMessage("force_return_to_lobby", () => {
 
 currentRoom.onMessage("*", (type, message) => {
     if (type === "end_round") {
+        if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
         // Hide all other divs and show only votazioni
         document.getElementById('lobby').classList.remove('active');
         document.getElementById('playing').classList.remove('active');
