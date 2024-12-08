@@ -281,6 +281,10 @@ currentRoom.onMessage("force_return_to_lobby", () => {
 
 currentRoom.onMessage("*", (type, message) => {
     if (type === "end_round") {
+        if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
         // Hide all other divs and show only votazioni
         document.getElementById('lobby').classList.remove('active');
         document.getElementById('playing').classList.remove('active');
@@ -289,7 +293,7 @@ currentRoom.onMessage("*", (type, message) => {
         
         console.log("Received end_round message");
         acronimiList = Array.from(currentRoom.state.acronimiMandati);
-        currentAcronimoIndex = 0;
+        currentAcronimoIndex = -1;
         document.getElementById('risultato-list').classList.add('visible');
         showNextAcronimo();
     } else if (type === "next_acronimo") {
