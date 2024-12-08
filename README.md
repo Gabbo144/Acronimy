@@ -12,11 +12,13 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - http://localhost:2567/game.html?roomId=
 - non sono sicuro di cosa succede quando gli acronimi disponibili finiscono
 - forse problemi quando comincia una nuova partita dopo essere tornati alla lobby? TESTARE
+- TESTARE con 3 giocatori
 </br >
 
 
 ## DA FARE (in ordine di impostanza):
 - Voti singoli e non due a due
+- TESTA!
 - massimo un voto
 - eliminare elemento da array quando è stato mostrato
 - controllo nome già esistente
