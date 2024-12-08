@@ -289,7 +289,7 @@ currentRoom.onMessage("*", (type, message) => {
         
         console.log("Received end_round message");
         acronimiList = Array.from(currentRoom.state.acronimiMandati);
-        currentAcronimoIndex = 0;
+        currentAcronimoIndex = -1;
         document.getElementById('risultato-list').classList.add('visible');
         showNextAcronimo();
     } else if (type === "next_acronimo") {

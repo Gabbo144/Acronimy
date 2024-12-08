@@ -104,7 +104,7 @@
         const client = new Colyseus.Client('ws://localhost:2567');
         let currentRoom = null;
         let controllobottone = 0;
-        let currentAcronimoIndex = 0;
+        let currentAcronimoIndex = -1;
         let acronimiList = [];
         let currentRound = 0;
         let slider = document.getElementById("myRange");
@@ -178,10 +178,10 @@ function showScores() {
 }
 
         function vote(isUpvote) {
-            if (currentAcronimoIndex < 0 || currentAcronimoIndex >= acronimiList.length) {
-                console.error("Invalid acronimo index for voting:", currentAcronimoIndex);
-                return;
-            }
+            // if (currentAcronimoIndex < 0 || currentAcronimoIndex >= acronimiList.length) {
+            //     console.error("Invalid acronimo index for voting:", currentAcronimoIndex);
+            //     return;
+            // }
             console.log(`Voting for acronimo at index: ${currentAcronimoIndex}`);
             currentRoom.send("vote", { index: currentAcronimoIndex, isUpvote });
         }
@@ -550,6 +550,15 @@ document.getElementById('end-round-btn').addEventListener('click', () => {
                 currentRoom.onMessage("*", (type, message) => {
                     if (type === "end_round") {
                         console.log("Received end_round message");
+
+                        document.getElementById('lobby').classList.remove('active');
+        document.getElementById('playing').classList.remove('active');
+        document.getElementById('votazioni').classList.add('active');
+        document.getElementById('classifica').classList.remove('active');
+        
+        console.log("Received end_round message");
+        document.getElementById('risultato-list').classList.add('visible');
+
                         acronimiList = Array.from(currentRoom.state.acronimiMandati);
                         currentAcronimoIndex = -1;
                         scorriacronimo();

@@ -308,11 +308,39 @@ this.onMessage("start_round", (client, message) => {
         this.onMessage("manda_acronimo", (client, message) => {
             const acronimo = new AcronimoSchema();
             acronimo.text = message.acronimo;
-            acronimo.author = this.state.players[client.sessionId].nickname; // Assicurati che questo sia impostato
-            acronimo.upvotes = 0;
-            acronimo.downvotes = 0;
-            this.state.acronimiMandati.push(acronimo);
-            console.log("Acronimo ricevuto:", message.acronimo, "da:", acronimo.author); // Log per debug
+        
+            // Utilizza `get` per accedere al giocatore
+            const player = this.state.players.get(client.sessionId);
+            if (player) {
+                acronimo.author = player.nickname;
+                acronimo.upvotes = 0;
+                acronimo.downvotes = 0;
+                this.state.acronimiMandati.push(acronimo);
+        
+                // Segna il giocatore come avendo inviato le parole
+                player.hasSubmittedWords = true;
+                this.state.wordsSubmittedCount++;
+        
+                // Controlla se tutti i giocatori hanno inviato le parole
+                const allSubmitted = this.state.wordsSubmittedCount >= this.clients.length - 1;
+        
+                if (allSubmitted) {
+                    // Ferma il timer
+                    if (this.roundTimer) {
+                        clearTimeout(this.roundTimer);
+                        this.roundTimer = null;
+                    }
+        
+                    // Avanza alla fase di votazione
+                    this.broadcast("end_round");
+        
+                    // Reimposta i contatori e i flag di invio
+                    this.state.wordsSubmittedCount = 0;
+                    this.state.players.forEach(player => {
+                        player.hasSubmittedWords = false;
+                    });
+                }
+            }
         });
     
         // Generate a random letter at the start of the round
@@ -355,6 +383,9 @@ this.onMessage("start_round", (client, message) => {
         player.score = 0;
         player.connected = true;
         this.state.players[client.sessionId] = player;
+        player.hasSubmittedWords = false;
+        this.state.players.set(client.sessionId, player);
+
         console.log(`Player ${player.nickname} added to players state.`);
 
         // Update connected players count
