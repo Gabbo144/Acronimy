@@ -6,7 +6,7 @@ class PlayerSchema extends schema.Schema {
         this.nickname = "";
         this.connected = true;
         this.score = 0;
-        this.hasSubmittedWords = false; // Add this property
+        this.hasSubmittedWords = false; 
     }
 }
 
@@ -17,8 +17,8 @@ class AcronimoSchema extends schema.Schema {
         this.author = "";
         this.upvotes = 0;
         this.downvotes = 0;
-        this.currentRound = 0;  // Add this
-        this.totalRounds = 3;   // Add this
+        this.currentRound = 0;  
+        this.totalRounds = 3;   
     }
 }
 
@@ -30,9 +30,9 @@ class MyRoomState extends schema.Schema {
         this.acronimiMandati = new schema.ArraySchema();
         this.currentAcronimoIndex = 0;
         this.wordsSubmittedCount = 0;
-        this.currentRound = 0;    // Add these two properties
-        this.totalRounds = 3;     // in the constructor
-        this.timerDuration = 60;  // Add timer duration to state
+        this.currentRound = 0;    
+        this.totalRounds = 3;     
+        this.timerDuration = 60;  
     }
 }
 
@@ -44,14 +44,14 @@ schema.defineTypes(MyRoomState, {
     currentRound: "number",
     totalRounds: "number",
     wordsSubmittedCount: "number",
-    timerDuration: "number"  // Add this type definition
+    timerDuration: "number"  
 });
 
 schema.defineTypes(PlayerSchema, {
     nickname: "string",
     connected: "boolean",
     score: "number",
-    hasSubmittedWords: "boolean" // Define the type
+    hasSubmittedWords: "boolean" 
 });
 
 schema.defineTypes(AcronimoSchema, {

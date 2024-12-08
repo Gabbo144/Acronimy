@@ -18,6 +18,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 ## DA FARE (in ordine di impostanza):
 - Voti singoli e non due a due
 - sistema di quando tutti hanno fatto vai avanti (div playing)
+- massimo un voto
 - eliminare elemento da array quando è stato mostrato
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
