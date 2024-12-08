@@ -11,16 +11,17 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
 - http://localhost:2567/game.html?roomId=
 - non sono sicuro di cosa succede quando gli acronimi disponibili finiscono
+- forse problemi quando comincia una nuova partita dopo essere tornati alla lobby? TESTARE
 </br >
 
 
 ## DA FARE (in ordine di impostanza):
 - Voti singoli e non due a due
 - sistema di quando tutti hanno fatto vai avanti (div playing)
-- sistema di classifica del round appena giocato
 - eliminare elemento da array quando è stato mostrato
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
+- numero round/impostazioni sincronizzate
 - Fixare formattazione
 
 
@@ -35,7 +36,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 25/11 - ora in base al momento del round le varie sezioni scorrono in modo sincronizzato. Creato sistema di round sincronizzato </br >
 26/11 - aggiunto sistema di round, l'host può scegliere quanti round fare. Ho anche aggiunto il nuovo sistema per cui le parole le inseriscono gli utenti. Schermata finale.</br >
 28/11 - aggiunto sistema di tempo</br >
-01/12 - Ora nella fase di scrittura degli acronimi (se l'opzione è selezionata) la fase finisce quando tutti hanno mandato le parole
+01/12 - Ora nella fase di scrittura degli acronimi (se l'opzione è selezionata) la fase finisce quando tutti hanno mandato le parole </br >
+08/12 - Aggiunto sistema di classifica relativa al round appena giocato
 
 
 ## Cosa fanno i file

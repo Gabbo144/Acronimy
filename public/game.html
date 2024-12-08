@@ -247,25 +247,36 @@ currentRoom.onMessage("force_return_to_lobby", () => {
     document.getElementById('classifica').classList.remove('active');
     document.getElementById('scrivereparole').classList.remove('active');
     
-    // Reset game state
+    // Reset game state variables
     currentAcronimoIndex = -1;
     acronimiList = [];
     controllobottone = 0;
     
-    // Azzera il numero di round
-    document.getElementById('numero_round').textContent = 'Round 0/3';
+    // Clear display elements
+    document.getElementById('numero_round').textContent = '';
+    document.getElementById('current-letter').textContent = '';
+    document.getElementById('current-acronimo').textContent = '';
+    document.getElementById('vote-count').textContent = '';
     
-    // Pulisci la lista dei punteggi
+    // Clear timer if running
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    
+    // Reset scores display
     const scoresList = document.getElementById('scores-list');
-    if (scoresList) {
-        scoresList.innerHTML = '';
-    }
-
-    // Pulisci il contenitore dei punteggi
+    if (scoresList) scoresList.innerHTML = '';
+    
+    const roundScoresList = document.getElementById('round-scores-list');
+    if (roundScoresList) roundScoresList.innerHTML = '';
+    
+    // Hide scores containers
     const scoresContainer = document.getElementById('scores-container');
-    if (scoresContainer) {
-        scoresContainer.style.display = 'none';
-    }
+    if (scoresContainer) scoresContainer.style.display = 'none';
+    
+    const roundScoresContainer = document.getElementById('round-scores-container');
+    if (roundScoresContainer) roundScoresContainer.style.display = 'none';
 });
 
 currentRoom.onMessage("*", (type, message) => {

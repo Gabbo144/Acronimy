@@ -390,6 +390,46 @@ currentRoom.onMessage("round_started", (message) => {
     }
 });
 
+currentRoom.onMessage("force_return_to_lobby", () => {
+    // Reset UI
+    document.getElementById('lobby').classList.add('active');
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.remove('active');
+    document.getElementById('scrivereparole').classList.remove('active');
+    
+    // Reset game state variables
+    currentAcronimoIndex = -1;
+    acronimiList = [];
+    controllobottone = 0;
+    
+    // Clear display elements
+    document.getElementById('numero_round').textContent = '';
+    document.getElementById('current-letter').textContent = '';
+    document.getElementById('current-acronimo').textContent = '';
+    document.getElementById('vote-count').textContent = '';
+    
+    // Clear timer if running
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    
+    // Reset scores display
+    const scoresList = document.getElementById('scores-list');
+    if (scoresList) scoresList.innerHTML = '';
+    
+    const roundScoresList = document.getElementById('round-scores-list');
+    if (roundScoresList) roundScoresList.innerHTML = '';
+    
+    // Hide scores containers
+    const scoresContainer = document.getElementById('scores-container');
+    if (scoresContainer) scoresContainer.style.display = 'none';
+    
+    const roundScoresContainer = document.getElementById('round-scores-container');
+    if (roundScoresContainer) roundScoresContainer.style.display = 'none';
+});
+
 currentRoom.onMessage("custom_words_phase", () => {
     // Mostra la sezione di inserimento parole
     document.getElementById('lobby').classList.remove('active');
@@ -485,12 +525,18 @@ document.getElementById('scrivereparole').querySelector('button').addEventListen
     document.getElementById('playing').classList.add('active');
 });
 
-        document.getElementById('end-round-btn').addEventListener('click', () => {
-            document.getElementById('playing').classList.remove('active');
-            document.getElementById('votazioni').classList.add('active');
-            document.getElementById('risultato-list').classList.add('visible');
-            currentRoom.send("end_round");
-        });
+document.getElementById('end-round-btn').addEventListener('click', () => {
+    // Stop timer
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.add('active');
+    document.getElementById('risultato-list').classList.add('visible');
+    currentRoom.send("end_round");
+});
 
                 currentRoom = await client.joinById(roomId, { nickname });
                 document.getElementById('room-code').textContent = roomId;

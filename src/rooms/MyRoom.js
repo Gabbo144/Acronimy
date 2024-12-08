@@ -57,9 +57,32 @@ exports.MyRoom = class extends colyseus.Room {
         });
 
         this.onMessage("return_all_to_lobby", (client) => {
-            // Verifica che il messaggio provenga dall'host
+            // Verify message is from host
             if (client.sessionId === this.hostSessionId) {
-                // Invia tutti alla home
+                // Reset game state
+                this.state.currentRound = 0;
+                this.state.currentLetter = "";
+                this.state.acronimiMandati = [];
+                this.state.currentAcronimoIndex = 0;
+                this.state.wordsSubmittedCount = 0;
+                
+                // Reset player scores and states
+                this.state.players.forEach(player => {
+                    player.score = 0;
+                    player.hasSubmittedWords = false;
+                });
+                
+                // Reset game flags
+                this.gameStarted = false;
+                this.useCustomWords = false;
+                parolegiocatori.length = 0;
+                
+                // Clear any active timer
+                if (this.roundTimer) {
+                    clearTimeout(this.roundTimer);
+                    this.roundTimer = null;
+                }
+        
                 this.broadcast("force_return_to_lobby");
             }
         });
@@ -208,6 +231,12 @@ this.onMessage("start_round", (client, message) => {
 
         // Message handlers
         this.onMessage("end_round", (client) => {
+            // Clear any existing timer
+            if (this.roundTimer) {
+                clearTimeout(this.roundTimer);
+                this.roundTimer = null;
+            }
+            
             console.log("Broadcasting end_round message from client:", client.sessionId);
             this.broadcast("end_round");
         });
