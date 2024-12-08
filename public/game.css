@@ -112,3 +112,22 @@
 #scrivereparole.active {
     display: block;
 }
+
+#round-scores-container {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#round-scores-list {
+    list-style: none;
+    padding: 0;
+}
+
+#round-scores-list li {
+    margin: 5px 0;
+    padding: 5px;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+}

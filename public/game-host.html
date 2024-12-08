@@ -82,6 +82,10 @@
     </div>
     
     <div id="classifica">
+        <div id="round-scores-container">
+            <h2>Punteggi del Round</h2>
+            <ul id="round-scores-list"></ul>
+        </div>
 
             <div id="scores-container">
                 <h2>Classifica</h2>
@@ -132,44 +136,45 @@ function showScores() {
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.add('active');
 
+    // Show overall scores
     const scoresContainer = document.getElementById('scores-container');
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';
+
+    // Show round scores
+    const roundScoresList = document.getElementById('round-scores-list');
+    roundScoresList.innerHTML = '';
+
+    // Display round-specific scores
+    acronimiList.forEach(acronimo => {
+        const li = document.createElement('li');
+        const roundScore = acronimo.upvotes - acronimo.downvotes;
+        li.textContent = `"${acronimo.text}" by ${acronimo.author} - Punti: ${roundScore} (👍 ${acronimo.upvotes} | 👎 ${acronimo.downvotes})`;
+        roundScoresList.appendChild(li);
+    });
+
+    // Update titles based on game state
     const titulo = scoresContainer.querySelector('h2');
-    
     if (currentRoom.state.currentRound >= currentRoom.state.totalRounds) {
         titulo.textContent = "Classifica Finale";
-        // Aggiungi il bottone per tornare alla lobby SOLO in game-host.html
+        // Add back to lobby button
         const backButton = document.createElement('button');
         backButton.textContent = "Torna alla Lobby";
         backButton.onclick = () => {
-            // L'host invia un messaggio a tutti i client per tornare alla lobby
             currentRoom.send("return_all_to_lobby");
-            // Mostra il div lobby e nascondi gli altri
-            document.getElementById('lobby').classList.add('active');
-            document.getElementById('playing').classList.remove('active');
-            document.getElementById('votazioni').classList.remove('active');
-            document.getElementById('classifica').classList.remove('active');
-            document.getElementById('host_interface').classList.add('active');
-            // Azzera il numero di round
-            document.getElementById('numero_round').textContent = 'Round 0/3';
-            currentRoom.state.currentRound = 0;
         };
         scoresContainer.appendChild(backButton);
-        // Nascondi il bottone "prossimo round"
-        const nextRoundBtn = document.getElementById('prossimo_round');
-        if (nextRoundBtn) nextRoundBtn.style.display = 'none';
+        document.getElementById('prossimo_round').style.display = 'none';
     } else {
-        titulo.textContent = "Classifica";
+        titulo.textContent = "Classifica Generale";
     }
-    
+
+    // Show overall scores
     currentRoom.state.players.forEach((player, sessionId) => {
         const li = document.createElement('li');
         li.textContent = `${player.nickname}: ${player.score} punti`;
         scoresList.appendChild(li);
     });
-    
-    scoresContainer.style.display = 'block';
 }
 
         function vote(isUpvote) {
