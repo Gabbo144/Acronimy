@@ -21,7 +21,6 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 ## DA FARE (in ordine di impostanza):
 - Voti singoli e non due a due
 - counter di chi ha mandato e chi ha votato
-- massimo un voto
 - eliminare elemento da array quando è stato mostrato
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
@@ -42,7 +41,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 28/11 - aggiunto sistema di tempo</br >
 01/12 - Ora nella fase di scrittura degli acronimi (se l'opzione è selezionata) la fase finisce quando tutti hanno mandato le parole </br >
 08/12 - Aggiunto sistema di classifica relativa al round appena giocato, inoltre ora anche nel div playing quando tutti hanno mandato la fase avanza </br >
-09/12 - bug fixati ma non tutti, scoperti di nuovi.
+09/12 - bug fixati ma non tutti, scoperti di nuovi ma fixati. Aggiunto limite al voto.
 
 
 ## Cosa fanno i file
@@ -63,4 +62,4 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 08/12/24, 23.52_
+## _ultima modifica: 09/12/24, 18.05_
