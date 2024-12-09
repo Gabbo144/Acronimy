@@ -26,6 +26,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - fixare bottone link aggiungendo nome
 - numero round/impostazioni sincronizzate
 - Fixare formattazione
+- se è selezionata l'opzione: PAROLE/SIGLE SCELTE DALL'UTENTE, quando tutti hanno mandatole 3 parole e comincia la fase playing, se uno dei giocatori preme invia la fase finisce subito, anche se dovrebbe aspettare tutti i giocatori
 
 
 ## Progressi
@@ -62,4 +63,4 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 09/12/24, 18.05_
+## _ultima modifica: 09/12/24, 18.27_
