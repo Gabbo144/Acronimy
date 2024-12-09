@@ -57,34 +57,31 @@ exports.MyRoom = class extends colyseus.Room {
         });
 
         this.onMessage("return_all_to_lobby", (client) => {
-            // Verify message is from host
-            if (client.sessionId === this.hostSessionId) {
-                // Reset game state
-                this.state.currentRound = 0;
-                this.state.currentLetter = "";
-                this.state.acronimiMandati = [];
-                this.state.currentAcronimoIndex = 0;
-                this.state.wordsSubmittedCount = 0;
-                
-                // Reset player scores and states
-                this.state.players.forEach(player => {
-                    player.score = 0;
-                    player.hasSubmittedWords = false;
-                });
-                
-                // Reset game flags
-                this.gameStarted = false;
-                this.useCustomWords = false;
-                parolegiocatori.length = 0;
-                
-                // Clear any active timer
-                if (this.roundTimer) {
-                    clearTimeout(this.roundTimer);
-                    this.roundTimer = null;
-                }
+            // Reset game state
+            this.state.currentRound = 0;
+            this.state.currentLetter = "";
+            this.state.acronimiMandati = [];
+            this.state.currentAcronimoIndex = 0;
+            this.state.wordsSubmittedCount = 0;
+            this.gameStarted = false;
         
-                this.broadcast("force_return_to_lobby");
+            // Reset player scores and states
+            this.state.players.forEach(player => {
+                player.score = 0;
+                player.hasSubmittedWords = false;
+            });
+        
+            // Clear any active timers
+            if (this.roundTimer) {
+                clearTimeout(this.roundTimer);
+                this.roundTimer = null;
             }
+        
+            // Reset host tracking
+            this.hostSessionId = null;
+        
+            // Broadcast force return to ensure all clients reset
+            this.broadcast("force_return_to_lobby");
         });
 
         this.onMessage("start_custom_words_phase", (client) => {

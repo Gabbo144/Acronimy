@@ -404,12 +404,16 @@ currentRoom.onMessage("force_return_to_lobby", () => {
     currentAcronimoIndex = -1;
     acronimiList = [];
     controllobottone = 0;
+    currentRound = 0;
+
     
     // Clear display elements
     document.getElementById('numero_round').textContent = '';
     document.getElementById('current-letter').textContent = '';
     document.getElementById('current-acronimo').textContent = '';
     document.getElementById('vote-count').textContent = '';
+    document.getElementById('scores-container').style.display = 'none';
+    document.getElementById('round-scores-container').style.display = 'none';
     
     // Clear timer if running
     if (timerInterval) {
