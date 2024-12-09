@@ -309,13 +309,7 @@ currentRoom.onMessage("*", (type, message) => {
                 `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
             currentAcronimoIndex = message.index;
         }
-    } else if (type === "show_scores") {
-        // Hide all other divs and show only classifica
-        document.getElementById('lobby').classList.remove('active');
-        document.getElementById('playing').classList.remove('active');
-        document.getElementById('votazioni').classList.remove('active');
-        document.getElementById('classifica').classList.add('active');
-    }
+    } 
 });
 
 document.getElementById('submit-words-btn').addEventListener('click', () => {
@@ -427,35 +421,33 @@ currentRoom.onMessage("round_started", (message) => {
     }
 });
 
-currentRoom.onMessage("show_scores", (message) => {
-    // Hide all other divs and show only classifica
+currentRoom.onMessage("show_scores", () => {
+    // Show scoreboard section
     document.getElementById('lobby').classList.remove('active');
     document.getElementById('playing').classList.remove('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.add('active');
     
+    // Show both containers
+    const roundScoresContainer = document.getElementById('round-scores-container');
     const scoresContainer = document.getElementById('scores-container');
+    roundScoresContainer.style.display = 'block';
     scoresContainer.style.display = 'block';
     
-    // Cambia il titolo in base al round corrente
-    const titulo = scoresContainer.querySelector('h2');
-    if (currentRoom.state.currentRound >= currentRoom.state.totalRounds) {
-        titulo.textContent = "Classifica Finale";
-        // Aggiungi il bottone per tornare alla lobby
-        const backButton = document.createElement('button');
-        backButton.textContent = "Torna alla Lobby";
-        backButton.onclick = () => {
-            window.location.href = '/';
-        };
-        scoresContainer.appendChild(backButton);
-    } else {
-        titulo.textContent = "Classifica";
-    }
+    // Display round scores
+    const roundScoresList = document.getElementById('round-scores-list');
+    roundScoresList.innerHTML = '';
+    currentRoom.state.acronimiMandati.forEach(acronimo => {
+        const li = document.createElement('li');
+        const roundScore = acronimo.upvotes - acronimo.downvotes;
+        li.textContent = `"${acronimo.text}" by ${acronimo.author} - Punti: ${roundScore} (👍 ${acronimo.upvotes} | 👎 ${acronimo.downvotes})`;
+        roundScoresList.appendChild(li);
+    });
     
+    // Display provisional scores
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';
-    
-    currentRoom.state.players.forEach((player, sessionId) => {
+    currentRoom.state.players.forEach((player) => {
         const li = document.createElement('li');
         li.textContent = `${player.nickname}: ${player.score} punti`;
         scoresList.appendChild(li);

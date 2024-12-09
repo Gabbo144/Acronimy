@@ -323,6 +323,7 @@ this.onMessage("start_round", (client, message) => {
         
                 // Controlla se tutti i giocatori hanno inviato le parole
                 const allSubmitted = this.state.wordsSubmittedCount >= this.clients.length - 1;
+                console.log(allSubmitted)
         
                 if (allSubmitted) {
                     // Ferma il timer

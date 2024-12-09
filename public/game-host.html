@@ -426,10 +426,22 @@ currentRoom.onMessage("force_return_to_lobby", () => {
     
     // Hide scores containers
     const scoresContainer = document.getElementById('scores-container');
-    if (scoresContainer) scoresContainer.style.display = 'none';
+    if (scoresContainer) {
+        scoresContainer.style.display = 'none';
+        // Remove any existing back button
+        const existingBackButton = scoresContainer.querySelector('button');
+        if (existingBackButton) {
+            existingBackButton.remove();
+        }
+    }
     
     const roundScoresContainer = document.getElementById('round-scores-container');
     if (roundScoresContainer) roundScoresContainer.style.display = 'none';
+
+    const bottonepazzo = document.getElementById('bottonepazzo');
+    if (bottonepazzo) {
+        bottonepazzo.style.display = 'block';
+    }
 });
 
 currentRoom.onMessage("custom_words_phase", () => {
@@ -560,6 +572,11 @@ document.getElementById('end-round-btn').addEventListener('click', () => {
         document.getElementById('playing').classList.remove('active');
         document.getElementById('votazioni').classList.add('active');
         document.getElementById('classifica').classList.remove('active');
+
+        const bottonepazzo = document.getElementById('bottonepazzo');
+    if (bottonepazzo) {
+        bottonepazzo.style.display = 'block';
+    }
         
         console.log("End round - current acronimi:", currentRoom.state.acronimiMandati);
         currentAcronimoIndex = -1;
@@ -611,13 +628,14 @@ currentRoom.onMessage("vote_update", (message) => {
     const scoresList = document.getElementById('scores-list');
     scoresList.innerHTML = '';
     const titulo = scoresContainer.querySelector('h2');
+
     if (currentRoom.state.currentRound >= currentRoom.state.totalRounds) {
         titulo.textContent = "Classifica Finale";
         // Aggiungi il bottone per tornare alla lobby
         const backButton = document.createElement('button');
         backButton.textContent = "Torna alla Lobby";
         backButton.onclick = () => {
-            window.location.href = '/';
+            currentRoom.send("return_all_to_lobby");
         };
         scoresContainer.appendChild(backButton);
         // Nascondi il bottone "prossimo round" se presente
@@ -625,6 +643,8 @@ currentRoom.onMessage("vote_update", (message) => {
         if (nextRoundBtn) nextRoundBtn.style.display = 'none';
     } else {
         titulo.textContent = "Classifica";
+        document.getElementById('prossimo_round').style.display = 'block';
+
     }
     
     // Debug log

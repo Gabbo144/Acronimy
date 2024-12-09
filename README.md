@@ -13,6 +13,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - non sono sicuro di cosa succede quando gli acronimi disponibili finiscono
 - forse problemi quando comincia una nuova partita dopo essere tornati alla lobby? TESTARE
 - TESTARE con 3 giocatori
+- - BUG
+- dopo che tutti sono tornati alla lobby, quando ricomincia una nuova partita e tutti inviano game-host.html non vede la classifica e i nonhost vedono la classifica finale. probabilmente un problema di counter
 </br >
 
 
@@ -40,6 +42,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 28/11 - aggiunto sistema di tempo</br >
 01/12 - Ora nella fase di scrittura degli acronimi (se l'opzione è selezionata) la fase finisce quando tutti hanno mandato le parole </br >
 08/12 - Aggiunto sistema di classifica relativa al round appena giocato, inoltre ora anche nel div playing quando tutti hanno mandato la fase avanza </br >
+09/12 - bug fixati ma non tutti, scoperti di nuovi.
 
 
 ## Cosa fanno i file
