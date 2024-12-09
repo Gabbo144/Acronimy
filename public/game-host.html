@@ -338,6 +338,9 @@ function scorriacronimo() {
             document.getElementById('playing').classList.add('active');
             document.getElementById('votazioni').classList.remove('active');
             document.getElementById('classifica').classList.remove('active');
+
+            const scoresList = document.getElementById('scores-list');
+            scoresList.innerHTML = '';
         });
 
         // Add this handler in game-host.html where other message handlers are defined
@@ -357,21 +360,32 @@ currentRoom.onMessage("all_words_submitted", () => {
 });
 
 
-        currentRoom.onMessage("return_to_lobby", () => {
-    // Reset UI
+currentRoom.onMessage("return_to_lobby", () => {
+    // Reset UI state
     document.getElementById('lobby').classList.add('active');
     document.getElementById('playing').classList.remove('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
+    document.getElementById('scrivereparole').classList.remove('active');
     document.getElementById('host_interface').classList.add('active');
-    
-    // Reset game state
+
+    // Reset game variables
     currentAcronimoIndex = -1;
     acronimiList = [];
     controllobottone = 0;
     
-    // Re-enable start game button
+    // Clear existing scores
+    const scoresList = document.getElementById('scores-list');
+    const roundScoresList = document.getElementById('round-scores-list');
+    if (scoresList) scoresList.innerHTML = '';
+    if (roundScoresList) roundScoresList.innerHTML = '';
+
+    // Re-enable controls
     document.getElementById('inizia_round').style.display = 'block';
+    document.getElementById('bottonepazzo').style.display = 'none';
+    
+    // Reset round counter display
+    document.getElementById('numero_round').textContent = '';
 });
 
 currentRoom.onMessage("round_started", (message) => {
@@ -457,6 +471,45 @@ currentRoom.onMessage("custom_words_phase", () => {
     document.getElementById('classifica').classList.remove('active');
 });
 
+currentRoom.onMessage("show_scores", () => {
+    // Show scoreboard section
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('playing').classList.remove('active');
+    document.getElementById('votazioni').classList.remove('active');
+    document.getElementById('classifica').classList.add('active');
+    
+    // Show both containers
+    const roundScoresContainer = document.getElementById('round-scores-container');
+    const scoresContainer = document.getElementById('scores-container');
+    const prossimoRoundBtn = document.getElementById('prossimo_round');
+
+    roundScoresContainer.style.display = 'block';
+    scoresContainer.style.display = 'block';
+    
+    if (currentRoom.state.currentRound < currentRoom.state.totalRounds) {
+        prossimoRoundBtn.style.display = 'block';
+    }
+    
+    // Display round scores
+    const roundScoresList = document.getElementById('round-scores-list');
+    roundScoresList.innerHTML = '';
+    currentRoom.state.acronimiMandati.forEach(acronimo => {
+        const li = document.createElement('li');
+        const roundScore = acronimo.upvotes - acronimo.downvotes;
+        li.textContent = `"${acronimo.text}" by ${acronimo.author} - Punti: ${roundScore} (👍 ${acronimo.upvotes} | 👎 ${acronimo.downvotes})`;
+        roundScoresList.appendChild(li);
+    });
+    
+    // Display provisional scores
+    const scoresList = document.getElementById('scores-list');
+    scoresList.innerHTML = '';
+    currentRoom.state.players.forEach((player) => {
+        const li = document.createElement('li');
+        li.textContent = `${player.nickname}: ${player.score} punti`;
+        scoresList.appendChild(li);
+    });
+});
+
 // Add this to game-host.html where other message handlers are defined
 currentRoom.onMessage("words_submission_update", (message) => {
     console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`);
@@ -479,39 +532,35 @@ document.getElementById('submit-words-btn').addEventListener('click', () => {
 
 
 document.getElementById('inizia_round').addEventListener('click', () => {
-    const slider = document.getElementById('myRange');
     const totalRounds = parseInt(document.getElementById('myRange').value);
     const useCustomWords = document.getElementById('parolone').checked;
     const timeSelect = document.getElementById('temporound');
     const selectedTime = timeSelect.value;
     const [minutes, seconds] = selectedTime.split(':').map(Number);
-    const totalSeconds = minutes * 60 + seconds;
     const timerDuration = minutes * 60 + seconds;
 
-    if (useCustomWords) {
-        
-        // Nascondi il lobby e mostra la sezione di inserimento parole
-        currentRoom.send("start_game", { 
-            totalRounds: totalRounds,
-            timerDuration: timerDuration,
-            useCustomWords: true
-        });
-        document.getElementById('lobby').classList.remove('active');
-        document.getElementById('scrivereparole').classList.add('active');
-        document.getElementById('playing').classList.remove('active');
-        document.getElementById('votazioni').classList.remove('active');
-        document.getElementById('classifica').classList.remove('active');
-        currentRoom.send("start_custom_words_phase");
-    } else {
-        // Avvia il gioco normalmente con le sigle predefinite
-        currentRoom.send("start_game", { 
+    // Reset game state
+    currentAcronimoIndex = -1;
+    acronimiList = [];
+    controllobottone = 0;
+    
+    // Clear display elements
+    document.getElementById('current-letter').textContent = '';
+    document.getElementById('current-acronimo').textContent = '';
+    document.getElementById('vote-count').textContent = '';
+    
+    // Reset score displays
+    const scoresList = document.getElementById('scores-list');
+    const roundScoresList = document.getElementById('round-scores-list');
+    if (scoresList) scoresList.innerHTML = '';
+    if (roundScoresList) roundScoresList.innerHTML = '';
+
+    // Start new game
+    currentRoom.send("start_game", { 
         totalRounds: totalRounds,
-        timerDuration: timerDuration
+        timerDuration: timerDuration,
+        useCustomWords: useCustomWords
     });
-        document.getElementById('lobby').classList.remove('active');
-        document.getElementById('playing').classList.add('active');
-        
-    }
 });
 
 // Quando si preme "AVANTI" dopo aver inserito le parole

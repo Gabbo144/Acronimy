@@ -98,6 +98,7 @@
     border-radius: 4px;
     cursor: pointer;
     margin: 10px;
+    display: block; /* Ensure button is visible by default */
 }
 
 #prossimo_round:hover {

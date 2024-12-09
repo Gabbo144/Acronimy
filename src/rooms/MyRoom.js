@@ -23,6 +23,9 @@ exports.MyRoom = class extends colyseus.Room {
         this.usedNicknames = new Set();
         this.state.currentRound = 0;
         this.gameStarted = false;  // Add this flag
+        this.state.wordsSubmittedCount = 0;
+        this.state.currentRound = 0;
+        this.state.acronimiMandati = [];
 
         // Set maximum clients and ensure room stays unlocked
         this.maxClients = 16;
