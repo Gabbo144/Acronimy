@@ -20,7 +20,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 ## DA FARE (in ordine di impostanza):
 - Voti singoli e non due a due
-- TESTA!
+- counter di chi ha mandato e chi ha votato
 - massimo un voto
 - eliminare elemento da array quando è stato mostrato
 - controllo nome già esistente

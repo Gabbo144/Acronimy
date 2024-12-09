@@ -32,10 +32,10 @@
 
         <span id="slider-value">rounds</span>
         <br>
-          <input type="radio" id="sigle" name="fav_language" value="HTML">
-          <label for="html">SIGLE FAMOSE</label>
-          <input type="radio" id="parolone" name="fav_language" value="CSS">
-          <label for="css">PAROLE/SIGLE SCELTE DALL'UTENTE</label>
+         <input type="radio" id="sigle" name="fav_language" value="HTML">
+         <label for="html">SIGLE FAMOSE</label>
+         <input type="radio" id="parolone" name="fav_language" value="CSS">
+         <label for="css">PAROLE/SIGLE SCELTE DALL'UTENTE</label>
 
 
 
@@ -69,8 +69,8 @@
             <div id="risultato-list">
                 <p id="current-acronimo"></p>
                 <div id="voting-buttons">
-                    <button onclick="vote(true)" class="vote-btn">👍 Bello</button>
-                    <button onclick="vote(false)" class="vote-btn">👎 Brutto</button>
+                    <button onclick="vote(true); havotato()" class="vote-btn">👍 Bello</button>
+                    <button onclick="vote(false); havotato()" class="vote-btn">👎 Brutto</button>
                 </div>
                 <p id="vote-count"></p>
             </div>
@@ -112,7 +112,15 @@
         const TOTAL_ROUNDS = output1;
         let timerInterval;
         let timeRemaining;
+        var havotato = 0;
 
+        function havotato() {
+            havotato++;
+            if (havotato > 1) {
+                alert("Hai già votato!");
+                return;
+            }
+        }
 
 
 // Add this after slider initialization
