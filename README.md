@@ -1,4 +1,4 @@
-# Acronimi
+# Acronimy
 Un gioco sugli acronimi. 
 
 Sto usando Javascript con il framework [Colyseus](https://colyseus.io/).
@@ -13,14 +13,13 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - non sono sicuro di cosa succede quando gli acronimi disponibili finiscono
 - forse problemi quando comincia una nuova partita dopo essere tornati alla lobby? TESTARE
 - TESTARE con 3 giocatori
-- - BUG
-- dopo che tutti sono tornati alla lobby, quando ricomincia una nuova partita e tutti inviano game-host.html non vede la classifica e i nonhost vedono la classifica finale. probabilmente un problema di counter
 </br >
 
 
 ## DA FARE (in ordine di impostanza):
-- Voti singoli e non due a due
+- fixate bugs
 - counter di chi ha mandato e chi ha votato
+- Voti singoli e non due a due
 - eliminare elemento da array quando è stato mostrato
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
@@ -57,7 +56,7 @@ Configurazione principale del server, definisce route e middleware, gestisce fil
 ### index.html
 Questo file è la "landing page", puoi scegliere se creare una stanza o connetterti a una esistente
 ### game.html/game-host.html
-Interfaccia di gioco sia per host che per giocatori, ancora molto rudimentale in quanto mostra il codice stanza e l'acronimo sincronizzato e, in caso della versione host, anche il bottone per fermare il round. 
+Interfaccia di gioco sia per host che per giocatori, contiene tutto.
 ### MyRoom_test.js, example.js, eccetera
 File che non ho toccato, a scopo di test o configurazione del framework.
 
