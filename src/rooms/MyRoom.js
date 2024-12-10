@@ -327,7 +327,7 @@ this.onMessage("manda_acronimo", (client, message) => {
 
         // Incrementa il contatore delle parole sottomesse
         player.submittedWordsCount++;
-        this.state.wordsSubmittedCount++;
+        this.state.acronimiSubmittedCount++;
 
         // Controlla se il giocatore ha sottomesso tutte le parole richieste
         if (player.submittedWordsCount >= 3) { // Supponendo 3 parole per giocatore
@@ -335,10 +335,10 @@ this.onMessage("manda_acronimo", (client, message) => {
         }
 
         // Controlla se tutti i giocatori hanno sottomesso le parole richieste
-        const allSubmitted = Array.from(this.state.players.values()).every(p => p.submittedWordsCount >= 3);
+        const allSubmitted = Array.from(this.state.players.values()).every(p => p.submittedWordsCount >= this.clients.length-1);
         console.log(allSubmitted);
 
-        if (allSubmitted) {
+        if (this.state.acronimiSubmittedCount >= this.clients.length - 1) {
             // Ferma il timer
             if (this.roundTimer) {
                 clearTimeout(this.roundTimer);
@@ -349,7 +349,7 @@ this.onMessage("manda_acronimo", (client, message) => {
             this.broadcast("end_round");
 
             // Reimposta i contatori e i flag di invio
-            this.state.wordsSubmittedCount = 0;
+            this.state.acronimiSubmittedCount = 0;
             this.state.players.forEach(p => {
                 p.hasSubmittedWords = false;
                 p.submittedWordsCount = 0; // Aggiungi se necessario

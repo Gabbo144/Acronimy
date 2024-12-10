@@ -31,6 +31,7 @@ class MyRoomState extends schema.Schema {
         this.acronimiMandati = new schema.ArraySchema();
         this.currentAcronimoIndex = 0;
         this.wordsSubmittedCount = 0;
+        this.acronimiSubmittedCount = 0;
         this.currentRound = 0;    
         this.totalRounds = 3;     
         this.timerDuration = 60;  
@@ -45,6 +46,7 @@ schema.defineTypes(MyRoomState, {
     currentRound: "number",
     totalRounds: "number",
     wordsSubmittedCount: "number",
+    acronimiSubmittedCount: "number",
     timerDuration: "number"  
 });
 
