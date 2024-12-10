@@ -147,6 +147,13 @@ this.onMessage("start_new_round", (client, message) => {
     this.state.currentRound++;
     this.state.timerDuration = message.timerDuration || 60;
 
+    this.state.players.forEach(player => {
+        player.submittedWordsCount = 0; // Resetta il contatore
+        player.hasSubmittedWords = false;
+    });
+
+    this.state.wordsSubmittedCount = 0; // Resetta il contatore globale se necessario
+
 
     if (this.state.currentRound > this.state.totalRounds) {
         this.gameStarted = false;
@@ -305,44 +312,55 @@ this.onMessage("start_round", (client, message) => {
             }
         });
     
-        this.onMessage("manda_acronimo", (client, message) => {
-            const acronimo = new AcronimoSchema();
-            acronimo.text = message.acronimo;
-        
-            // Utilizza `get` per accedere al giocatore
-            const player = this.state.players.get(client.sessionId);
-            if (player) {
-                acronimo.author = player.nickname;
-                acronimo.upvotes = 0;
-                acronimo.downvotes = 0;
-                this.state.acronimiMandati.push(acronimo);
-        
-                // Segna il giocatore come avendo inviato le parole
-                player.hasSubmittedWords = true;
-                this.state.wordsSubmittedCount++;
-        
-                // Controlla se tutti i giocatori hanno inviato le parole
-                const allSubmitted = this.state.wordsSubmittedCount >= this.clients.length - 1;
-                console.log(allSubmitted)
-        
-                if (allSubmitted) {
-                    // Ferma il timer
-                    if (this.roundTimer) {
-                        clearTimeout(this.roundTimer);
-                        this.roundTimer = null;
-                    }
-        
-                    // Avanza alla fase di votazione
-                    this.broadcast("end_round");
-        
-                    // Reimposta i contatori e i flag di invio
-                    this.state.wordsSubmittedCount = 0;
-                    this.state.players.forEach(player => {
-                        player.hasSubmittedWords = false;
-                    });
-                }
+// src/rooms/MyRoom.js
+
+this.onMessage("manda_acronimo", (client, message) => {
+    const acronimo = new AcronimoSchema();
+    acronimo.text = message.acronimo;
+
+    const player = this.state.players.get(client.sessionId);
+    if (player) {
+        acronimo.author = player.nickname;
+        acronimo.upvotes = 0;
+        acronimo.downvotes = 0;
+        this.state.acronimiMandati.push(acronimo);
+
+        // Incrementa il contatore delle parole sottomesse
+        player.submittedWordsCount++;
+        this.state.wordsSubmittedCount++;
+
+        // Controlla se il giocatore ha sottomesso tutte le parole richieste
+        if (player.submittedWordsCount >= 3) { // Supponendo 3 parole per giocatore
+            player.hasSubmittedWords = true;
+        }
+
+        // Controlla se tutti i giocatori hanno sottomesso le parole richieste
+        const allSubmitted = Array.from(this.state.players.values()).every(p => p.submittedWordsCount >= 3);
+        console.log(allSubmitted);
+
+        if (allSubmitted) {
+            // Ferma il timer
+            if (this.roundTimer) {
+                clearTimeout(this.roundTimer);
+                this.roundTimer = null;
             }
-        });
+
+            // Avanza alla fase di votazione
+            this.broadcast("end_round");
+
+            // Reimposta i contatori e i flag di invio
+            this.state.wordsSubmittedCount = 0;
+            this.state.players.forEach(p => {
+                p.hasSubmittedWords = false;
+                p.submittedWordsCount = 0; // Aggiungi se necessario
+
+            });
+
+            // Aggiungi un flag per la fase corrente, se necessario
+            this.state.isVotingPhase = true;
+        }
+    }
+});
     
         // Generate a random letter at the start of the round
         this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];

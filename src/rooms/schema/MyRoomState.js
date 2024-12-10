@@ -7,6 +7,7 @@ class PlayerSchema extends schema.Schema {
         this.connected = true;
         this.score = 0;
         this.hasSubmittedWords = false; 
+        this.submittedWordsCount = 0;
     }
 }
 
