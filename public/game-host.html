@@ -112,15 +112,16 @@
         const TOTAL_ROUNDS = output1;
         let timerInterval;
         let timeRemaining;
-        var havotato = 0;
+        
+        let voteConto = 0;
 
-        function havotato() {
-            havotato++;
-            if (havotato > 1) {
-                alert("Hai già votato!");
-                return;
-            }
-        }
+function havotato() {
+    voteConto++;
+    if (voteConto > 1) {
+        alert("Hai già votato!");
+        return;
+    }
+}
 
 
 // Add this after slider initialization
@@ -242,6 +243,8 @@ function showScores() {
 
     startTimer(totalSeconds);
 }
+
+
 function mandaacronimo() {
     if (!currentRoom) return;
     controllobottone++;
