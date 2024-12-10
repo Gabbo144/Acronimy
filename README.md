@@ -23,7 +23,6 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - fixare bottone link aggiungendo nome
 - eliminare elemento da array quando è stato mostrato
 - Fixare formattazione
-- ora non avanza nella fae playing quando tutti hanno mandato
 
 
 ## Progressi
