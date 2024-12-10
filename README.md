@@ -17,8 +17,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 
 ## DA FARE (in ordine di impostanza):
-- counter di chi ha votato
-- Voti singoli e non due a due
+- counter di quanti hanno votato
 - numero round/impostazioni sincronizzate
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
@@ -41,7 +40,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 01/12 - Ora nella fase di scrittura degli acronimi (se l'opzione è selezionata) la fase finisce quando tutti hanno mandato le parole </br >
 08/12 - Aggiunto sistema di classifica relativa al round appena giocato, inoltre ora anche nel div playing quando tutti hanno mandato la fase avanza </br >
 09/12 - bug fixati ma non tutti, scoperti di nuovi ma fixati. Aggiunto limite al voto. </br >
-10/12 - fixato bug di progressione sbaglaita dopo la fase scrivereparole, fixato limite voti
+10/12 - fixato bug di progressione sbaglaita dopo la fase scrivereparole, fixato limite voti. fixati i voti a due a due con una banale divisone, il sistema avana ancora di due.
 
 
 ## Cosa fanno i file

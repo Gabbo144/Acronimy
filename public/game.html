@@ -496,7 +496,7 @@ currentRoom.onMessage("show_scores", () => {
     currentRoom.state.acronimiMandati.forEach(acronimo => {
         const li = document.createElement('li');
         const roundScore = acronimo.upvotes - acronimo.downvotes;
-        li.textContent = `"${acronimo.text}" by ${acronimo.author} - Punti: ${roundScore} (👍 ${acronimo.upvotes} | 👎 ${acronimo.downvotes})`;
+        li.textContent = `"${acronimo.text}" by ${acronimo.author} - Punti: ${roundScore} (👍 ${acronimo.upvotes/2} | 👎 ${acronimo.downvotes/2})`;
         roundScoresList.appendChild(li);
     });
     
@@ -505,7 +505,7 @@ currentRoom.onMessage("show_scores", () => {
     scoresList.innerHTML = '';
     currentRoom.state.players.forEach((player) => {
         const li = document.createElement('li');
-        li.textContent = `${player.nickname}: ${player.score} punti`;
+        li.textContent = `${player.nickname}: ${player.score/2} punti`;
         scoresList.appendChild(li);
     });
 });
