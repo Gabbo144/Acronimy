@@ -19,10 +19,10 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 ## DA FARE (in ordine di impostanza):
 - counter di chi ha votato
 - Voti singoli e non due a due
-- eliminare elemento da array quando è stato mostrato
+- numero round/impostazioni sincronizzate
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
-- numero round/impostazioni sincronizzate
+- eliminare elemento da array quando è stato mostrato
 - Fixare formattazione
 - ora non avanza nella fae playing quando tutti hanno mandato
 
