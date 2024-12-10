@@ -17,7 +17,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 
 ## DA FARE (in ordine di impostanza):
-- counter di chi ha mandato e chi ha votato
+- counter di chi ha votato
 - Voti singoli e non due a due
 - eliminare elemento da array quando è stato mostrato
 - controllo nome già esistente

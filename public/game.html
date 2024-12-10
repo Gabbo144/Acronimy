@@ -29,6 +29,8 @@
         <input type="text" id="custom-word-2" class="custom-word-input">
         <input type="text" id="custom-word-3" class="custom-word-input">
         <button id="submit-words-btn">Invia Parole</button>
+        <p id="submission-counter">Words submitted: 0/0</p>
+
     </div>
     
     <div id="playing">
@@ -37,6 +39,7 @@
             <h3>Time Remaining: <span id="timer-display">00:00</span></h3>
             <input type="text" name="" id="user_acronimozz">
             <button onclick="mandaacronimo()">invia</button>
+            <p id="submission-counterz">Words submitted: 0/0</p>
 
     </div>
     
@@ -191,9 +194,28 @@ currentRoom.onMessage("custom_words_phase", () => {
 });
 
 currentRoom.onMessage("words_submission_update", (message) => {
-    console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`);
+    console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayer}`);
     // Optionally show a progress indicator
 });
+
+currentRoom.onMessage("acronimi_submission_update", (message) => {
+    console.log(`Acronimi submitted: ${message.submittedCountz}/${message.totalPlayer}`);
+    // Update counter display
+    const counterz = document.getElementById('submission-counterz');
+    if (counterz) {
+        counterz.textContent = `Acronimi submitted: ${message.submittedCountz}/${message.totalPlayer}`;
+    }
+});
+
+currentRoom.onMessage("words_submission_update", (message) => {
+    console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`); // Note: totalPlayers not totalPlayer
+    // Update counter display
+    const counter = document.getElementById('submission-counter');
+    if (counter) {
+        counter.textContent = `Words submitted: ${message.submittedCount}/${message.totalPlayers}`; // Fix property name
+    }
+});
+
 
 currentRoom.onMessage("all_words_submitted", () => {
     document.getElementById('scrivereparole').classList.remove('active');

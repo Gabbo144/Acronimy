@@ -47,6 +47,8 @@
         <input type="text" id="custom-word-2" class="custom-word-input">
         <input type="text" id="custom-word-3" class="custom-word-input">
         <button id="submit-words-btn">Invia Parole</button>
+        <p id="submission-counter">Words submitted: 0/0</p>
+
     </div>
     
     <div id="host_interface" class="active">
@@ -60,6 +62,8 @@
             <input type="text" name="" id="user_acronimozz">
             <button onclick="mandaacronimo()">invia</button>
             <button id="end-round-btn">End Round</button>
+            <p id="submission-counterz">Words submitted: 0/0</p>
+
 
 
     </div>
@@ -525,11 +529,16 @@ currentRoom.onMessage("show_scores", () => {
 currentRoom.onMessage("words_submission_update", (message) => {
     console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`);
     // Optionally add a visual indicator
-    const submissionStatus = document.createElement('p');
-    submissionStatus.textContent = `Words submitted: ${message.submittedCount}/${message.totalPlayers}`;
-    document.getElementById('scrivereparole').appendChild(submissionStatus);
+    const counter = document.getElementById('submission-counter');
+    counter.textContent = `Words submitted: ${message.submittedCount}/${message.totalPlayers}`;
 });
 
+currentRoom.onMessage("acronimi_submission_update", (message) => {
+    console.log(`acronimi submitted: ${message.submittedCount}/${message.totalPlayers}`);
+    // Update counter display
+    const counterz = document.getElementById('submission-counterz');
+    counterz.textContent = `Words submitted: ${message.submittedCountz}/${message.totalPlayer}`;
+});
 
 document.getElementById('submit-words-btn').addEventListener('click', () => {
     const inputs = document.querySelectorAll('.custom-word-input');

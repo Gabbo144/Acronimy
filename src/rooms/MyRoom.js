@@ -338,6 +338,11 @@ this.onMessage("manda_acronimo", (client, message) => {
         const allSubmitted = Array.from(this.state.players.values()).every(p => p.submittedWordsCount >= this.clients.length-1);
         console.log(allSubmitted);
 
+        this.broadcast("acronimi_submission_update", {
+            submittedCountz: this.state.acronimiSubmittedCount,
+            totalPlayer: this.clients.length-1
+        });
+
         if (this.state.acronimiSubmittedCount >= this.clients.length - 1) {
             // Ferma il timer
             if (this.roundTimer) {
