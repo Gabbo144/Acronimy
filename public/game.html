@@ -19,6 +19,10 @@
             <h2>Online Players</h2>
             <ul id="players-list"></ul>
         </div>
+        <div id="game-settings">
+            <p>Rounds: <span id="total-rounds">3</span></p>
+            <p>Timer: <span id="round-timer">1:00</span></p>
+        </div>
 
     </div>
     
@@ -51,7 +55,9 @@
                     <button onclick="vote(true)" class="vote-btn">👍 Bello</button>
                     <button onclick="vote(false)" class="vote-btn">👎 Brutto</button>
                 </div>
+                <p id="votes-submitted">Votes: 0/0</p>
                 <p id="vote-count"></p>
+
             </div>
 
     </div>
@@ -94,12 +100,17 @@ function showNextAcronimo() {
             document.getElementById('vote-count').textContent = 
                 `👍 ${acronimo.upvotes} | 👎 ${acronimo.downvotes}`;
             
-            // Re-enable voting buttons for new acronimo
+            // Disable voting buttons if current user is the author
             const voteButtons = document.querySelectorAll('.vote-btn');
-            voteButtons.forEach(btn => btn.disabled = false);
+            const isAuthor = acronimo.author === sessionStorage.getItem('nickname');
+            voteButtons.forEach(btn => {
+                btn.disabled = isAuthor;
+                if (isAuthor) {
+                    btn.title = "Non puoi votare il tuo acronimo";
+                }
+            });
         }
     }
-
 }
 
 function startTimer(duration) {
@@ -363,6 +374,13 @@ currentRoom.onMessage("*", (type, message) => {
     } 
 });
 
+currentRoom.onMessage("vote_count_update", (message) => {
+    const counter = document.getElementById('votes-submitted');
+    if (counter) {
+        counter.textContent = `Votes: ${message.votesSubmitted}/${(message.totalExpectedVotes/2)-1}`;
+    }
+});
+
 document.getElementById('submit-words-btn').addEventListener('click', () => {
     const inputs = document.querySelectorAll('.custom-word-input');
     inputs.forEach(input => {
@@ -435,6 +453,16 @@ currentRoom.onMessage("start_game", () => {
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
     console.log("Game started by host");
+});
+
+currentRoom.onMessage("settings_update", (message) => {
+    document.getElementById('total-rounds').textContent = message.totalRounds;
+    
+    // Format timer duration back to MM:SS
+    const minutes = Math.floor(message.timerDuration / 60);
+    const seconds = message.timerDuration % 60;
+    document.getElementById('round-timer').textContent = 
+        `${minutes}:${seconds.toString().padStart(2, '0')}`;
 });
 
 currentRoom.onMessage("return_to_lobby", () => {

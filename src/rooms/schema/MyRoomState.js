@@ -35,6 +35,8 @@ class MyRoomState extends schema.Schema {
         this.currentRound = 0;    
         this.totalRounds = 3;     
         this.timerDuration = 60;  
+        this.votesSubmitted = 0;
+        this.totalExpectedVotes = 0;
     }
 }
 
@@ -47,7 +49,9 @@ schema.defineTypes(MyRoomState, {
     totalRounds: "number",
     wordsSubmittedCount: "number",
     acronimiSubmittedCount: "number",
-    timerDuration: "number"  
+    timerDuration: "number",
+        votesSubmitted: "number",
+    totalExpectedVotes: "number"
 });
 
 schema.defineTypes(PlayerSchema, {

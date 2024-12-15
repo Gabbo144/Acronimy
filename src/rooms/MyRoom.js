@@ -235,6 +235,18 @@ this.onMessage("start_round", (client, message) => {
     });
 });
     
+// Add this in the onCreate method
+this.onMessage("settings_update", (client, message) => {
+    // Update room settings
+    this.state.totalRounds = message.totalRounds;
+    this.state.timerDuration = message.timerDuration;
+    
+    // Broadcast the update to all clients
+    this.broadcast("settings_update", {
+        totalRounds: this.state.totalRounds,
+        timerDuration: this.state.timerDuration
+    });
+});
 
         // Message handlers
         this.onMessage("end_round", (client) => {
@@ -258,6 +270,7 @@ this.onMessage("start_round", (client, message) => {
     
         this.onMessage("next_acronimo", (client, message) => {
             console.log("Received next_acronimo message");
+            this.state.votesSubmitted = 0;
             this.broadcast("next_acronimo", { 
                 index: message.index,
                 text: this.state.acronimiMandati[message.index].text,
@@ -265,14 +278,26 @@ this.onMessage("start_round", (client, message) => {
                 downvotes: this.state.acronimiMandati[message.index].downvotes,
                 author: this.state.acronimiMandati[message.index].author // Aggiungi l'autore
             });
+            this.broadcast("vote_count_update", {
+                votesSubmitted: 0,
+                totalExpectedVotes: this.state.totalExpectedVotes
+            });
         });
     
         this.onMessage("vote", (client, message) => {
             const { index, isUpvote } = message;
             const acronimo = this.state.acronimiMandati[index];
+
+
+            if (acronimo && acronimo.author === this.playerIdentities.get(client.sessionId)) {
+                // Reject the vote if voter is the author
+                return;
+            }
+            
             if (acronimo && acronimo.author) {
                 // Find the player who authored the acronimo
                 const authorSessionId = this.getSessionIdByNickname(acronimo.author);
+                this.state.votesSubmitted++;
                 if (authorSessionId && this.state.players[authorSessionId]) {
                     if (isUpvote) {
                         acronimo.upvotes++;
@@ -309,7 +334,12 @@ this.onMessage("start_round", (client, message) => {
                     author: acronimo.author,
                     authorScore: authorPlayer.score
                 });
+                this.broadcast("vote_count_update", {
+                    votesSubmitted: this.state.votesSubmitted,
+                    totalExpectedVotes: (this.clients.length - 1) * this.state.acronimiMandati.length
+                });
             }
+            
         });
     
 // src/rooms/MyRoom.js

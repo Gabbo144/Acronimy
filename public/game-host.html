@@ -76,7 +76,9 @@
                     <button onclick="vote(true)" class="vote-btn">👍 Bello</button>
                     <button onclick="vote(false)" class="vote-btn">👎 Brutto</button>
                 </div>
+                <p id="votes-submitted">Votes: 0/0</p>
                 <p id="vote-count"></p>
+
             </div>
             <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
 
@@ -134,6 +136,40 @@ slider.oninput = function() {
         document.getElementById('numero_round').textContent = 
             `Round ${currentRoom.state.currentRound}/${this.value}`;
     }
+}
+
+slider.addEventListener('change', function() {
+    if (currentRoom) {
+        const timeSelect = document.getElementById('temporound');
+        const [minutes, seconds] = timeSelect.value.split(':').map(Number);
+        const timerDuration = minutes * 60 + seconds;
+        
+        currentRoom.send("settings_update", {
+            totalRounds: parseInt(this.value),
+            timerDuration: timerDuration
+        });
+        
+        // Update local display
+        document.getElementById('slider-value').textContent = this.value + " rounds";
+    }
+});
+
+document.getElementById('temporound').addEventListener('change', function() {
+    if (currentRoom) {
+        const [minutes, seconds] = this.value.split(':').map(Number);
+        const timerDuration = minutes * 60 + seconds;
+        
+        currentRoom.send("settings_update", {
+            totalRounds: parseInt(slider.value),
+            timerDuration: timerDuration
+        });
+    }
+});
+
+function getSelectedTimerDuration() {
+    const timeSelect = document.getElementById('temporound');
+    const [minutes, seconds] = timeSelect.value.split(':').map(Number);
+    return minutes * 60 + seconds;
 }
 
 function showScores() {
@@ -319,6 +355,13 @@ function scorriacronimo() {
             // Riabilita i bottoni di voto per il nuovo acronimo
             const voteButtons = document.querySelectorAll('.vote-btn');
             voteButtons.forEach(btn => btn.disabled = false);
+            const isAuthor = acronimo.author === sessionStorage.getItem('nickname');
+            voteButtons.forEach(btn => {
+                btn.disabled = isAuthor;
+                if (isAuthor) {
+                    btn.title = "Non puoi votare il tuo acronimo";
+                }
+            });
 
             // Invia un messaggio di reset dei voti per il nuovo acronimo
             currentRoom.send("next_acronimo", {
@@ -501,6 +544,13 @@ currentRoom.onMessage("force_return_to_lobby", () => {
     const bottonepazzo = document.getElementById('bottonepazzo');
     if (bottonepazzo) {
         bottonepazzo.style.display = 'block';
+    }
+});
+
+currentRoom.onMessage("vote_count_update", (message) => {
+    const counter = document.getElementById('votes-submitted');
+    if (counter) {
+        counter.textContent = `Votes: ${message.votesSubmitted}/${(message.totalExpectedVotes/2)-1}`;
     }
 });
 
