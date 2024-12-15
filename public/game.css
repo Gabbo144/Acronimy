@@ -36,19 +36,19 @@
 
 .players-section {
     margin: 20px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 20px;
+    border: 3px solid black;
+    border-radius: 10px;
 }
 
 #players-list {
     list-style: none;
-    padding: 0;
+    padding: 15px;
 }
 
 #players-list li {
     margin: 5px 0;
-    padding: 5px;
+
 }
 
 .player-online {
@@ -132,3 +132,27 @@
     font-size: 16px;
     border-bottom: 1px solid #eee;
 }
+
+.slider {
+    -webkit-appearance:none;
+    width:160px;
+    height:20px;
+    margin:10px 50px;
+    border: solidblack 2px;
+background: white;
+    background-size:150px 10px;
+    background-position:center;
+    background-repeat:no-repeat;
+    overflow:hidden;
+    outline: none;
+}
+
+.slider::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    background:black;
+    position:relative;
+    z-index:3;
+    box-shadow:0 0 5px 0 rgba(0,0,0,0.3);
+  }
