@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Host</title>
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="game.css">
 </head>
 <body>
@@ -12,29 +13,55 @@
 
     <div id="lobby" class="active">
 
-        <h2>Room Code: <span id="room-code"></span></h2>
-        <div class="players-section">
+        <h2 style="text-align: center;" >Room Code: <span id="room-code"></span></h2>
+        <div class="players-section" style="margin-left: 10%; margin-right: 10%; margin-top: 3%;">
             <h2>Online Players</h2>
             <ul id="players-list"></ul>
         </div>
-        <button id="copy-link-btn" onclick="copyGameLink()">Copy Game Link</button>
-        <button id="inizia_round">Comincia la partita</button>
-        <input type="range" min="1" max="10" value="3" class="slider" id="myRange"> <br>
-        <select name="timer" id="temporound">
-            <option value="0:10">0:10</option>
-            <option value="0:30">0:30</option>
-            <option value="1:00">1:00</option>
-            <option value="1:30">1:30</option>
-            <option value="2:00">2:00</option> 
-        </select>
-            <br>
+        <!-- <button id="copy-link-btn" onclick="copyGameLink()">Copy Game Link</button> -->
 
-        <span id="slider-value">rounds</span>
-        <br>
-         <input type="radio" id="sigle" name="fav_language" value="HTML">
-         <label for="html">SIGLE FAMOSE</label>
-         <input type="radio" id="parolone" name="fav_language" value="CSS">
-         <label for="css">PAROLE/SIGLE SCELTE DALL'UTENTE</label>
+
+
+
+
+         <table class="tabellasettings">
+            <tr>
+                <td><p>Numero Round</p></td>
+                <td><p>Tempo</p></td>
+                <td>Modalità</td>
+            </tr>
+            <tr>
+                <td><input type="range" min="1" max="10" value="3" class="slider" id="myRange"> <br> <span id="slider-value">rounds</span>
+                </td>
+                <td>
+                    <select name="timer" id="temporound">
+                        <option value="0:10">0:10</option>
+                        <option value="0:30">0:30</option>
+                        <option value="1:00">1:00</option>
+                        <option value="1:30">1:30</option>
+                        <option value="2:00">2:00</option> 
+                    </select>
+                </td>
+                <td>
+                    
+	<div class="toggle">
+        <input type="radio" id="sizeWeight" name="sizeBy" value="weight" checked="checked" />
+        <label for="sizeWeight">Parole personalizzate</label>
+        <input type="radio" id="sizeDimensions" name="sizeBy" value="dimensions" />
+        <label for="sizeDimensions">Parole Famose</label>
+	</div>
+
+                </td>
+            </tr>
+            
+         </table>
+
+         <div style="
+         display: flex; /* Enables CSS flexbox */
+          justify-content: center; /* Centers horizontally */
+       ">
+      <button id="inizia_round" class="flip-card__btn" >Comincia la partita</button>
+       </div>
 
 
 
