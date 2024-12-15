@@ -135,6 +135,9 @@ html {
 	 flex-flow: row nowrap;
 	 justify-content: flex-start;
 	 align-items: stretch;
+     display: flex;
+     justify-content: center;
+     align-items: center;
 }
  .toggle input {
 	 width: 0;
