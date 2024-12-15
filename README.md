@@ -21,6 +21,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - numero round/impostazioni sincronizzate
 - controllo nome già esistente
 - fixare bottone link aggiungendo nome
+
 - eliminare elemento da array quando è stato mostrato
 - Fixare formattazione
 
