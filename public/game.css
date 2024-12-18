@@ -159,7 +159,7 @@
 }
 
 .slider {
-    -webkit-appearance: none;
+    /* -webkit-appearance: none; */
     width:160px;
     height:20px;
     margin:10px 50px;
