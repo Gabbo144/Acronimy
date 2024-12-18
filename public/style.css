@@ -254,3 +254,20 @@ html {
 	}
 }
  
+.players-section {
+  margin: 20px 0;
+  padding: 20px;
+  border: 3px solid black;
+  border-radius: 10px;
+}
+
+.player-online {
+  color: green;
+}
+
+.player-offline {
+  color: gray;
+  font-style: italic;
+}
+
+

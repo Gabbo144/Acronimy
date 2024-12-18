@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Host</title>
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="game.css">
 </head>
@@ -61,7 +62,7 @@
          display: flex; /* Enables CSS flexbox */
           justify-content: center; /* Centers horizontally */
        ">
-      <button id="inizia_round" class="flip-card__btn">Start game</button>
+      <button id="inizia_round" style="background-color: white;" class="flip-card__btn">Start game</button>
        </div>
 
 
@@ -105,24 +106,32 @@
 
     </div>
     
-    <div id="votazioni">
+ 
 
+        <div id="votazioni">
+            <p style="font-size: 300%; margin-bottom: 10px;" id="votes-submitted">Votes: 0/0</p>
+        
             <div id="risultato-list">
-                <p id="current-acronimo"></p>
-                <div id="voting-buttons">
-                    <button onclick="vote(true)" class="vote-btn">👍 Bello</button>
-                    <button onclick="vote(false)" class="vote-btn">👎 Brutto</button>
+                <p id="current-acronimo" class="acronimogrosso"></p>
+                <div id="voting-buttons" class="bottoni">
+                    <button onclick="vote(true)" style="height: 10%;" class="vote-buton flip-card__btn">
+                        <i class="bi bi-arrow-up-circle-fill"></i>
+                    </button>
+                    <button onclick="vote(false)" style="height: 10%;" class="vote-buton flip-card__btn">
+                        <i class="bi bi-arrow-down-circle-fill"></i>
+                    </button>
                 </div>
-                <p id="votes-submitted">Votes: 0/0</p>
                 <p id="vote-count"></p>
-
             </div>
-            <button id="bottonepazzo" onclick="scorriacronimo()">avanti</button>
+        
+            <div class="button-container">
+                <button class="flip-card__btn" id="bottonepazzo" onclick="scorriacronimo()">Next</button>
+                <button class="flip-card__btn" onclick="showScores()">Scores</button>
+            </div>
+        </div>
 
-            <button onclick="showScores()">Mostra Classifica</button>
 
 
-    </div>
     
     <div id="classifica">
         <div id="round-scores-container">
@@ -780,10 +789,29 @@ document.getElementById('end-round-btn').addEventListener('click', () => {
                     } else if (type === "next_acronimo") {
                         console.log("Received next_acronimo message:", message);
                         if (message && message.text) {
-                            document.getElementById('current-acronimo').textContent = message.text;
-                            document.getElementById('vote-count').textContent =
-                                `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
-                        }
+        document.getElementById('current-acronimo').textContent = message.text;
+        document.getElementById('vote-count').textContent = 
+            `👍 ${message.upvotes} | 👎 ${message.downvotes}`;
+            
+        // Get current player's nickname
+        const currentPlayerNickname = sessionStorage.getItem('nickname');
+        
+        // Get vote buttons
+        const voteButtons = document.querySelectorAll('.vote-buton');
+        
+        // Disable buttons if current player is the author
+        const isAuthor = message.author === currentPlayerNickname;
+        voteButtons.forEach(btn => {
+            btn.disabled = isAuthor;
+            if (isAuthor) {
+                btn.title = "Non puoi votare il tuo acronimo";
+                btn.style.opacity = "0.5"; // Visual feedback
+            } else {
+                btn.title = "";
+                btn.style.opacity = "1";
+            }
+        });
+    }
                     }
                 });
 
