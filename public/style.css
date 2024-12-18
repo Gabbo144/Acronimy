@@ -5,6 +5,39 @@ html {
       font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
   }
 
+  /* Stile per la sezione della classifica */
+#scores-container, #round-scores-container {
+  margin: 20px 0;
+  padding: 20px;
+  border: 2px solid #333;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#scores-list, #round-scores-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#scores-list li, #round-scores-list li {
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 18px;
+  border-bottom: 1px solid #ddd;
+}
+
+#scores-list li:last-child, #round-scores-list li:last-child {
+  border-bottom: none;
+}
+
+#scores-container h2, #round-scores-container h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
   
   #navbar {
       max-width: fit-content;
