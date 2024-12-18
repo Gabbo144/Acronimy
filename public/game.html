@@ -8,20 +8,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game</title>
     <link rel="stylesheet" href="game.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
 </head>
 <body>
     <div id="lobby">
-
-        <a href="http://localhost:2567/"><button>HOME</button></a>
-        <h2>Room Code: <span id="room-code"></span></h2>
+        <h2 style="text-align: center;">Room Code: <span id="room-code"></span></h2>
         <div class="players-section">
-            <h2>Online Players</h2>
+            <h2>Players</h2>
             <ul id="players-list"></ul>
         </div>
-        <div id="game-settings">
-            <p>Rounds: <span id="total-rounds">3</span></p>
-            <p>Timer: <span id="round-timer">1:00</span></p>
+        <div id="game-settings" style="font-size: 150%;">
+            <p style="float: left; padding-left: 10%;">Rounds: <span id="total-rounds">3</span></p>
+            <p style="float: right; padding-right: 10%;">Timer: <span id="round-timer">1:00</span></p>
         </div>
 
     </div>

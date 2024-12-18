@@ -77,6 +77,20 @@ html {
       padding: 5px 10px;
       outline: none;
     }
+
+
+
+    .custom-word-input{
+      width: 250px;
+      height: 40px;
+      border-radius: 5px;
+      border: 2px solid black;
+      box-shadow: 4px 4px black;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 5px 10px;
+      margin: 10px;
+    }
     
     
     

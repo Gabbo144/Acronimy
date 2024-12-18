@@ -15,7 +15,7 @@
 
         <h2 style="text-align: center;" >Room Code: <span id="room-code"></span></h2>
         <div class="players-section" style="margin-left: 10%; margin-right: 10%; margin-top: 3%;">
-            <h2>Online Players</h2>
+            <h2>Players</h2>
             <ul id="players-list"></ul>
         </div>
         <!-- <button id="copy-link-btn" onclick="copyGameLink()">Copy Game Link</button> -->
@@ -26,9 +26,9 @@
 
          <table class="tabellasettings">
             <tr>
-                <td><p>Numero Round</p></td>
-                <td><p>Tempo</p></td>
-                <td>Modalità</td>
+                <td><p>Rounds</p></td>
+                <td><p>Timer</p></td>
+                <td>Game mode</td>
             </tr>
             <tr>
                 <td><input type="range" min="1" max="10" value="3" class="slider" id="myRange"> <br> <span id="slider-value">rounds</span>
@@ -44,12 +44,12 @@
                 </td>
                 <td>
                     
-	<div class="toggle">
-        <input type="radio" id="sizeWeight" name="sizeBy" value="weight" checked="checked" />
-        <label for="sizeWeight">Parole personalizzate</label>
-        <input type="radio" id="sizeDimensions" name="sizeBy" value="dimensions" />
-        <label for="sizeDimensions">Parole Famose</label>
-	</div>
+                <div class="toggle">
+                    <input type="radio" id="parolone" name="sizeBy" value="weight" checked="checked" />
+                    <label for="parolone">Custom Words</label>
+                    <input type="radio" id="sizeDimensions" name="sizeBy" value="dimensions" />
+                    <label for="sizeDimensions">Popular</label>
+                </div>
 
                 </td>
             </tr>
@@ -60,7 +60,7 @@
          display: flex; /* Enables CSS flexbox */
           justify-content: center; /* Centers horizontally */
        ">
-      <button id="inizia_round" class="flip-card__btn" >Comincia la partita</button>
+      <button id="inizia_round" class="flip-card__btn">Start game</button>
        </div>
 
 
@@ -68,21 +68,28 @@
     </div>
 
     <div id="scrivereparole">
-        <button id="avanti-btn">AVANTI</button>
-        <input type="text" id="custom-word-1" class="custom-word-input">
-        <input type="text" id="custom-word-2" class="custom-word-input">
-        <input type="text" id="custom-word-3" class="custom-word-input">
-        <button id="submit-words-btn">Invia Parole</button>
-        <p id="submission-counter">Words submitted: 0/0</p>
+        <button id="avanti-btn" style="display: none;">AVANTI</button> 
+        <p id="submission-counter" style="font-size: 150%; float: right; margin: 5%;">Words submitted: 0/0</p>
+        <div style="
+          max-width: fit-content;
+          margin-left: auto;
+          margin-right: auto;
+        ">
+        
+        <input type="text" id="custom-word-1" class="custom-word-input"> <br>
+        <input type="text" id="custom-word-2" class="custom-word-input"> <br>
+        <input type="text" id="custom-word-3" class="custom-word-input"> <br>
+        <button id="submit-words-btn" style="margin: 0 auto; display: block; margin-top: 20px;" class="flip-card__btn">Invia Parole</button>
+        </div>
 
     </div>
     
     <div id="host_interface" class="active">
-        <p id="numero_round"></p>
     </div>
     
     <div id="playing">
 
+            <p id="numero_round"></p>
             <h3>Time Remaining: <span id="timer-display">00:00</span></h3>
             <h2>Current Letter: <span id="current-letter"></span></h2>
             <input type="text" name="" id="user_acronimozz">
@@ -655,6 +662,13 @@ document.getElementById('submit-words-btn').addEventListener('click', () => {
 
 
 document.getElementById('inizia_round').addEventListener('click', () => {
+    // const totalRounds = parseInt(document.getElementById('myRange').value);
+    // const useCustomWords = document.getElementById('parolone').checked;
+    // const timeSelect = document.getElementById('temporound');
+    // const selectedTime = timeSelect.value;
+    // const [minutes, seconds] = selectedTime.split(':').map(Number);
+    // const timerDuration = minutes * 60 + seconds;
+
     const totalRounds = parseInt(document.getElementById('myRange').value);
     const useCustomWords = document.getElementById('parolone').checked;
     const timeSelect = document.getElementById('temporound');

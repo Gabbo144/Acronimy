@@ -41,6 +41,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 09/12 - bug fixati ma non tutti, scoperti di nuovi ma fixati. Aggiunto limite al voto. </br >
 10/12 - fixato bug di progressione sbaglaita dopo la fase scrivereparole, fixato limite voti. fixati i voti a due a due con una banale divisone, il sistema avana ancora di due.</br >
 15/12 - Aggiunte impostazioni sincronizzate anche a game.html, se l'acronimo è del giocatore non può votare. Counter di quanti hanno votato. Stile index.html e parziale game-host.html
+18/12 - Stile scrivereparole
 
 
 ## Cosa fanno i file
@@ -61,7 +62,7 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 15/12/24, 17.29_
+## _ultima modifica: 18/12/24, 15.03_
 
 https://codepen.io/dsenneff/pen/ZoLVZW
 /* From Uiverse.io by andrew-demchenk0 */ 
