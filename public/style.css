@@ -304,3 +304,215 @@ html {
 }
 
 
+#votazioni.active {
+  display: block !important; 
+}
+
+#votazioni {
+  display: none;
+}
+
+#risultato-list {
+  display: none;
+}
+
+.acronimogrosso {
+  font-size: 5em;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.bottoni {
+  display: flex;
+  justify-content: center;
+  font-size: 3em;
+}
+
+.vote-buton {
+  font-size: 2em;
+  padding: 20px;
+  margin: 2%;
+  
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.button-container button {
+  margin: 0 10px; /* Margine uniforme per entrambi i bottoni */
+  padding: 10px 20px; /* Padding per rendere i bottoni più grandi */
+}
+
+#risultato-list.visible {
+  display: block;
+}
+
+.vote-btn {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#vote-count {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+#scores-container {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+}
+
+#scores-list {
+  list-style: none;
+  padding: 0;
+}
+
+#scores-list li {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+
+
+#players-list {
+  list-style: none;
+  padding: 15px;
+}
+
+#players-list li {
+  margin: 5px 0;
+
+}
+
+
+#scores-container {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+}
+
+#scores-list {
+  list-style: none;
+  padding: 0;
+}
+
+#lobby, #host_interface, #playing, #classifica {
+  display: none;
+}
+
+#lobby.active, #host_interface.active, #playing.active, #classifica.active {
+  display: block;
+}
+
+#scores-container {
+  display: block; /* Remove any inline display:none styles */
+}
+
+#numero_round {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #333;
+}
+
+#prossimo_round {
+  width: 250px;
+  height: 40px;
+  border-radius: 5px;
+  border: 2px solid black;
+  box-shadow: 4px 4px black;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 5px 10px;
+  margin: 10px;
+  display: block; /* Ensure button is visible by default */
+}
+
+
+
+/* In game.css */
+#scrivereparole {
+  display: none;
+}
+
+#scrivereparole.active {
+  display: block;
+}
+
+#round-scores-container {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#round-scores-list {
+  list-style: none;
+  padding: 0;
+}
+
+#round-scores-list li {
+  margin: 5px 0;
+  padding: 5px;
+  font-size: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 160px;
+  height: 20px;
+  margin: 10px 50px;
+  border: solid black 2px;
+  background: white;
+  background-size: 150px 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  outline: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: black;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,0.3);
+  cursor: pointer;
+}
+
+/* Per Firefox */
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: black;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,0.3);
+  cursor: pointer;
+  border: none;
+}
+
+/* Per Edge/IE */
+.slider::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  background: black;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,0.3);
+  cursor: pointer;
+}
+
+
+
+
