@@ -19,9 +19,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 ## DA FARE (in ordine di impostanza):
 - controllo nome già esistente
 - bottone greyed out in game.html
-- fixare slider, fare bottone torna alla lobby
+- fare bottone torna alla lobby
 - fixare bottone link aggiungendo nome
-- fixare bottone disattivato al caricamento quando acronimo è del giocatore
 - eliminare elemento da array quando è stato mostrato
 - Fixare formattazione
 
@@ -63,7 +62,7 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 18/12/24, 20:00_
+## _ultima modifica: 18/12/24, 20:58_
 
 https://codepen.io/dsenneff/pen/ZoLVZW
 /* From Uiverse.io by andrew-demchenk0 */ 
