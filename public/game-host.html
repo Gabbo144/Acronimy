@@ -40,6 +40,7 @@
                         <option value="1:00">1:00</option>
                         <option value="1:30">1:30</option>
                         <option value="2:00">2:00</option> 
+                        <option value="30:00">30:00</option>
                     </select>
                 </td>
                 <td>
@@ -87,15 +88,18 @@
     <div id="host_interface" class="active">
     </div>
     
-    <div id="playing">
+    <div id="playing" style="font-size: 150%;">
 
+        <div style="display: flex; justify-content: space-between; align-items: center;">
             <p id="numero_round"></p>
-            <h3>Time Remaining: <span id="timer-display">00:00</span></h3>
-            <h2>Current Letter: <span id="current-letter"></span></h2>
-            <input type="text" name="" id="user_acronimozz">
-            <button onclick="mandaacronimo()">invia</button>
-            <button id="end-round-btn">End Round</button>
-            <p id="submission-counterz">Words submitted: 0/0</p>
+            <p><span id="timer-display">00:00</span></p>
+        </div>
+            <br>
+            <h2 style="background-color: yellow; text-align: center; margin-left: 35%; margin-right: 35%;"> <span id="current-letter"></span></h2>
+            <input type="text" name="" class="inputfigo" id="user_acronimozz" style="display: block; margin: 0 auto;">
+            <button onclick="mandaacronimo()" style="margin: 0 auto; display: block; margin-top: 20px;" class="flip-card__btn">invia</button>
+            <button style="display: none; " id="end-round-btn">End Round</button>
+            <p id="submission-counterz" style="text-align: center;">Words submitted: 0/0</p>
 
 
 

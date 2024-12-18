@@ -56,6 +56,24 @@ html {
       align-items: center;
       gap: 20px;
     }
+
+    #timer-display {
+      font-size: 1.5em; /* Regola la dimensione del font */
+      color: #333; /* Regola il colore del testo */
+      font-weight: bold; /* Regola il peso del font */
+  }
+
+  .inputfigo {
+    width: 250px;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid black;
+    box-shadow: 4px 4px black;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 5px 10px;
+    margin: 10px;
+  }
     
     .title {
       margin: 20px 0 20px 0;
