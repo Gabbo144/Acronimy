@@ -18,13 +18,13 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 ## DA FARE (in ordine di impostanza):
 - controllo nome già esistente
+- chiudere stanza quando non c'è piu nessuno
 - tabella responsive
 - forse numero di voti mandati?
 - bottone greyed out in game.html
 - fare bottone torna alla lobby
 - fixare bottone link aggiungendo nome
 - eliminare elemento da array quando è stato mostrato
-- Fixare formattazione
 
 
 ## Progressi
