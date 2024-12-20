@@ -516,3 +516,71 @@ html {
 
 
 
+/* Stile per la tabella delle impostazioni */
+.tabellasettings {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  padding: 20px;
+}
+
+.tabellasettings tr td {
+  padding: 15px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Media queries per responsività */
+@media screen and (max-width: 768px) {
+  .tabellasettings {
+      display: flex;
+      flex-direction: column;
+  }
+
+  .tabellasettings tr {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+  }
+
+  .tabellasettings td {
+      width: 100%;
+      display: block;
+      text-align: center;
+      padding: 10px;
+  }
+
+  /* Aggiustamenti per gli elementi interni */
+  .slider {
+      width: 80%;
+      margin: 10px auto;
+  }
+
+  #temporound {
+      width: 80%;
+      margin: 10px auto;
+  }
+
+  .toggle {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin: 10px auto;
+  }
+}
+
+/* Aggiustamenti per schermi molto piccoli */
+@media screen and (max-width: 480px) {
+  .tabellasettings td {
+      padding: 5px;
+  }
+
+  .slider, #temporound {
+      width: 90%;
+  }
+
+  .toggle label {
+      padding: 0.5rem 1rem;
+  }
+}
