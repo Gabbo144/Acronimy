@@ -8,8 +8,15 @@ const parolegiocatori =[]
 const acronimi = [
     "AIDS", "HIV", "USA", "USSR", "ONU", "NASA",
     "FBI", "UNICEF", "NATO", "URL", "PDF",
-    "HTML", "VIP", "ASAP", "LOL"
+    "HTML", "VIP", "ASAP", "LOL", "CEO", "CTO", "HTTP",
+    "GPS", "XML", "IP", "USB", "LAN", "RAM", "ROM", 
+    "Wi-Fi", "ATM", "NFC", "GPS", "AI", "GPU", "CPU",
+    "TLC", "MRI", "COVID", "SARS", "DNA", "RNA", "CEO", 
+    "ICT", "EUA", "HTML5", "CSS", "JS", "SEO", "VPN",
+    "SMS", "MMS", "TV", "DVD", "MP3", "MP4", "JPEG",
+    "PNG", "GIF", "API", "SDK", "IP", "LAN", "WAN", "SQL", "LMAO", "IDK"
 ];
+
 
 var acronimi_mandati = [];
 
