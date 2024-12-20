@@ -24,38 +24,34 @@
 
 
 
-         <table class="tabellasettings">
-            <tr>
-                <td><p>Rounds</p></td>
-                <td><p>Timer</p></td>
-                <td>Game mode</td>
-            </tr>
-            <tr>
-                <td><input type="range" min="1" max="10" value="3" class="slider" id="myRange"> <br> <span id="slider-value">rounds</span>
-                </td>
-                <td>
-                    <select style="font-size: 150%; padding: 10px;" name="timer" id="temporound">
-                        <option value="0:10">0:10</option>
-                        <option value="0:30">0:30</option>
-                        <option value="1:00">1:00</option>
-                        <option value="1:30">1:30</option>
-                        <option value="2:00">2:00</option> 
-                        <option value="30:00">30:00</option>
-                    </select>
-                </td>
-                <td>
-                    
+        <div class="settings-container">
+            <div class="settings-item">
+                <p>Rounds</p>
+                <input type="range" min="1" max="10" value="3" class="slider" id="myRange"> 
+                <br> 
+                <span id="slider-value">rounds</span>
+            </div>
+            <div class="settings-item">
+                <p>Timer</p>
+                <select style="font-size: 150%; padding: 10px;" name="timer" id="temporound">
+                    <option value="0:10">0:10</option>
+                    <option value="0:30">0:30</option>
+                    <option value="1:00">1:00</option>
+                    <option value="1:30">1:30</option>
+                    <option value="2:00">2:00</option>
+                    <option value="30:00">30:00</option>
+                </select>
+            </div>
+            <div class="settings-item">
+                <p>Game mode</p>
                 <div class="toggle">
                     <input type="radio" id="parolone" name="sizeBy" value="weight" checked="checked" />
                     <label for="parolone">Custom Words</label>
                     <input type="radio" id="sizeDimensions" name="sizeBy" value="dimensions" />
                     <label for="sizeDimensions">Popular</label>
                 </div>
-
-                </td>
-            </tr>
-            
-         </table>
+            </div>
+        </div>
 
          <div style="
          display: flex; /* Enables CSS flexbox */

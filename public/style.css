@@ -516,3 +516,21 @@ html {
 
 
 
+.settings-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.settings-item {
+  flex: 1 1 30%; /* Adjust the basis percentage as needed */
+  margin: 10px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .settings-item {
+      flex: 1 1 100%;
+  }
+}
