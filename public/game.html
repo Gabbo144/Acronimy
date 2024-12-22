@@ -116,7 +116,7 @@ function showNextAcronimo() {
             const currentUserNickname = sessionStorage.getItem('nickname');
             
             // Disable voting buttons if current user is the author
-            const voteButtons = document.querySelectorAll('.vote-buton');
+            const voteButtons = document.querySelectorAll('.vote-btn');
             const isAuthor = message.author === currentPlayerNickname;
         voteButtons.forEach(btn => {
             btn.disabled = isAuthor;
