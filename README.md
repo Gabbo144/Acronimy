@@ -18,6 +18,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 ## DA FARE (in ordine di importanza):
 - controllo nome già esistente
+- fixare immagine index
 - chiudere stanza quando non c'è piu nessuno
 - tabella responsive
 - forse numero di voti mandati?
@@ -45,6 +46,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 15/12 - Aggiunte impostazioni sincronizzate anche a game.html, se l'acronimo è del giocatore non può votare. Counter di quanti hanno votato. Stile index.html e parziale game-host.html </br >
 18/12 - Stile scrivereparole, playing, votazioni, classifiche </br >
 20/12 - testato l'online, devo ancora configurare il dominio e aggiustare qualcosina </br >
+22/12 - devo testare render.com ma in teoria ora è chiamato ogni 10 minuti e di conseguenza sempre attivo </br >
 
 
 ## Cosa fanno i file
@@ -65,7 +67,9 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 20/12/24, 15:42_
+## _ultima modifica: 22/12/24, 01:58_
 
 https://codepen.io/dsenneff/pen/ZoLVZW
 /* From Uiverse.io by andrew-demchenk0 */ 
+https://uiverse.io/andrew-demchenk0/afraid-cougar-9
+https://uiverse.io/alexroumi/shy-sloth-91
