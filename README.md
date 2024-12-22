@@ -20,7 +20,6 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 - controllo nome già esistente
 - fixare immagine index
 - chiudere stanza quando non c'è piu nessuno
-- tabella responsive
 - forse numero di voti mandati?
 - bottone greyed out in game.html
 - fare bottone torna alla lobby
