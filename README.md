@@ -2,17 +2,15 @@
 Un gioco sugli acronimi. 
 
 Sto usando Javascript con il framework [Colyseus](https://colyseus.io/).
-Il tutto è attualmente hostato localmente ma non dovrebbe essere difficile configurare un server remoto dato che usa Node e WebSocket.
+Il tutto è attualmente hostato su render.com, con un bypass per le limitazioni del free tier.
 
 Pagina di Notion:
 https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67d2da?pvs=4
 
 ## Note
 - CI SONO VARI COMMENTI/RIMASUGLI/NOMI STRANI PERCHE STO USANDO COPILOT __
-- http://localhost:2567/game.html?roomId=
+- game.html?roomId=
 - non sono sicuro di cosa succede quando gli acronimi disponibili finiscono
-- forse problemi quando comincia una nuova partita dopo essere tornati alla lobby? TESTARE
-- TESTARE con 3 giocatori
 </br >
 
 
@@ -51,16 +49,14 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 Logica principale della stanza di gioco, gestisce connessioni e disconnessioni, stato del gioco, messaggi, eccetera (ad esempio la generazione di acronimi)
 ### MyRoomState.js
 Definisce la struttura dello stato del gioco, gestisce sincronizzazione tra server e client, contiene il playerschema (vedi docs colyseus). 
-### index.js
-Punto di ingresso dell'applicazione, avvia il server sulla porta 2567
-### app.config.js
-Configurazione principale del server, definisce route e middleware, gestisce file statici e playground/monitor di colyseus. Questo file lo ho modificato molto poco.
 ### index.html
 Questo file è la "landing page", puoi scegliere se creare una stanza o connetterti a una esistente
 ### game.html/game-host.html
 Interfaccia di gioco sia per host che per giocatori, contiene tutto.
-### MyRoom_test.js, example.js, eccetera
-File che non ho toccato, a scopo di test o configurazione del framework.
+### app.config.js
+Configurazione principale del server, definisce route e middleware, gestisce file statici e playground/monitor di colyseus. Questo file lo ho modificato molto poco.
+
+
 
 
 
