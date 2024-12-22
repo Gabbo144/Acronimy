@@ -18,7 +18,6 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 ## DA FARE (in ordine di importanza):
 - controllo nome già esistente
-- bottone greyed out in game.html
 - fare bottone torna alla lobby
 - fixare bottone link aggiungendo nome
 - eliminare elemento da array quando è stato mostrato
@@ -43,6 +42,8 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 18/12 - Stile scrivereparole, playing, votazioni, classifiche </br >
 20/12 - testato l'online, devo ancora configurare il dominio e aggiustare qualcosina </br >
 22/12 - devo testare render.com ma in teoria ora è chiamato ogni 10 minuti e di conseguenza sempre attivo </br >
+22/12 - fixato counter voti, bottone greyed out, fixata immagine. </br>
+
 
 
 ## Cosa fanno i file
@@ -63,7 +64,7 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 22/12/24, 01:58_
+## _ultima modifica: 22/12/24, 14:51_
 
 https://codepen.io/dsenneff/pen/ZoLVZW
 /* From Uiverse.io by andrew-demchenk0 */ 
