@@ -7,7 +7,6 @@
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="game.css">
 </head>
 <body>
 
@@ -25,38 +24,34 @@
 
 
 
-         <table class="tabellasettings">
-            <tr>
-                <td><p>Rounds</p></td>
-                <td><p>Timer</p></td>
-                <td>Game mode</td>
-            </tr>
-            <tr>
-                <td><input type="range" min="1" max="10" value="3" class="slider" id="myRange"> <br> <span id="slider-value">rounds</span>
-                </td>
-                <td>
-                    <select style="font-size: 150%; padding: 10px;" name="timer" id="temporound">
-                        <option value="0:10">0:10</option>
-                        <option value="0:30">0:30</option>
-                        <option value="1:00">1:00</option>
-                        <option value="1:30">1:30</option>
-                        <option value="2:00">2:00</option> 
-                        <option value="30:00">30:00</option>
-                    </select>
-                </td>
-                <td>
-                    
+        <div class="settings-container">
+            <div class="settings-item">
+                <p>Rounds</p>
+                <input type="range" min="1" max="10" value="3" class="slider" id="myRange"> 
+                <br> 
+                <span id="slider-value">rounds</span>
+            </div>
+            <div class="settings-item">
+                <p>Timer</p>
+                <select style="font-size: 150%; padding: 10px;" name="timer" id="temporound">
+                    <option value="0:10">0:10</option>
+                    <option value="0:30">0:30</option>
+                    <option value="1:00">1:00</option>
+                    <option value="1:30">1:30</option>
+                    <option value="2:00">2:00</option>
+                    <option value="30:00">30:00</option>
+                </select>
+            </div>
+            <div class="settings-item">
+                <p>Game mode</p>
                 <div class="toggle">
                     <input type="radio" id="parolone" name="sizeBy" value="weight" checked="checked" />
                     <label for="parolone">Custom Words</label>
                     <input type="radio" id="sizeDimensions" name="sizeBy" value="dimensions" />
                     <label for="sizeDimensions">Popular</label>
                 </div>
-
-                </td>
-            </tr>
-            
-         </table>
+            </div>
+        </div>
 
          <div style="
          display: flex; /* Enables CSS flexbox */
@@ -152,7 +147,7 @@
 
 
 
-        const client = new Colyseus.Client('ws://localhost:2567');
+        const client = new Colyseus.Client('ws://acronimy.ddns.net');
         let currentRoom = null;
         let controllobottone = 0;
         let currentAcronimoIndex = -1;
@@ -280,7 +275,7 @@ function vote(isUpvote) {
     }
 
     try {
-        console.log(`Sending vote: ${isUpvote ? 'upvote' : 'downvote'} for index ${currentAcronimoIndex}`);
+        // console.log(`Sending vote: ${isUpvote ? 'upvote' : 'downvote'} for index ${currentAcronimoIndex}`);
         currentRoom.send("vote", {
             index: currentAcronimoIndex,
             isUpvote: isUpvote
@@ -299,7 +294,7 @@ function vote(isUpvote) {
             const maxRounds = parseInt(slider.value);
 
             if (currentRoom.state.currentRound >= maxRounds) {
-        console.log("Game Over - Max rounds reached");
+        // console.log("Game Over - Max rounds reached");
         showScores();
         document.getElementById('prossimo_round').style.display = 'none';
         return;
@@ -331,7 +326,7 @@ function vote(isUpvote) {
     
     // Mantieni solo questa chiamata
     if (currentRoom) {
-        console.log("Sending start_new_round message with duration:", timerDuration);
+        // console.log("Sending start_new_round message with duration:", timerDuration);
         currentRoom.send("start_new_round", { 
             timerDuration: timerDuration,
             maxRounds: maxRounds 
@@ -353,7 +348,7 @@ function mandaacronimo() {
         return;
     } else {
         var acronimoz = document.getElementById('user_acronimozz').value;
-        console.log("Host sending acronimo:", acronimoz); // Debug log
+        // console.log("Host sending acronimo:", acronimoz); // Debug log
         currentRoom.send("manda_acronimo", { acronimo: acronimoz });
     }
 }
@@ -416,7 +411,7 @@ function scorriacronimo() {
                 downvotes: acronimo.downvotes,
                 resetVotes: true  // Aggiungi questa flag
             });
-            console.log("Displayed acronimo at index:", currentAcronimoIndex);
+            // console.log("Displayed acronimo at index:", currentAcronimoIndex);
         }
     } else {
         document.getElementById('bottonepazzo').style.display = 'none';
@@ -516,7 +511,7 @@ currentRoom.onMessage("return_to_lobby", () => {
 });
 
 currentRoom.onMessage("round_started", (message) => {
-    console.log("Received round_started message:", message);
+    // console.log("Received round_started message:", message);
     
     document.getElementById('lobby').classList.remove('active');
     document.getElementById('playing').classList.add('active');
@@ -531,7 +526,7 @@ currentRoom.onMessage("round_started", (message) => {
         `Round ${message.roundNumber}/${message.totalRounds}`;
     
     if (message.timerDuration) {
-        console.log("Starting timer with duration:", message.timerDuration);
+        // console.log("Starting timer with duration:", message.timerDuration);
         startTimer(message.timerDuration);
     }
 });
@@ -595,7 +590,11 @@ currentRoom.onMessage("force_return_to_lobby", () => {
 currentRoom.onMessage("vote_count_update", (message) => {
     const counter = document.getElementById('votes-submitted');
     if (counter) {
+        if (message.totalExpectedVotes === 0) {
+            counter.textContent = `Votes: ${message.votesSubmitted}/${(message.totalExpectedVotes/2)}`;
+        } else {
         counter.textContent = `Votes: ${message.votesSubmitted}/${(message.totalExpectedVotes/2)-1}`;
+    }
     }
 });
 
@@ -649,14 +648,14 @@ currentRoom.onMessage("show_scores", () => {
 
 // Add this to game-host.html where other message handlers are defined
 currentRoom.onMessage("words_submission_update", (message) => {
-    console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`);
+    // console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`);
     // Optionally add a visual indicator
     const counter = document.getElementById('submission-counter');
     counter.textContent = `Words submitted: ${message.submittedCount}/${message.totalPlayers}`;
 });
 
 currentRoom.onMessage("acronimi_submission_update", (message) => {
-    console.log(`acronimi submitted: ${message.submittedCount}/${message.totalPlayers}`);
+    // console.log(`acronimi submitted: ${message.submittedCount}/${message.totalPlayers}`);
     // Update counter display
     const counterz = document.getElementById('submission-counterz');
     counterz.textContent = `Words submitted: ${message.submittedCountz}/${message.totalPlayer}`;
@@ -780,13 +779,13 @@ document.getElementById('end-round-btn').addEventListener('click', () => {
         bottonepazzo.style.display = 'block';
     }
         
-        console.log("End round - current acronimi:", currentRoom.state.acronimiMandati);
+        // console.log("End round - current acronimi:", currentRoom.state.acronimiMandati);
         currentAcronimoIndex = -1;
         document.getElementById('risultato-list').classList.add('visible');
         scorriacronimo();
     }
                     } else if (type === "next_acronimo") {
-                        console.log("Received next_acronimo message:", message);
+                        // console.log("Received next_acronimo message:", message);
                         if (message && message.text) {
         document.getElementById('current-acronimo').textContent = message.text;
         document.getElementById('vote-count').textContent = 
@@ -873,7 +872,7 @@ currentRoom.onMessage("vote_update", (message) => {
     
     currentRoom.state.players.forEach((player, sessionId) => {
         const li = document.createElement('li');
-        console.log(`Player ${player.nickname} has score: ${player.score}`); // Debug log
+        // console.log(`Player ${player.nickname} has score: ${player.score}`); // Debug log
         li.textContent = `${player.nickname}: ${player.score} punti`;
         scoresList.appendChild(li);
     });

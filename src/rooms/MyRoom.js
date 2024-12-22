@@ -8,8 +8,15 @@ const parolegiocatori =[]
 const acronimi = [
     "AIDS", "HIV", "USA", "USSR", "ONU", "NASA",
     "FBI", "UNICEF", "NATO", "URL", "PDF",
-    "HTML", "VIP", "ASAP", "LOL"
+    "HTML", "VIP", "ASAP", "LOL", "CEO", "CTO", "HTTP",
+    "GPS", "XML", "IP", "USB", "LAN", "RAM", "ROM", 
+    "Wi-Fi", "ATM", "NFC", "GPS", "AI", "GPU", "CPU",
+    "TLC", "MRI", "COVID", "SARS", "DNA", "RNA", "CEO", 
+    "ICT", "EUA", "HTML5", "CSS", "JS", "SEO", "VPN",
+    "SMS", "MMS", "TV", "DVD", "MP3", "MP4", "JPEG",
+    "PNG", "GIF", "API", "SDK", "IP", "LAN", "WAN", "SQL", "LMAO", "IDK"
 ];
+
 
 var acronimi_mandati = [];
 
@@ -101,7 +108,7 @@ exports.MyRoom = class extends colyseus.Room {
             // Verifica e aggiungi la parola
             if (message.word && !parolegiocatori.includes(message.word)) {
                 parolegiocatori.push(message.word);
-                console.log("Word added:", message.word);
+                // console.log("Word added:", message.word);
             }
         
             player.hasSubmittedWords = true;
@@ -120,7 +127,7 @@ exports.MyRoom = class extends colyseus.Room {
                     }
                 });
         
-                console.log("Parole raccolte:", parolegiocatori); // Debug log
+                // console.log("Parole raccolte:", parolegiocatori); // Debug log
                 this.state.currentRound = 1;
                 
                 // Copia le parole in un nuovo array per mantenerle
@@ -256,20 +263,20 @@ this.onMessage("settings_update", (client, message) => {
                 this.roundTimer = null;
             }
             
-            console.log("Broadcasting end_round message from client:", client.sessionId);
+            // console.log("Broadcasting end_round message from client:", client.sessionId);
             this.broadcast("end_round");
         });
 
         this.onMessage("show_scores", (client) => {
-            console.log("Showing scores");
+            // console.log("Showing scores");
             this.broadcast("show_scores");
             Object.entries(this.state.players).forEach(([sessionId, player]) => {
-                console.log(`Player ${player.nickname}: ${player.score} points`);
+                // console.log(`Player ${player.nickname}: ${player.score} points`);
             });
         });
     
         this.onMessage("next_acronimo", (client, message) => {
-            console.log("Received next_acronimo message");
+            // console.log("Received next_acronimo message");
             this.state.votesSubmitted = 0;
             this.broadcast("next_acronimo", { 
                 index: message.index,
@@ -319,11 +326,11 @@ this.onMessage("settings_update", (client, message) => {
                 if (isUpvote) {
                     acronimo.upvotes++;
                     authorPlayer.score++;
-                    console.log(`Punto assegnato a ${authorPlayer.nickname}, nuovo punteggio: ${authorPlayer.score}`);
+                    // console.log(`Punto assegnato a ${authorPlayer.nickname}, nuovo punteggio: ${authorPlayer.score}`);
                 } else {
                     acronimo.downvotes++;
                     authorPlayer.score--;
-                    console.log(`Punto sottratto a ${authorPlayer.nickname}, nuovo punteggio: ${authorPlayer.score}`);
+                    // console.log(`Punto sottratto a ${authorPlayer.nickname}, nuovo punteggio: ${authorPlayer.score}`);
                 }
         
                 // Broadcast vote update with author score
@@ -366,7 +373,7 @@ this.onMessage("manda_acronimo", (client, message) => {
 
         // Controlla se tutti i giocatori hanno sottomesso le parole richieste
         const allSubmitted = Array.from(this.state.players.values()).every(p => p.submittedWordsCount >= this.clients.length-1);
-        console.log(allSubmitted);
+        // console.log(allSubmitted);
 
         this.broadcast("acronimi_submission_update", {
             submittedCountz: this.state.acronimiSubmittedCount,
@@ -399,7 +406,7 @@ this.onMessage("manda_acronimo", (client, message) => {
     
         // Generate a random letter at the start of the round
         this.state.currentLetter = acronimi[Math.floor(Math.random() * acronimi.length)];
-        console.log(`Generated letter: ${this.state.currentLetter}`);
+        // console.log(`Generated letter: ${this.state.currentLetter}`);
     }
 
     onJoin(client, options) {
@@ -446,7 +453,7 @@ this.onMessage("manda_acronimo", (client, message) => {
         const connectedPlayers = Object.values(this.state.players)
             .filter(p => p.connected).length;
 
-        console.log(`Connected players count: ${connectedPlayers}`);
+        // console.log(`Connected players count: ${connectedPlayers}`);
 
         // Update room lock status
         if (connectedPlayers >= this.maxClients) {

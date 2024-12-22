@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="game.css">
     <script src="https://unpkg.com/colyseus.js@0.15.0/dist/colyseus.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 </head>
@@ -89,8 +88,8 @@
 </div>
 
     <script>
-        const client = new Colyseus.Client('ws://localhost:2567');
-        let currentRoom = null;
+const client = new Colyseus.Client('ws://acronimy.ddns.net');
+let currentRoom = null;
         let controllobottone = 0;
         let acronimiList = [];
         let currentAcronimoIndex = -1;
@@ -166,7 +165,7 @@ function vote(isUpvote) {
     }
 
     try {
-        console.log(`Sending vote: ${isUpvote ? 'upvote' : 'downvote'} for index ${currentAcronimoIndex}`);
+        // console.log(`Sending vote: ${isUpvote ? 'upvote' : 'downvote'} for index ${currentAcronimoIndex}`);
         currentRoom.send("vote", {
             index: currentAcronimoIndex,
             isUpvote: isUpvote
@@ -190,7 +189,7 @@ function vote(isUpvote) {
             } else {
                 var acronimoz = document.getElementById('user_acronimozz').value;
                 currentRoom.send("manda_acronimo", { acronimo: acronimoz });
-                console.log("Acronimo inviato:", acronimoz);
+                // console.log("Acronimo inviato:", acronimoz);
             }
         }
 
@@ -233,12 +232,12 @@ currentRoom.onMessage("custom_words_phase", () => {
 });
 
 currentRoom.onMessage("words_submission_update", (message) => {
-    console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayer}`);
+    // console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayer}`);
     // Optionally show a progress indicator
 });
 
 currentRoom.onMessage("acronimi_submission_update", (message) => {
-    console.log(`Acronimi submitted: ${message.submittedCountz}/${message.totalPlayer}`);
+    // console.log(`Acronimi submitted: ${message.submittedCountz}/${message.totalPlayer}`);
     // Update counter display
     const counterz = document.getElementById('submission-counterz');
     if (counterz) {
@@ -247,7 +246,7 @@ currentRoom.onMessage("acronimi_submission_update", (message) => {
 });
 
 currentRoom.onMessage("words_submission_update", (message) => {
-    console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`); // Note: totalPlayers not totalPlayer
+    // console.log(`Words submitted: ${message.submittedCount}/${message.totalPlayers}`); // Note: totalPlayers not totalPlayer
     // Update counter display
     const counter = document.getElementById('submission-counter');
     if (counter) {
@@ -362,7 +361,7 @@ currentRoom.onMessage("*", (type, message) => {
         document.getElementById('votazioni').classList.add('active');
         document.getElementById('classifica').classList.remove('active');
         
-        console.log("Received end_round message");
+        // console.log("Received end_round message");
         acronimiList = Array.from(currentRoom.state.acronimiMandati);
         currentAcronimoIndex = -1;
         document.getElementById('risultato-list').classList.add('visible');
@@ -410,7 +409,7 @@ document.getElementById('submit-words-btn').addEventListener('click', () => {
 // public/game.html
 
 currentRoom.onMessage("start_round", (message) => {
-    console.log("Received start_round message:", message);
+    // console.log("Received start_round message:", message);
 
     document.getElementById('lobby').classList.remove('active');
     document.getElementById('playing').classList.add('active');
@@ -425,7 +424,7 @@ currentRoom.onMessage("start_round", (message) => {
         `Round ${message.roundNumber}/${message.totalRounds}`;
 
     if (message.timerDuration) {
-        console.log("Starting timer with duration:", message.timerDuration);
+        // console.log("Starting timer with duration:", message.timerDuration);
         startTimer(message.timerDuration);
     } else {
         console.warn("No timerDuration in start_round message");
@@ -435,7 +434,7 @@ currentRoom.onMessage("start_round", (message) => {
 
 // Add this message handler
 currentRoom.onMessage("round_started", (message) => {
-    console.log("Received round_started message:", message);
+    // console.log("Received round_started message:", message);
     
     document.getElementById('lobby').classList.remove('active');
     document.getElementById('playing').classList.add('active');
@@ -453,7 +452,7 @@ currentRoom.onMessage("round_started", (message) => {
         `Round ${message.roundNumber}/${message.totalRounds}`;
     
     if (message.timerDuration) {
-        console.log("Starting timer with duration:", message.timerDuration);
+        // console.log("Starting timer with duration:", message.timerDuration);
         startTimer(message.timerDuration);
     } else {
         console.warn("No timerDuration in round_started message");
@@ -467,7 +466,7 @@ currentRoom.onMessage("start_game", () => {
     document.getElementById('playing').classList.add('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
-    console.log("Game started by host");
+    // console.log("Game started by host");
 });
 
 currentRoom.onMessage("settings_update", (message) => {
@@ -499,7 +498,7 @@ currentRoom.onMessage("return_to_lobby", () => {
 // public/game.html
 
 currentRoom.onMessage("round_started", (message) => {
-    console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
+    // console.log(`Round ${message.roundNumber} started with letter: ${message.letter}`);
     
     document.getElementById('lobby').classList.remove('active');
     document.getElementById('playing').classList.add('active');

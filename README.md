@@ -16,13 +16,15 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 </br >
 
 
-## DA FARE (in ordine di impostanza):
+## DA FARE (in ordine di importanza):
 - controllo nome già esistente
+- chiudere stanza quando non c'è piu nessuno
+- tabella responsive
+- forse numero di voti mandati?
 - bottone greyed out in game.html
 - fare bottone torna alla lobby
 - fixare bottone link aggiungendo nome
 - eliminare elemento da array quando è stato mostrato
-- Fixare formattazione
 
 
 ## Progressi
@@ -40,8 +42,9 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 08/12 - Aggiunto sistema di classifica relativa al round appena giocato, inoltre ora anche nel div playing quando tutti hanno mandato la fase avanza </br >
 09/12 - bug fixati ma non tutti, scoperti di nuovi ma fixati. Aggiunto limite al voto. </br >
 10/12 - fixato bug di progressione sbaglaita dopo la fase scrivereparole, fixato limite voti. fixati i voti a due a due con una banale divisone, il sistema avana ancora di due.</br >
-15/12 - Aggiunte impostazioni sincronizzate anche a game.html, se l'acronimo è del giocatore non può votare. Counter di quanti hanno votato. Stile index.html e parziale game-host.html
-18/12 - Stile scrivereparole, playing, votazioni, classifiche
+15/12 - Aggiunte impostazioni sincronizzate anche a game.html, se l'acronimo è del giocatore non può votare. Counter di quanti hanno votato. Stile index.html e parziale game-host.html </br >
+18/12 - Stile scrivereparole, playing, votazioni, classifiche </br >
+20/12 - testato l'online, devo ancora configurare il dominio e aggiustare qualcosina </br >
 
 
 ## Cosa fanno i file
@@ -62,7 +65,7 @@ File che non ho toccato, a scopo di test o configurazione del framework.
 
 
 
-## _ultima modifica: 18/12/24, 20:58_
+## _ultima modifica: 20/12/24, 15:42_
 
 https://codepen.io/dsenneff/pen/ZoLVZW
 /* From Uiverse.io by andrew-demchenk0 */ 

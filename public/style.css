@@ -317,7 +317,7 @@ html {
 }
 
 .acronimogrosso {
-  font-size: 5em;
+  font-size: 3em;
   text-align: center;
   margin-top: 10px;
 }
@@ -329,7 +329,7 @@ html {
 }
 
 .vote-buton {
-  font-size: 2em;
+  font-size: 1em;
   padding: 20px;
   margin: 2%;
   
@@ -516,3 +516,21 @@ html {
 
 
 
+.settings-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.settings-item {
+  flex: 1 1 30%; /* Adjust the basis percentage as needed */
+  margin: 10px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .settings-item {
+      flex: 1 1 100%;
+  }
+}
