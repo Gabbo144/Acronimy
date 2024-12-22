@@ -117,12 +117,17 @@ function showNextAcronimo() {
             
             // Disable voting buttons if current user is the author
             const voteButtons = document.querySelectorAll('.vote-buton');
-            voteButtons.forEach(button => {
-                const isAuthor = acronimo.author === currentUserNickname;
-                button.disabled = isAuthor;
-                button.style.opacity = isAuthor ? "0.5" : "1";
-                button.title = isAuthor ? "Non puoi votare il tuo acronimo" : "";
-            });
+            const isAuthor = message.author === currentPlayerNickname;
+        voteButtons.forEach(btn => {
+            btn.disabled = isAuthor;
+            if (isAuthor) {
+                btn.title = "Non puoi votare il tuo acronimo";
+                btn.style.opacity = "0.5"; // Visual feedback
+            } else {
+                btn.title = "";
+                btn.style.opacity = "1";
+            }
+        });
         }
     }
 }
