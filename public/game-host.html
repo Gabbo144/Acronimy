@@ -590,11 +590,7 @@ currentRoom.onMessage("force_return_to_lobby", () => {
 currentRoom.onMessage("vote_count_update", (message) => {
     const counter = document.getElementById('votes-submitted');
     if (counter) {
-        if (message.totalExpectedVotes === 0) {
-            counter.textContent = `Votes: ${message.votesSubmitted}/${(message.totalExpectedVotes/2)}`;
-        } else {
-        counter.textContent = `Votes: ${message.votesSubmitted}/${(message.totalExpectedVotes/2)-1}`;
-    }
+        counter.textContent = `Votes: ${message.votesSubmitted}/${(message.totalExpectedVotes)-1}`;
     }
 });
 

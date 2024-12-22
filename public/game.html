@@ -391,7 +391,7 @@ currentRoom.onMessage("*", (type, message) => {
 currentRoom.onMessage("vote_count_update", (message) => {
     const counter = document.getElementById('votes-submitted');
     if (counter) {
-        counter.textContent = `Votes: ${message.votesSubmitted}/${(message.totalExpectedVotes/2)-1}`;
+        counter.textContent = `Votes: ${message.votesSubmitted}/${(message.totalExpectedVotes)-1}`;
     }
 });
 

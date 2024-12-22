@@ -343,7 +343,7 @@ this.onMessage("settings_update", (client, message) => {
                 });
                 this.broadcast("vote_count_update", {
                     votesSubmitted: this.state.votesSubmitted,
-                    totalExpectedVotes: (this.clients.length - 1) * this.state.acronimiMandati.length
+                    totalExpectedVotes: (this.clients.length - 1)  // * this.state.acronimiMandati.length
                 });
             }
             
