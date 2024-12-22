@@ -384,7 +384,7 @@ currentRoom.onMessage("*", (type, message) => {
         currentAcronimoIndex = message.index;
         
         // Always reset vote buttons when showing new acronimo
-        const voteButtons = document.querySelectorAll('.vote-btn');
+        const voteButtons = document.querySelectorAll('.vote-buton');
         voteButtons.forEach(btn => btn.disabled = false);
         
         // Remove this acronimo from voted set
