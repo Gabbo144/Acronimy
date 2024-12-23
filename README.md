@@ -17,6 +17,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 ## DA FARE (in ordine di importanza):
 - controllo nome già esistente
 - fixare conteggio round diverso per modalita diverse
+- resettare tutte le variabili
 - fare bottone torna alla lobby
 - fixare bottone link aggiungendo nome
 - eliminare elemento da array quando è stato mostrato
