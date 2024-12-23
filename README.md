@@ -16,9 +16,11 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 
 ## DA FARE (in ordine di importanza):
 - controllo nome già esistente
+- fixare conteggio round diverso per modalita diverse
 - fare bottone torna alla lobby
 - fixare bottone link aggiungendo nome
 - eliminare elemento da array quando è stato mostrato
+- div non chiuso forse, linea 89 game-host.html
 
 
 ## Progressi
@@ -41,6 +43,7 @@ https://www.notion.so/romanofranceso/Gioco-acronimi-12ada23e29518098abd6c8438e67
 20/12 - testato l'online, devo ancora configurare il dominio e aggiustare qualcosina </br >
 22/12 - devo testare render.com ma in teoria ora è chiamato ogni 10 minuti e di conseguenza sempre attivo </br >
 22/12 - fixato counter voti, bottone greyed out, fixata immagine. </br>
+23/12 - aggiunti numero round e acronimo anche nella fase di voto.
 
 
 
