@@ -116,10 +116,10 @@ exports.MyRoom = class extends colyseus.Room {
         
             this.broadcast("words_submission_update", {
                 submittedCount: this.state.wordsSubmittedCount,
-                totalPlayers: this.clients.length-2
+                totalPlayers: this.clients.length-1
             });
         
-            if (this.state.wordsSubmittedCount >= this.clients.length-2) {
+            if (this.state.wordsSubmittedCount >= this.clients.length-1) {
                 this.state.wordsSubmittedCount = 0;
                 this.state.players.forEach((p) => {
                     if (p instanceof PlayerSchema) {
@@ -343,7 +343,7 @@ this.onMessage("settings_update", (client, message) => {
                 });
                 this.broadcast("vote_count_update", {
                     votesSubmitted: this.state.votesSubmitted,
-                    totalExpectedVotes: (this.clients.length - 2)  // * this.state.acronimiMandati.length
+                    totalExpectedVotes: (this.clients.length - 1)  // * this.state.acronimiMandati.length
                 });
             }
             
@@ -372,15 +372,15 @@ this.onMessage("manda_acronimo", (client, message) => {
         }
 
         // Controlla se tutti i giocatori hanno sottomesso le parole richieste
-        const allSubmitted = Array.from(this.state.players.values()).every(p => p.submittedWordsCount >= this.clients.length-2);
+        const allSubmitted = Array.from(this.state.players.values()).every(p => p.submittedWordsCount >= this.clients.length-1);
         // console.log(allSubmitted);
 
         this.broadcast("acronimi_submission_update", {
             submittedCountz: this.state.acronimiSubmittedCount,
-            totalPlayer: this.clients.length-2
+            totalPlayer: this.clients.length-1
         });
 
-        if (this.state.acronimiSubmittedCount >= this.clients.length - 2) {
+        if (this.state.acronimiSubmittedCount >= this.clients.length - 1) {
             // Ferma il timer
             if (this.roundTimer) {
                 clearTimeout(this.roundTimer);
