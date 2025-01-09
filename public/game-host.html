@@ -441,8 +441,8 @@ function scorriacronimo() {
             
             try {
 
-                currentRoom = await client.joinById(roomId, { nickname });
-        document.getElementById('room-code').textContent = roomId;
+                currentRoom = await client.create('my_room', { nickname });
+                document.getElementById('room-code').textContent = currentRoom.id;
 
         // Set initial visibility
         document.getElementById('lobby').classList.add('active');
