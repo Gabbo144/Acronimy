@@ -486,6 +486,7 @@ currentRoom.onMessage("start_game", () => {
     document.getElementById('playing').classList.add('active');
     document.getElementById('votazioni').classList.remove('active');
     document.getElementById('classifica').classList.remove('active');
+    console.log(this.clients.length);
     // console.log("Game started by host");
 });
 

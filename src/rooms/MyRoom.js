@@ -412,6 +412,7 @@ this.onMessage("manda_acronimo", (client, message) => {
     onJoin(client, options) {
         console.log(`${client.sessionId} joined room ${this.roomId}`);
         console.log(`Received nickname: ${options.nickname}`);
+        console.log(this.clients.length);
         
 
         // First check if nickname is provided
