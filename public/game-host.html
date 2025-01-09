@@ -443,8 +443,8 @@ function scorriacronimo() {
             
             try {
 
-                currentRoom = await client.create('my_room', { nickname });
-                document.getElementById('room-code').textContent = currentRoom.id;
+                currentRoom = await client.joinById(roomId, { nickname });
+        document.getElementById('room-code').textContent = roomId;
 
         // Set initial visibility
         document.getElementById('lobby').classList.add('active');
@@ -462,7 +462,6 @@ function scorriacronimo() {
 
             const scoresList = document.getElementById('scores-list');
             scoresList.innerHTML = '';
-            console.log(this.clients.length);
         });
 
         // Add this handler in game-host.html where other message handlers are defined
